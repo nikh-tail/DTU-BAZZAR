@@ -4,7 +4,6 @@ import { Listing } from '../types/index.js';
 import { ListingService } from '../services/listing.service.js';
 import { ListingCard } from '../components/listings/ListingCard.js';
 import { ListingFilters } from '../components/listings/ListingFilters.js';
-import { HostelFilterChips } from '../components/listings/HostelFilterChips.js';
 import { EmptyState } from '../components/common/EmptyState.js';
 
 interface BrowsePageProps {
@@ -81,8 +80,8 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 min-h-screen pb-20 sm:pb-8">
       {/* Top Search & Filter Bar */}
-      <div className="bg-campus-card border border-slate-800 rounded-3xl p-4 sm:p-5 mb-5 shadow-xl space-y-3">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="bg-campus-card border border-slate-800 rounded-3xl p-4 sm:p-5 mb-6 shadow-xl">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Search Input */}
           <div className="relative w-full sm:flex-1">
             <Search size={18} className="absolute left-4 text-slate-400 pointer-events-none" />
@@ -90,7 +89,7 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
               type="text"
               value={filters.search}
               onChange={(e) => handleFilterChange({ search: e.target.value })}
-              placeholder="Search by title, specs, branch notes, or hostel..."
+              placeholder="Search by title, brand, specs, or department..."
               className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-slate-100 placeholder-slate-400 rounded-2xl pl-11 pr-10 py-2.5 text-sm outline-none transition-all"
             />
             {filters.search && (
@@ -118,14 +117,6 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
               Showing <strong className="text-white font-bold">{listings.length}</strong> of {totalCount} items
             </div>
           </div>
-        </div>
-
-        {/* 1-Tap DTU Hostel Filter Chips Bar */}
-        <div className="pt-2 border-t border-slate-800/80">
-          <HostelFilterChips
-            selectedHostel={filters.campusLocation === 'ALL' ? '' : filters.campusLocation}
-            onSelectHostel={(hostel) => handleFilterChange({ campusLocation: hostel ? hostel : 'ALL' })}
-          />
         </div>
       </div>
 
@@ -189,7 +180,7 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
           ) : listings.length === 0 ? (
             <EmptyState
               title="No items found"
-              description="Try adjusting your keywords, price filter, or campus hostel to find what you need."
+              description="Try adjusting your keywords, price filter, or category to find what you need."
               actionText="Clear All Filters"
               onAction={handleResetFilters}
             />
