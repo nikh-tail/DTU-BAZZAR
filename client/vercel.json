@@ -1,6 +1,18 @@
 {
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://dtu-bazzar.onrender.com/api/:path*"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://dtu-bazzar.onrender.com/uploads/:path*"
+    },
+    {
+      "source": "/socket.io/:path*",
+      "destination": "https://dtu-bazzar.onrender.com/socket.io/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
