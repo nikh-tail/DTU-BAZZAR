@@ -18,7 +18,9 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const { token, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    const socketInstance = io('/', {
+    const serverUrl = import.meta.env.VITE_API_URL || '/';
+
+    const socketInstance = io(serverUrl, {
       auth: { token: token || undefined },
       autoConnect: true,
       transports: ['websocket', 'polling'],
@@ -26,7 +28,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     socketInstance.on('connect', () => {
       setIsConnected(true);
-      // console.log('⚡ Socket connected to DTU Bazaar gateway');
     });
 
     socketInstance.on('disconnect', () => {

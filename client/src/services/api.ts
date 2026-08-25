@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-export const API_BASE_URL = '/api';
+// Dynamically use VITE_API_URL when deployed to Vercel/Render, or relative path locally
+const rawApiUrl = import.meta.env.VITE_API_URL || '';
+export const API_BASE_URL = rawApiUrl
+  ? `${rawApiUrl.replace(/\/$/, '')}/api`
+  : '/api';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
