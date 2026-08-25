@@ -4,6 +4,7 @@ import { Listing } from '../types/index.js';
 import { ListingService } from '../services/listing.service.js';
 import { ListingCard } from '../components/listings/ListingCard.js';
 import { ListingFilters } from '../components/listings/ListingFilters.js';
+import { HostelFilterChips } from '../components/listings/HostelFilterChips.js';
 import { EmptyState } from '../components/common/EmptyState.js';
 
 interface BrowsePageProps {
@@ -78,10 +79,10 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 min-h-screen pb-20 sm:pb-8">
       {/* Top Search & Filter Bar */}
-      <div className="bg-campus-card border border-slate-800 rounded-3xl p-4 sm:p-5 mb-8 shadow-xl">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-campus-card border border-slate-800 rounded-3xl p-4 sm:p-5 mb-5 shadow-xl space-y-3">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           {/* Search Input */}
           <div className="relative w-full sm:flex-1">
             <Search size={18} className="absolute left-4 text-slate-400 pointer-events-none" />
@@ -102,7 +103,7 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
             )}
           </div>
 
-          {/* Mobile Filter Drawer Button */}
+          {/* Mobile Filter Drawer Button & Count */}
           <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
             <button
               onClick={() => setIsMobileFilterOpen(true)}
@@ -117,6 +118,14 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
               Showing <strong className="text-white font-bold">{listings.length}</strong> of {totalCount} items
             </div>
           </div>
+        </div>
+
+        {/* 1-Tap DTU Hostel Filter Chips Bar */}
+        <div className="pt-2 border-t border-slate-800/80">
+          <HostelFilterChips
+            selectedHostel={filters.campusLocation === 'ALL' ? '' : filters.campusLocation}
+            onSelectHostel={(hostel) => handleFilterChange({ campusLocation: hostel ? hostel : 'ALL' })}
+          />
         </div>
       </div>
 
@@ -138,50 +147,59 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
               className="fixed inset-0 bg-black/70 backdrop-blur-sm"
               onClick={() => setIsMobileFilterOpen(false)}
             />
-            <div className="relative w-full max-w-xs h-full bg-campus-card p-6 overflow-y-auto z-10">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-base font-bold text-white">Filters</h3>
+            <div className="relative w-full max-w-xs bg-campus-card h-full p-6 overflow-y-auto border-l border-slate-800 shadow-2xl z-10">
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
+                <h3 className="font-bold text-white text-base">Filter Listings</h3>
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="p-1 rounded-full text-slate-400 hover:text-white"
+                  className="p-2 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               </div>
+
               <ListingFilters
                 filters={filters}
-                onChange={handleFilterChange}
+                onChange={(f) => {
+                  handleFilterChange(f);
+                }}
                 onReset={handleResetFilters}
               />
+
+              <div className="pt-6 mt-6 border-t border-slate-800">
+                <button
+                  onClick={() => setIsMobileFilterOpen(false)}
+                  className="w-full py-3 rounded-full bg-campus-lime text-black font-bold text-sm shadow-glow"
+                >
+                  Apply Filters ({listings.length} Results)
+                </button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Listings 4-Column Grid Area */}
+        {/* Listings Feed Grid */}
         <div className="lg:col-span-3">
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div
-                  key={i}
-                  className="h-80 rounded-3xl bg-slate-900/60 border border-slate-800 animate-pulse"
-                />
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-72 rounded-3xl bg-slate-900 animate-pulse border border-slate-800" />
               ))}
             </div>
           ) : listings.length === 0 ? (
             <EmptyState
-              title="No matching campus items"
-              description="We couldn't find any listings matching your search or filters. Try removing some filters or searching for something else."
-              actionText="Reset All Filters"
+              title="No items found"
+              description="Try adjusting your keywords, price filter, or campus hostel to find what you need."
+              actionText="Clear All Filters"
               onAction={handleResetFilters}
             />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
-              {listings.map((listing) => (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              {listings.map((item) => (
                 <ListingCard
-                  key={listing.id}
-                  listing={listing}
-                  onClick={() => onNavigate('listing-detail', { id: listing.id })}
+                  key={item.id}
+                  listing={item}
+                  onClick={() => onNavigate('listing-detail', { id: item.id })}
                 />
               ))}
             </div>

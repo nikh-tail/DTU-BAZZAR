@@ -4,6 +4,7 @@ import { SocketProvider } from './context/SocketContext.js';
 import { ChatProvider } from './context/ChatContext.js';
 import { Navbar } from './components/common/Navbar.js';
 import { Footer } from './components/common/Footer.js';
+import { BottomNav } from './components/common/BottomNav.js';
 import { AuthModal } from './pages/AuthModal.js';
 import { ChatDrawer } from './components/chat/ChatDrawer.js';
 import { HomePage } from './pages/HomePage.js';
@@ -71,8 +72,8 @@ export function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-campus-bg text-slate-100 flex flex-col justify-between selection:bg-campus-lime selection:text-black">
-      {/* Sticky Top Navigation */}
+    <div className="min-h-screen bg-campus-bg text-slate-100 flex flex-col justify-between selection:bg-campus-lime selection:text-black pb-16 sm:pb-0">
+      {/* Sticky Top Navigation (Desktop & Mobile Header) */}
       <Navbar
         onNavigate={navigate}
         activePage={currentPage}
@@ -106,6 +107,9 @@ export function AppContent() {
 
       {/* Global Campus Footer */}
       <Footer onNavigate={navigate} />
+
+      {/* Mobile-First App Navigation Bar */}
+      <BottomNav currentPage={currentPage} onNavigate={navigate} />
 
       {/* Global In-App Chat Drawer */}
       <ChatDrawer

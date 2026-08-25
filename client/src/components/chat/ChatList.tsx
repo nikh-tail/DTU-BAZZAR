@@ -95,7 +95,7 @@ export const ChatList: React.FC<ChatListProps> = ({
             </div>
 
             {/* Unread badge */}
-            {conv.unreadCount > 0 && (
+            {(conv.unreadCount ?? 0) > 0 && (
               <span className="w-5 h-5 rounded-full bg-campus-pink text-white text-[10px] font-black flex items-center justify-center flex-shrink-0 animate-pulse shadow-glow-pink">
                 {conv.unreadCount}
               </span>

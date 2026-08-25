@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageCircle, ShieldCheck, MapPin, Star, Heart, CheckCircle2 } from 'lucide-react';
+import { MessageCircle, ShieldCheck, Star, Heart, Phone, Sparkles } from 'lucide-react';
 import { Listing } from '../../types/index.js';
 import { formatPrice } from '../../utils/formatters.js';
 import { ConditionBadge, VerifiedDtuBadge } from '../common/Badge.js';
@@ -11,11 +11,13 @@ import { UserService } from '../../services/user.service.js';
 interface QuickActionBoxProps {
   listing: Listing;
   onSelectSellerProfile: (sellerId: string) => void;
+  onOpenMakeOffer?: () => void;
 }
 
 export const QuickActionBox: React.FC<QuickActionBoxProps> = ({
   listing,
   onSelectSellerProfile,
+  onOpenMakeOffer,
 }) => {
   const { user, isAuthenticated, openAuthModal } = useAuth();
   const { startChatWithListing, sendMessage } = useChat();
@@ -50,6 +52,14 @@ export const QuickActionBox: React.FC<QuickActionBoxProps> = ({
     } finally {
       setIsChatLoading(false);
     }
+  };
+
+  const handleWhatsApp = () => {
+    const phone = listing.seller.phone?.replace(/\D/g, '') || '919876543210';
+    const text = encodeURIComponent(
+      `Hi ${listing.seller.name}! I saw your listing on DTU Bazaar: "${listing.title}" (${formatPrice(listing.price)}). Is it still available to meet on campus?`
+    );
+    window.open(`https://wa.me/${phone}?text=${text}`, '_blank');
   };
 
   const handleToggleSave = async () => {
@@ -127,7 +137,7 @@ export const QuickActionBox: React.FC<QuickActionBoxProps> = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {isOwner ? (
           <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-300 text-xs font-semibold text-center">
             This is your active listing. You can manage it in your profile dashboard.
@@ -138,6 +148,7 @@ export const QuickActionBox: React.FC<QuickActionBoxProps> = ({
           </div>
         ) : (
           <>
+            {/* Primary: In-App Chat */}
             <Button
               variant="lime"
               size="lg"
@@ -149,16 +160,37 @@ export const QuickActionBox: React.FC<QuickActionBoxProps> = ({
               Chat with Seller
             </Button>
 
+            {/* Secondary Row: Make Offer & WhatsApp */}
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={onOpenMakeOffer}
+                className="py-3 px-3 rounded-2xl bg-slate-900 border border-slate-700 hover:border-campus-lime text-slate-200 hover:text-campus-lime text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
+              >
+                <Sparkles size={14} className="text-campus-lime" />
+                <span>Make Offer</span>
+              </button>
+
+              <button
+                onClick={handleWhatsApp}
+                className="py-3 px-3 rounded-2xl bg-[#25D366]/15 border border-[#25D366]/40 hover:bg-[#25D366]/25 text-[#25D366] text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
+                title="Chat on WhatsApp"
+              >
+                <Phone size={14} className="fill-[#25D366]" />
+                <span>WhatsApp</span>
+              </button>
+            </div>
+
+            {/* Wishlist button */}
             <button
               onClick={handleToggleSave}
-              className={`w-full py-3 rounded-full border text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+              className={`w-full py-2.5 rounded-2xl border text-xs font-bold transition-all flex items-center justify-center gap-2 ${
                 isSaved
                   ? 'bg-campus-pink/20 border-campus-pink text-pink-300 shadow-glow-pink'
-                  : 'bg-slate-900 border-slate-700 text-slate-300 hover:text-white hover:border-slate-500'
+                  : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
               }`}
             >
-              <Heart size={15} className={isSaved ? 'fill-campus-pink text-campus-pink' : ''} />
-              <span>{isSaved ? 'Saved to Wishlist' : 'Add to Wishlist'}</span>
+              <Heart size={14} className={isSaved ? 'fill-campus-pink text-campus-pink' : ''} />
+              <span>{isSaved ? 'Saved to Wishlist' : 'Save to Wishlist'}</span>
             </button>
           </>
         )}

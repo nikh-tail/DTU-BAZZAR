@@ -55,6 +55,7 @@ export interface Listing {
     id: string;
     name: string;
     email?: string;
+    phone?: string | null;
     branch?: string | null;
     year?: string | null;
     userType?: string;
@@ -67,6 +68,17 @@ export interface Listing {
     };
   };
   images: ListingImage[];
+}
+
+export interface ListingsQueryResponse {
+  success: boolean;
+  data: Listing[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 export interface Message {
@@ -92,6 +104,7 @@ export interface Conversation {
   partner: {
     id: string;
     name: string;
+    phone?: string | null;
     branch?: string | null;
     year?: string | null;
     hostel?: string | null;
@@ -100,16 +113,13 @@ export interface Conversation {
   isBuyer: boolean;
   lastMessageText?: string | null;
   lastMessageAt?: string | null;
-  unreadCount: number;
+  unreadCount?: number;
 }
 
-export interface ListingsQueryResponse {
+export interface AuthResponse {
   success: boolean;
-  data: Listing[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
+  message?: string;
+  token?: string;
+  user?: User;
+  debugOtp?: string;
 }
