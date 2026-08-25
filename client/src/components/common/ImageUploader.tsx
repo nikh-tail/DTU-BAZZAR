@@ -1,0 +1,91 @@
+import React, { useRef } from 'react';
+import { UploadCloud, X, Image as ImageIcon } from 'lucide-react';
+
+interface ImageUploaderProps {
+  files: File[];
+  onChange: (files: File[]) => void;
+  maxFiles?: number;
+}
+
+export const ImageUploader: React.FC<ImageUploaderProps> = ({
+  files,
+  onChange,
+  maxFiles = 5,
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const selectedFiles = Array.from(e.target.files);
+      const combined = [...files, ...selectedFiles].slice(0, maxFiles);
+      onChange(combined);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    const updated = files.filter((_, idx) => idx !== index);
+    onChange(updated);
+  };
+
+  return (
+    <div className="w-full space-y-3">
+      <div className="flex items-center justify-between">
+        <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider">
+          Item Photos ({files.length}/{maxFiles})
+        </label>
+        <span className="text-xs text-slate-500">Up to 5MB each (JPEG, PNG, WEBP)</span>
+      </div>
+
+      {/* Grid of uploaded previews & add trigger */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+        {files.map((file, index) => {
+          const previewUrl = URL.createObjectURL(file);
+          return (
+            <div
+              key={index}
+              className="relative group aspect-square rounded-2xl overflow-hidden border border-slate-700 bg-slate-900"
+            >
+              <img
+                src={previewUrl}
+                alt={`Upload preview ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => removeFile(index)}
+                className="absolute top-1.5 right-1.5 p-1 bg-black/80 text-rose-400 hover:text-rose-300 rounded-full opacity-90 group-hover:opacity-100 transition-opacity"
+              >
+                <X size={14} />
+              </button>
+              {index === 0 && (
+                <div className="absolute bottom-1.5 left-1.5 px-2 py-0.5 bg-campus-lime/90 text-black text-[10px] font-bold rounded-md">
+                  Cover
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {files.length < maxFiles && (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex flex-col items-center justify-center aspect-square rounded-2xl border-2 border-dashed border-slate-700 hover:border-campus-lime/60 bg-slate-900/40 hover:bg-slate-900 transition-all text-slate-400 hover:text-campus-lime group p-2"
+          >
+            <UploadCloud size={24} className="mb-1 group-hover:scale-110 transition-transform" />
+            <span className="text-xs font-medium text-center">Add Photo</span>
+          </button>
+        )}
+      </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        multiple
+        accept="image/jpeg,image/png,image/webp,image/jpg"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+    </div>
+  );
+};
