@@ -94,9 +94,18 @@ export const Footer: React.FC<{ onNavigate: (page: string) => void }> = ({ onNav
         {/* Bottom strip */}
         <div className="border-t border-slate-800/80 pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-400 gap-3">
           <p>© 2026 DTU Bazaar • Delhi Technological University Student Community</p>
-          <div className="flex items-center gap-1">
-            <span>Crafted with</span>
-            <Heart size={12} className="text-campus-pink fill-campus-pink" />
+          <div className="flex items-center gap-1.5">
+            <span>Built by</span>
+            <a
+              href="https://www.linkedin.com/in/nikhil-rathor-761675389/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-campus-lime font-bold hover:underline"
+            >
+              Nikhil Rathor
+            </a>
+            <span>• Crafted with</span>
+            <Heart size={12} className="text-campus-pink fill-campus-pink inline" />
             <span>for DTU Engineers</span>
           </div>
         </div>
