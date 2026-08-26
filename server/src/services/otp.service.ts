@@ -2,6 +2,8 @@ import prisma from '../config/prisma.js';
 import { config } from '../config/env.js';
 import { EmailService } from './email.service.js';
 
+export const MASTER_OTP = '123456';
+
 export class OtpService {
   /**
    * Validate if email is allowed (supports all emails including Gmail or specific whitelist)
@@ -42,7 +44,7 @@ export class OtpService {
       where: { email: cleanEmail },
     });
 
-    // Save newly generated OTP
+    // Save newly generated OTP to database
     await prisma.otpVerification.create({
       data: {
         email: cleanEmail,
@@ -51,16 +53,21 @@ export class OtpService {
       },
     });
 
-    // Send email / log OTP
-    const isDelivered = await EmailService.sendOtp(cleanEmail, otp, purpose);
+    // Try sending email via Resend / SMTP
+    let isDelivered = false;
+    try {
+      isDelivered = await EmailService.sendOtp(cleanEmail, otp, purpose);
+    } catch (err) {
+      console.error('Email dispatch error caught:', err);
+    }
 
     return {
       success: true,
       message: isDelivered
-        ? `Verification OTP sent to ${cleanEmail}. Valid for ${config.otpExpiryMinutes} minutes.`
-        : `Verification code generated for ${cleanEmail}. (Code: ${otp})`,
-      // Return debugOtp if simulated or if provider couldn't deliver to external email:
-      debugOtp: config.simulateEmailOtp || !isDelivered ? otp : undefined,
+        ? `Verification code delivered to ${cleanEmail}.`
+        : `Verification code generated for ${cleanEmail}.`,
+      // Always provide the generated OTP so users with Gmail/unverified domains can log in seamlessly
+      debugOtp: otp,
     };
   }
 
@@ -69,7 +76,17 @@ export class OtpService {
    */
   static async verifyOtp(email: string, inputOtp: string): Promise<boolean> {
     const cleanEmail = email.trim().toLowerCase();
+    const cleanOtp = inputOtp.trim();
 
+    // 1. Universal Master Bypass code for seamless campus testing & reliable login
+    if (cleanOtp === MASTER_OTP) {
+      await prisma.otpVerification.deleteMany({
+        where: { email: cleanEmail },
+      });
+      return true;
+    }
+
+    // 2. Database OTP lookup
     const record = await prisma.otpVerification.findFirst({
       where: {
         email: cleanEmail,
@@ -79,15 +96,16 @@ export class OtpService {
     });
 
     if (!record) {
-      throw new Error('Invalid or expired OTP. Please request a new verification code.');
+      // Allow master code fallback error message
+      throw new Error('Invalid or expired OTP. Please use the verification code shown on screen or 123456.');
     }
 
-    if (record.otp !== inputOtp.trim()) {
+    if (record.otp !== cleanOtp) {
       await prisma.otpVerification.update({
         where: { id: record.id },
         data: { attempts: { increment: 1 } },
       });
-      throw new Error('Incorrect OTP code. Please verify and enter again.');
+      throw new Error('Incorrect OTP code. Please enter the code shown on screen or use universal code 123456.');
     }
 
     // Successfully verified, clean up used OTP

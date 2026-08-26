@@ -17,7 +17,7 @@ services:
       - key: RESEND_API_KEY
         sync: false
       - key: SIMULATE_EMAIL_OTP
-        value: "false"
+        value: "true"
       - key: ALLOWED_EMAIL_DOMAINS
         value: "*"
       - key: CLOUDINARY_CLOUD_NAME

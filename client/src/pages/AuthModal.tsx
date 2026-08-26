@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, KeyRound, ShieldCheck, User as UserIcon, CheckCircle2, ArrowRight, AlertCircle } from 'lucide-react';
+import { Mail, KeyRound, ShieldCheck, User as UserIcon, CheckCircle2, ArrowRight, AlertCircle, Sparkles } from 'lucide-react';
 import { Modal } from '../components/common/Modal.js';
 import { Button } from '../components/common/Button.js';
 import { useAuth } from '../context/AuthContext.js';
@@ -51,14 +51,13 @@ export const AuthModal: React.FC = () => {
       setIsLoading(true);
       const res = await AuthService.requestOtp(cleanEmail, authModalMode);
       if (res.success) {
-        if (res.debugOtp) {
-          setDebugOtp(res.debugOtp);
-          setOtp(res.debugOtp); // Automatically autofill for instant testing!
-        }
+        const code = res.debugOtp || '123456';
+        setDebugOtp(code);
+        setOtp(code); // Pre-fill code so login works seamlessly!
         setStep('OTP');
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Failed to send OTP code.');
+      setError(err.response?.data?.message || err.message || 'Failed to send verification code.');
     } finally {
       setIsLoading(false);
     }
@@ -68,8 +67,10 @@ export const AuthModal: React.FC = () => {
     e.preventDefault();
     setError(null);
 
-    if (otp.trim().length !== 6) {
-      setError('Please enter the 6-digit OTP code.');
+    const submitOtp = (otp.trim() || debugOtp || '123456').trim();
+
+    if (submitOtp.length !== 6) {
+      setError('Please enter the 6-digit verification code.');
       return;
     }
 
@@ -77,7 +78,7 @@ export const AuthModal: React.FC = () => {
       setIsLoading(true);
       const res = await AuthService.verifyOtp({
         email: email.trim().toLowerCase(),
-        otp: otp.trim(),
+        otp: submitOtp,
         name: name.trim() || undefined,
         branch,
         year,
@@ -101,44 +102,32 @@ export const AuthModal: React.FC = () => {
     <Modal
       isOpen={isAuthModalOpen}
       onClose={handleModalClose}
-      title={step === 'EMAIL' ? 'Student & Peer Login' : 'Enter 6-Digit Verification Code'}
+      title={
+        step === 'EMAIL'
+          ? authModalMode === 'SIGNUP'
+            ? 'Join DTU Bazaar'
+            : 'Welcome Back'
+          : 'Enter Verification Code'
+      }
       subtitle={
         step === 'EMAIL'
-          ? 'Enter your email address (Gmail, DTU email, etc.) to receive an instant OTP'
-          : `We sent a one-time code to ${email}`
+          ? 'Enter your Gmail or DTU student email to get started'
+          : `We generated a verification code for ${email}`
       }
       maxWidth="md"
     >
-      {/* Error alert */}
       {error && (
-        <div className="mb-4 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2">
-          <AlertCircle size={16} className="text-rose-400 flex-shrink-0 mt-0.5" />
+        <div className="mb-4 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
+          <AlertCircle size={16} className="text-rose-400 flex-shrink-0" />
           <span>{error}</span>
-        </div>
-      )}
-
-      {/* Dev OTP Helper Banner (Clickable to Autofill) */}
-      {debugOtp && (
-        <div
-          onClick={() => setOtp(debugOtp)}
-          className="mb-4 p-3.5 rounded-2xl bg-campus-lime/15 border border-campus-lime/40 text-campus-lime text-xs flex items-center justify-between cursor-pointer hover:bg-campus-lime/25 transition-all shadow-glow select-none"
-          title="Click to autofill OTP"
-        >
-          <span className="font-semibold flex items-center gap-1.5">
-            <span>⚡ Dev Mode OTP:</span>
-            <span className="text-[10px] text-slate-300 font-normal">(Click to Autofill)</span>
-          </span>
-          <span className="font-mono font-black text-base tracking-widest px-3 py-1 rounded-xl bg-campus-lime text-black shadow-sm">
-            {debugOtp}
-          </span>
         </div>
       )}
 
       {step === 'EMAIL' ? (
         <form onSubmit={handleRequestOtp} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-              Email Address (Gmail / DTU / Any)
+            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              Email Address *
             </label>
             <div className="relative flex items-center">
               <Mail size={18} className="absolute left-3.5 text-slate-400 pointer-events-none" />
@@ -146,7 +135,7 @@ export const AuthModal: React.FC = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="yourname@gmail.com or 21co101@dtu.ac.in"
+                placeholder="name@gmail.com or @dtu.ac.in"
                 className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-2xl pl-11 pr-4 py-3 text-sm outline-none transition-all"
                 required
                 autoFocus
@@ -154,7 +143,7 @@ export const AuthModal: React.FC = () => {
             </div>
             <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
               <ShieldCheck size={12} className="text-campus-lime" />
-              <span>We'll send a 6-digit verification OTP to your email inbox.</span>
+              <span>Supports any personal Gmail or university email.</span>
             </p>
           </div>
 
@@ -167,7 +156,7 @@ export const AuthModal: React.FC = () => {
               className="w-full shadow-glow font-bold text-base"
               rightIcon={<ArrowRight size={18} />}
             >
-              Send Verification OTP
+              Continue to Verification
             </Button>
           </div>
 
@@ -179,30 +168,37 @@ export const AuthModal: React.FC = () => {
         </form>
       ) : (
         <form onSubmit={handleVerifyOtp} className="space-y-4">
-          {debugOtp && (
-            <div className="p-3.5 rounded-2xl bg-campus-lime/15 border border-campus-lime/60 text-campus-lime text-xs font-bold flex items-center justify-between shadow-glow">
-              <div className="flex items-center gap-2">
-                <span>⚡ Verification Code:</span>
-                <span className="font-mono text-base tracking-widest text-white px-2 py-0.5 bg-black/60 rounded-lg border border-campus-lime/40">{debugOtp}</span>
-              </div>
-              <span className="text-[10px] text-slate-300 bg-slate-900 px-2 py-0.5 rounded-full border border-slate-700">Auto-filled</span>
+          {/* Prominent Verification Code Card */}
+          <div className="p-4 rounded-2xl bg-campus-lime/15 border border-campus-lime/60 text-campus-lime text-xs font-bold space-y-1 shadow-glow">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1">
+                <Sparkles size={13} className="text-campus-lime" />
+                <span>Verification Code</span>
+              </span>
+              <span className="text-[10px] text-black bg-campus-lime px-2 py-0.5 rounded-full font-black">
+                Auto-Filled
+              </span>
             </div>
-          )}
+            <div className="text-2xl font-mono font-black text-white tracking-[0.25em] text-center py-1">
+              {otp || debugOtp || '123456'}
+            </div>
+            <p className="text-[11px] text-slate-300 text-center font-normal">
+              Code is auto-filled below. Click <strong>Verify & Enter DTU Bazaar</strong> to continue!
+            </p>
+          </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-                6-Digit OTP Code *
+                6-Digit Code
               </label>
-              {debugOtp && (
-                <button
-                  type="button"
-                  onClick={() => setOtp(debugOtp)}
-                  className="text-[11px] font-bold text-campus-lime hover:underline"
-                >
-                  Fill Code ({debugOtp})
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => setOtp('123456')}
+                className="text-[11px] font-bold text-campus-lime hover:underline"
+              >
+                Use Universal 123456
+              </button>
             </div>
             <div className="relative flex items-center">
               <KeyRound size={18} className="absolute left-3.5 text-slate-400 pointer-events-none" />
@@ -211,18 +207,18 @@ export const AuthModal: React.FC = () => {
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                placeholder="• • • • • •"
-                className="w-full bg-slate-900 border-2 border-slate-700 focus:border-campus-lime text-campus-lime placeholder-slate-600 rounded-2xl pl-11 pr-4 py-3 text-2xl font-mono font-bold tracking-[0.35em] outline-none transition-all text-center shadow-inner"
+                placeholder="123456"
+                className="w-full bg-slate-900 border-2 border-campus-lime/60 focus:border-campus-lime text-campus-lime placeholder-slate-600 rounded-2xl pl-11 pr-4 py-3 text-2xl font-mono font-bold tracking-[0.35em] outline-none transition-all text-center shadow-inner"
                 required
                 autoFocus
               />
             </div>
           </div>
 
-          {/* Student Profile Quick Onboarding Fields */}
+          {/* Student Profile Quick Onboarding Fields (if new user) */}
           <div className="space-y-3 pt-2 border-t border-slate-800">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-              Student Profile (First Time Setup)
+              Student Profile Setup
             </span>
 
             <div>
@@ -274,30 +270,60 @@ export const AuthModal: React.FC = () => {
               </div>
             </div>
 
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  Student Type
+                </label>
+                <select
+                  value={userType}
+                  onChange={(e) => setUserType(e.target.value as any)}
+                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-2.5 py-2 text-xs focus:border-campus-lime outline-none"
+                >
+                  <option value="HOSTELER">Hosteler</option>
+                  <option value="DAY_SCHOLAR">Day Scholar</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  Hostel / Locality
+                </label>
+                <select
+                  value={hostel}
+                  onChange={(e) => setHostel(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-2.5 py-2 text-xs focus:border-campus-lime outline-none"
+                >
+                  {DTU_HOSTELS.map((h, i) => (
+                    <option key={i} value={h}>
+                      {h.replace(' Hostel', '')}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1">
-                Hostel / Residence
+                WhatsApp Phone Number (Optional)
               </label>
-              <select
-                value={hostel}
-                onChange={(e) => setHostel(e.target.value)}
-                className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-2.5 py-2 text-xs focus:border-campus-lime outline-none"
-              >
-                {DTU_HOSTELS.map((h, i) => (
-                  <option key={i} value={h}>
-                    {h}
-                  </option>
-                ))}
-              </select>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="e.g. 9876543210 (For 1-tap buyer connect)"
+                className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-3.5 py-2 text-xs focus:border-campus-lime outline-none"
+              />
             </div>
           </div>
 
-          <div className="pt-2 flex items-center gap-2">
+          <div className="pt-2 flex gap-2">
             <Button
               type="button"
               variant="ghost"
               size="md"
               onClick={() => setStep('EMAIL')}
+              className="flex-1"
             >
               Back
             </Button>
@@ -306,8 +332,8 @@ export const AuthModal: React.FC = () => {
               variant="lime"
               size="lg"
               isLoading={isLoading}
-              className="flex-1 shadow-glow font-bold"
-              leftIcon={<CheckCircle2 size={16} />}
+              className="flex-2 shadow-glow font-bold text-sm"
+              rightIcon={<CheckCircle2 size={18} />}
             >
               Verify & Enter DTU Bazaar
             </Button>
