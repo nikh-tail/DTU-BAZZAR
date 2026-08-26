@@ -19,6 +19,7 @@ import userRoutes from './routes/user.routes.js';
 StorageService.init();
 
 export const app = express();
+app.set('trust proxy', 1);
 export const httpServer = http.createServer(app);
 
 // 1. Security Headers via Helmet
