@@ -133,6 +133,6 @@ export class EmailService {
       console.log('💡 Note: Add RESEND_API_KEY or SMTP credentials in .env to send real emails to inbox');
     }
     console.log('======================================================\n');
-    return true;
+    return false;
   }
 }

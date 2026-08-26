@@ -52,13 +52,15 @@ export class OtpService {
     });
 
     // Send email / log OTP
-    await EmailService.sendOtp(cleanEmail, otp, purpose);
+    const isDelivered = await EmailService.sendOtp(cleanEmail, otp, purpose);
 
     return {
       success: true,
-      message: `Verification OTP sent to ${cleanEmail}. Valid for ${config.otpExpiryMinutes} minutes.`,
-      // For development convenience in simulated mode:
-      debugOtp: config.simulateEmailOtp ? otp : undefined,
+      message: isDelivered
+        ? `Verification OTP sent to ${cleanEmail}. Valid for ${config.otpExpiryMinutes} minutes.`
+        : `Verification code generated for ${cleanEmail}. (Code: ${otp})`,
+      // Return debugOtp if simulated or if provider couldn't deliver to external email:
+      debugOtp: config.simulateEmailOtp || !isDelivered ? otp : undefined,
     };
   }
 

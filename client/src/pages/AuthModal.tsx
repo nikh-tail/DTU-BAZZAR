@@ -179,6 +179,16 @@ export const AuthModal: React.FC = () => {
         </form>
       ) : (
         <form onSubmit={handleVerifyOtp} className="space-y-4">
+          {debugOtp && (
+            <div className="p-3.5 rounded-2xl bg-campus-lime/15 border border-campus-lime/60 text-campus-lime text-xs font-bold flex items-center justify-between shadow-glow">
+              <div className="flex items-center gap-2">
+                <span>⚡ Verification Code:</span>
+                <span className="font-mono text-base tracking-widest text-white px-2 py-0.5 bg-black/60 rounded-lg border border-campus-lime/40">{debugOtp}</span>
+              </div>
+              <span className="text-[10px] text-slate-300 bg-slate-900 px-2 py-0.5 rounded-full border border-slate-700">Auto-filled</span>
+            </div>
+          )}
+
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
