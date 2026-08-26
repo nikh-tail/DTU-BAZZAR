@@ -18,7 +18,10 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const { token, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    const serverUrl = import.meta.env.VITE_API_URL || '/';
+    const isBrowser = typeof window !== 'undefined';
+    const isLocalhost = isBrowser && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    const DEFAULT_PROD_URL = 'https://dtu-bazzar.onrender.com';
+    const serverUrl = import.meta.env.VITE_API_URL || (!isLocalhost && isBrowser ? DEFAULT_PROD_URL : '/');
 
     const socketInstance = io(serverUrl, {
       auth: { token: token || undefined },

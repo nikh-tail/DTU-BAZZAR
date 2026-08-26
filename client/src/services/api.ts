@@ -1,7 +1,11 @@
 import axios from 'axios';
 
-// Dynamically use VITE_API_URL when deployed to Vercel/Render, or relative path locally
-const rawApiUrl = import.meta.env.VITE_API_URL || '';
+// Dynamically use Render backend in production or VITE_API_URL, and relative path locally
+const isBrowser = typeof window !== 'undefined';
+const isLocalhost = isBrowser && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const DEFAULT_PROD_URL = 'https://dtu-bazzar.onrender.com';
+
+const rawApiUrl = import.meta.env.VITE_API_URL || (!isLocalhost && isBrowser ? DEFAULT_PROD_URL : '');
 export const API_BASE_URL = rawApiUrl
   ? `${rawApiUrl.replace(/\/$/, '')}/api`
   : '/api';
