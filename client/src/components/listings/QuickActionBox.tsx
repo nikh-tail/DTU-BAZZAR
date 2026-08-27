@@ -102,7 +102,14 @@ export const QuickActionBox: React.FC<QuickActionBoxProps> = ({
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
             Seller Info
           </span>
-          <VerifiedDtuBadge size="sm" />
+          <div className="flex items-center gap-1.5">
+            {listing.seller.isProSeller && (
+              <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-campus-lime text-black font-black text-[10px] uppercase tracking-wider shadow-glow">
+                Pro 🌟
+              </span>
+            )}
+            <VerifiedDtuBadge size="sm" />
+          </div>
         </div>
 
         <div className="flex items-center gap-3">

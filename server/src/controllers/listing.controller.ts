@@ -117,6 +117,7 @@ export class ListingController {
                 rating: true,
                 reviewCount: true,
                 avatar: true,
+                isProSeller: true,
               },
             },
           },
@@ -169,6 +170,8 @@ export class ListingController {
               rating: true,
               reviewCount: true,
               avatar: true,
+              isProSeller: true,
+              maxListings: true,
               createdAt: true,
               _count: {
                 select: {
@@ -243,6 +246,29 @@ export class ListingController {
 
       const { title, description, price, category, condition, campusLocation, imageUrls } =
         validation.data;
+
+      // Enforce Listing Quota & Paywall Tier (3 for free, 10 for Pro Seller)
+      const currentListingsCount = await prisma.listing.count({
+        where: { sellerId: req.user.id, status: { not: 'ARCHIVED' } },
+      });
+
+      const maxLimit = req.user.maxListings ?? 3;
+
+      if (currentListingsCount >= maxLimit) {
+        res.status(402).json({
+          success: false,
+          code: 'PAYWALL_LIMIT_REACHED',
+          message:
+            maxLimit <= 3
+              ? 'You have reached the free limit of 3 listings. Upgrade to Campus Seller Pro for ₹10 to unlock up to 10 listings!'
+              : `You have reached your maximum seller capacity (${maxLimit} listings).`,
+          currentCount: currentListingsCount,
+          maxLimit,
+          isProSeller: Boolean(req.user.isProSeller),
+          upgradePrice: 10,
+        });
+        return;
+      }
 
       // Handle uploaded files via StorageService (Cloudinary or local)
       const files = req.files as Express.Multer.File[];

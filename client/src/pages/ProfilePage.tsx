@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.js';
 import { ProfileCard } from '../components/profile/ProfileCard.js';
 import { UserListingsTabs } from '../components/profile/UserListingsTabs.js';
+import { PaywallModal } from '../components/common/PaywallModal.js';
 import { UserService } from '../services/user.service.js';
 import { Listing, User } from '../types/index.js';
 
@@ -22,6 +23,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   const [soldListings, setSoldListings] = useState<Listing[]>([]);
   const [savedListings, setSavedListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
 
   const isOwner = !userId || (currentUser && currentUser.id === userId);
 
@@ -40,6 +42,17 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         if (listingsRes.success) {
           setActiveListings(listingsRes.data.active);
           setSoldListings(listingsRes.data.sold);
+          if (listingsRes.data.stats) {
+            setProfileUser((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    maxListings: listingsRes.data.stats.maxListings || prev.maxListings || 3,
+                    isProSeller: listingsRes.data.stats.isProSeller ?? prev.isProSeller,
+                  }
+                : prev
+            );
+          }
         }
         if (savedRes.success) {
           setSavedListings(savedRes.data);
@@ -100,6 +113,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           setProfileUser({ ...profileUser, ...updated });
           if (isOwner) updateUser(updated);
         }}
+        onOpenUpgrade={() => setIsPaywallOpen(true)}
       />
 
       {/* Tabs & Listings Management */}
@@ -113,6 +127,18 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           initialTab={initialTab}
         />
       </div>
+
+      {/* Paywall Modal */}
+      <PaywallModal
+        isOpen={isPaywallOpen}
+        onClose={() => setIsPaywallOpen(false)}
+        onSuccess={(updatedUser) => {
+          setProfileUser((prev) => (prev ? { ...prev, ...updatedUser } : updatedUser));
+          updateUser(updatedUser);
+          fetchData();
+        }}
+        currentCount={activeListings.length}
+      />
     </div>
   );
 };

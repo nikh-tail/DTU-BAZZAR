@@ -8,6 +8,8 @@ export interface AuthUser {
   year?: string | null;
   userType: string;
   hostel?: string | null;
+  maxListings?: number;
+  isProSeller?: boolean;
 }
 
 export interface AuthenticatedRequest extends Request {

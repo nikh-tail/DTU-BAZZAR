@@ -11,6 +11,9 @@ export interface MyListingsResponse {
       totalListings: number;
       activeCount: number;
       soldCount: number;
+      maxListings?: number;
+      isProSeller?: boolean;
+      remainingQuota?: number;
     };
   };
 }
@@ -23,6 +26,19 @@ export class UserService {
 
   static async updateProfile(payload: Partial<User>): Promise<{ success: boolean; message: string; data: User }> {
     const res = await api.put<{ success: boolean; message: string; data: User }>('/users/profile', payload);
+    return res.data;
+  }
+
+  static async upgradeSellerTier(payload: { paymentMode?: string; utrReference?: string; amount?: number } = {}): Promise<{
+    success: boolean;
+    message: string;
+    data: { user: User; maxListings: number; isProSeller: boolean };
+  }> {
+    const res = await api.post<{
+      success: boolean;
+      message: string;
+      data: { user: User; maxListings: number; isProSeller: boolean };
+    }>('/users/upgrade-tier', payload);
     return res.data;
   }
 

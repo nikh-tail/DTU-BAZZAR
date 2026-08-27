@@ -9,6 +9,7 @@ router.get('/profile/:id', UserController.getUserProfile);
 
 // User specific protected routes
 router.put('/profile', requireAuth, UserController.updateProfile);
+router.post('/upgrade-tier', requireAuth, UserController.upgradeSellerTier);
 router.get('/my-listings', requireAuth, UserController.getMyListings);
 router.post('/saved/toggle', requireAuth, UserController.toggleSaveListing);
 router.get('/saved', requireAuth, UserController.getSavedListings);

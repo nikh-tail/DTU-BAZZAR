@@ -34,6 +34,8 @@ export const requireAuth = async (
         userType: true,
         hostel: true,
         isVerified: true,
+        maxListings: true,
+        isProSeller: true,
       },
     });
 
@@ -70,6 +72,8 @@ export const optionalAuth = async (
             year: true,
             userType: true,
             hostel: true,
+            maxListings: true,
+            isProSeller: true,
           },
         });
         if (user) {

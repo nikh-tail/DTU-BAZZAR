@@ -8,27 +8,47 @@ datasource db {
 }
 
 model User {
-  id                    String         @id @default(cuid())
-  email                 String         @unique
+  id                    String               @id @default(cuid())
+  email                 String               @unique
   name                  String
-  isVerified            Boolean        @default(true)
+  isVerified            Boolean              @default(true)
   avatar                String?
   branch                String?
   year                  String?
-  userType              String         @default("HOSTELER") // HOSTELER | DAY_SCHOLAR
+  userType              String               @default("HOSTELER") // HOSTELER | DAY_SCHOLAR
   hostel                String?
   roomNumber            String?
   phone                 String?
-  rating                Float          @default(5.0)
-  reviewCount           Int            @default(1)
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
+  rating                Float                @default(5.0)
+  reviewCount           Int                  @default(1)
+  
+  // Listing Tier & Paywall Quota
+  maxListings           Int                  @default(3) // 3 for free, 10 for Pro Seller
+  isProSeller           Boolean              @default(false)
+  upgradedAt            DateTime?
 
-  listings              Listing[]      @relation("UserListings")
-  conversationsAsBuyer  Conversation[] @relation("BuyerConversations")
-  conversationsAsSeller Conversation[] @relation("SellerConversations")
-  messagesSent          Message[]      @relation("UserMessages")
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  listings              Listing[]            @relation("UserListings")
+  conversationsAsBuyer  Conversation[]       @relation("BuyerConversations")
+  conversationsAsSeller Conversation[]       @relation("SellerConversations")
+  messagesSent          Message[]            @relation("UserMessages")
   savedListings         SavedListing[]
+  upgradeTransactions   UpgradeTransaction[]
+}
+
+model UpgradeTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount      Float    @default(10.0)
+  status      String   @default("COMPLETED") // COMPLETED, PENDING, FAILED
+  paymentMode String   @default("UPI") // UPI, RAZORPAY, CASH
+  utrReference String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
 }
 
 model OtpVerification {

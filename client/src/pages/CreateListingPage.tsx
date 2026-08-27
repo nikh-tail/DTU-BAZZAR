@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { PlusCircle, Sparkles, ArrowLeft, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { PlusCircle, Sparkles, ArrowLeft, ShieldCheck, CheckCircle2, AlertCircle, Zap, Star } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { CATEGORIES, DTU_HOSTELS, CONDITION_LABELS } from '../utils/constants.js';
 import { ListingCategory, ListingCondition } from '../types/index.js';
 import { ImageUploader } from '../components/common/ImageUploader.js';
 import { Button } from '../components/common/Button.js';
+import { PaywallModal } from '../components/common/PaywallModal.js';
 import { ListingService } from '../services/listing.service.js';
+import { UserService } from '../services/user.service.js';
 import { useAuth } from '../context/AuthContext.js';
 
 interface CreateListingPageProps {
@@ -26,9 +28,43 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Quota & Paywall state
+  const [isPaywallOpen, setIsPaywallOpen] = useState(false);
+  const [activeCount, setActiveCount] = useState<number>(0);
+  const [maxLimit, setMaxLimit] = useState<number>(user?.maxListings || 3);
+  const [isProSeller, setIsProSeller] = useState<boolean>(Boolean(user?.isProSeller));
+
+  useEffect(() => {
+    const fetchQuota = async () => {
+      try {
+        const res = await UserService.getMyListings();
+        if (res.success && res.data?.stats) {
+          setActiveCount(res.data.stats.activeCount || 0);
+          if (res.data.stats.maxListings) {
+            setMaxLimit(res.data.stats.maxListings);
+          }
+          if (res.data.stats.isProSeller !== undefined) {
+            setIsProSeller(res.data.stats.isProSeller);
+          }
+        }
+      } catch {
+        // Fallback to user session values
+        setMaxLimit(user?.maxListings || 3);
+        setIsProSeller(Boolean(user?.isProSeller));
+      }
+    };
+    fetchQuota();
+  }, [user]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    // Pre-check local quota
+    if (activeCount >= maxLimit) {
+      setIsPaywallOpen(true);
+      return;
+    }
 
     if (!title.trim() || title.trim().length < 3) {
       setError('Please provide a descriptive title (at least 3 characters).');
@@ -77,16 +113,29 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
         }, 800);
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Failed to publish listing.');
+      if (err.response?.status === 402 || err.response?.data?.code === 'PAYWALL_LIMIT_REACHED') {
+        setIsPaywallOpen(true);
+        setError(err.response?.data?.message || 'Free listing limit reached. Upgrade to Pro for ₹10 to continue!');
+      } else {
+        setError(err.response?.data?.message || err.message || 'Failed to publish listing.');
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleUpgradeSuccess = (updatedUser: any) => {
+    setMaxLimit(10);
+    setIsProSeller(true);
+    setError(null);
+  };
+
+  const isLimitReached = activeCount >= maxLimit;
+
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 min-h-screen">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-6">
         <button
           onClick={() => onNavigate('home')}
           className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white mb-3 transition-colors"
@@ -95,20 +144,68 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
           <span>Back to marketplace</span>
         </button>
 
-        <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-2xl bg-campus-lime/20 border border-campus-lime/30 text-campus-lime flex items-center justify-center font-black">
-            ⚡
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-2xl bg-campus-lime/20 border border-campus-lime/30 text-campus-lime flex items-center justify-center font-black">
+              ⚡
+            </div>
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                List an Item for DTU Students
+              </h1>
+              <p className="text-xs text-slate-400">
+                Post your unused books, electronics, coolers, or cycle in under 60 seconds
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              List an Item for DTU Students
-            </h1>
-            <p className="text-xs text-slate-400">
-              Post your unused books, electronics, coolers, or cycle in under 60 seconds
-            </p>
+
+          {/* Quota Indicator Bar */}
+          <div className="flex items-center gap-2">
+            <div className="px-3.5 py-1.5 rounded-2xl bg-slate-900 border border-slate-800 text-xs">
+              <span className="text-slate-400">Quota: </span>
+              <strong className={isLimitReached ? 'text-rose-400' : 'text-campus-lime'}>
+                {activeCount}/{maxLimit}
+              </strong>
+              <span className="text-[11px] text-slate-400 ml-1">
+                {isProSeller ? '(Campus Pro 🌟)' : '(Free Tier)'}
+              </span>
+            </div>
+
+            {!isProSeller && (
+              <button
+                type="button"
+                onClick={() => setIsPaywallOpen(true)}
+                className="px-3 py-1.5 rounded-2xl bg-campus-lime text-black font-extrabold text-xs shadow-glow active:scale-95 transition-all flex items-center gap-1"
+              >
+                <Zap size={13} className="fill-black" />
+                <span>Upgrade ₹10</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Quota Limit Reached Banner */}
+      {isLimitReached && (
+        <div className="mb-6 p-4 rounded-3xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-xs flex items-center justify-between shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <span className="text-lg">🔒</span>
+            <div>
+              <strong className="block text-sm font-black text-amber-100">
+                Free Limit Reached ({activeCount}/{maxLimit} Items Active)
+              </strong>
+              <span>Upgrade for ₹10 to unlock up to 10 active listings and Pro Seller badge.</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsPaywallOpen(true)}
+            className="px-4 py-2 rounded-2xl bg-amber-400 text-black font-black text-xs hover:bg-amber-300 active:scale-95 transition-all shadow-md flex-shrink-0"
+          >
+            Unlock 10 Slots (₹10)
+          </button>
+        </div>
+      )}
 
       {error && (
         <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5">
@@ -265,6 +362,14 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
           </Button>
         </div>
       </form>
+
+      {/* Paywall Upgrade Modal */}
+      <PaywallModal
+        isOpen={isPaywallOpen}
+        onClose={() => setIsPaywallOpen(false)}
+        onSuccess={handleUpgradeSuccess}
+        currentCount={activeCount}
+      />
     </div>
   );
 };

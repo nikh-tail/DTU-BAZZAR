@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User as UserIcon, Edit2, ShieldCheck, Star, MapPin, Building, GraduationCap, Phone, Mail, Check } from 'lucide-react';
+import { User as UserIcon, Edit2, ShieldCheck, Star, MapPin, Building, GraduationCap, Phone, Mail, Check, Zap, Sparkles } from 'lucide-react';
 import { User } from '../../types/index.js';
 import { DTU_BRANCHES, DTU_HOSTELS, DTU_YEARS } from '../../utils/constants.js';
 import { Button } from '../common/Button.js';
@@ -9,12 +9,14 @@ interface ProfileCardProps {
   user: User;
   isOwner?: boolean;
   onUpdate?: (updated: User) => void;
+  onOpenUpgrade?: () => void;
 }
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({
   user,
   isOwner = false,
   onUpdate,
+  onOpenUpgrade,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -44,6 +46,9 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
     }
   };
 
+  const isPro = Boolean(user.isProSeller);
+  const maxLimit = user.maxListings || 3;
+
   return (
     <div className="bg-campus-card border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
       {/* Glow highlight */}
@@ -65,12 +70,21 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
           )}
 
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-xl sm:text-2xl font-black text-white">{user.name}</h2>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
-                <ShieldCheck size={13} />
-                <span>Verified DTU</span>
-              </span>
+              
+              {/* Pro Seller Badge vs Verified Badge */}
+              {isPro ? (
+                <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500/20 to-campus-lime/20 border border-amber-400/60 text-amber-300 text-xs font-black shadow-glow">
+                  <Star size={13} className="fill-amber-300" />
+                  <span>Campus Pro Seller</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
+                  <ShieldCheck size={13} />
+                  <span>Verified DTU</span>
+                </span>
+              )}
             </div>
 
             <p className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
@@ -78,7 +92,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
               <span>{user.email}</span>
             </p>
 
-            <div className="flex items-center gap-3 mt-2 text-xs">
+            <div className="flex items-center gap-3 mt-2 text-xs flex-wrap">
               <span className="flex items-center gap-1 text-campus-gold font-bold">
                 <Star size={14} className="fill-campus-gold" />
                 <span>{user.rating || 5.0}</span>
@@ -86,21 +100,34 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
               </span>
               <span className="text-slate-600">•</span>
               <span className="text-slate-300 font-medium">
-                {user.totalListings || 0} Total Listings
+                Capacity: <strong>{maxLimit} Listings</strong> {isPro ? '(Pro Tier)' : '(Free Tier)'}
               </span>
             </div>
           </div>
         </div>
 
         {isOwner && !isEditing && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsEditing(true)}
-            leftIcon={<Edit2 size={14} />}
-          >
-            Edit Profile
-          </Button>
+          <div className="flex items-center gap-2">
+            {!isPro && onOpenUpgrade && (
+              <button
+                type="button"
+                onClick={onOpenUpgrade}
+                className="px-3.5 py-2 rounded-2xl bg-campus-lime text-black font-black text-xs shadow-glow active:scale-95 transition-all flex items-center gap-1.5"
+              >
+                <Zap size={14} className="fill-black" />
+                <span>Upgrade to Pro (₹10)</span>
+              </button>
+            )}
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditing(true)}
+              leftIcon={<Edit2 size={14} />}
+            >
+              Edit Profile
+            </Button>
+          </div>
         )}
       </div>
 
@@ -239,10 +266,14 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
 
           <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
             <span className="text-slate-500 font-semibold uppercase tracking-wider block mb-1 flex items-center gap-1">
-              <ShieldCheck size={13} className="text-campus-cyan" /> Campus Trust Tier
+              <Zap size={13} className="text-campus-cyan" /> Seller Tier & Limit
             </span>
-            <p className="font-bold text-campus-lime">Verified Student Peer</p>
-            <p className="text-slate-400 mt-0.5">Direct Campus Meetup</p>
+            <p className="font-bold text-campus-lime">
+              {isPro ? '🌟 Campus Pro (10 Items)' : 'Free Tier (3 Items)'}
+            </p>
+            <p className="text-slate-400 mt-0.5">
+              {isPro ? '7 extra slots unlocked' : 'Upgrade for ₹10'}
+            </p>
           </div>
         </div>
       )}

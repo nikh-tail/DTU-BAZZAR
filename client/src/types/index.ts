@@ -14,6 +14,9 @@ export interface User {
   rating?: number;
   reviewCount?: number;
   isVerified?: boolean;
+  maxListings?: number;
+  isProSeller?: boolean;
+  upgradedAt?: string;
   totalListings?: number;
   savedCount?: number;
   createdAt?: string;
@@ -63,6 +66,8 @@ export interface Listing {
     rating?: number;
     reviewCount?: number;
     avatar?: string | null;
+    isProSeller?: boolean;
+    maxListings?: number;
     _count?: {
       listings?: number;
     };

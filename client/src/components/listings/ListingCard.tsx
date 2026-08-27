@@ -83,7 +83,14 @@ export const ListingCard: React.FC<ListingCardProps> = ({
 
         {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
-          <ConditionBadge condition={listing.condition} size="sm" />
+          <div className="flex items-center gap-1.5">
+            <ConditionBadge condition={listing.condition} size="sm" />
+            {listing.seller?.isProSeller && (
+              <span className="px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-campus-lime text-black font-black text-[10px] uppercase tracking-wider shadow-glow">
+                Pro 🌟
+              </span>
+            )}
+          </div>
           <button
             onClick={handleToggleSave}
             className={`p-2 rounded-full backdrop-blur-md transition-all ${
