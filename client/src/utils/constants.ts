@@ -18,7 +18,7 @@ export const CATEGORIES: {
     icon: '🚲',
     gradient: 'from-amber-500/30 to-orange-600/30 border-orange-500/40',
     bgGradient: 'bg-gradient-to-br from-amber-950/40 via-orange-950/20 to-campus-card',
-    image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1576435728678-68d0fbf94e91?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'ELECTRONICS',
@@ -28,7 +28,7 @@ export const CATEGORIES: {
     icon: '💻',
     gradient: 'from-cyan-500/30 to-blue-600/30 border-cyan-500/40',
     bgGradient: 'bg-gradient-to-br from-cyan-950/40 via-blue-950/20 to-campus-card',
-    image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'BOOKS_ACADEMICS',
@@ -38,7 +38,7 @@ export const CATEGORIES: {
     icon: '📚',
     gradient: 'from-pink-500/30 to-rose-600/30 border-pink-500/40',
     bgGradient: 'bg-gradient-to-br from-pink-950/40 via-rose-950/20 to-campus-card',
-    image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'HOSTEL_ESSENTIALS',
@@ -48,7 +48,7 @@ export const CATEGORIES: {
     icon: '🛏️',
     gradient: 'from-purple-500/30 to-indigo-600/30 border-purple-500/40',
     bgGradient: 'bg-gradient-to-br from-purple-950/40 via-indigo-950/20 to-campus-card',
-    image: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'LAB_STATIONERY',
@@ -58,7 +58,7 @@ export const CATEGORIES: {
     icon: '📐',
     gradient: 'from-emerald-500/30 to-teal-600/30 border-emerald-500/40',
     bgGradient: 'bg-gradient-to-br from-emerald-950/40 via-teal-950/20 to-campus-card',
-    image: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'SPORTS_FITNESS',
@@ -68,7 +68,7 @@ export const CATEGORIES: {
     icon: '🏸',
     gradient: 'from-lime-500/30 to-green-600/30 border-lime-500/40',
     bgGradient: 'bg-gradient-to-br from-lime-950/40 via-green-950/20 to-campus-card',
-    image: 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?w=600&auto=format&fit=crop&q=80',
   },
   {
     id: 'OTHER',
