@@ -43,13 +43,20 @@ export const TrendingSection: React.FC<TrendingSectionProps> = ({
 
       {/* Grid: strictly 2 cols on mobile, 4 cols on desktop */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-        {listings.slice(0, 8).map((listing) => (
-          <ListingCard
-            key={listing.id}
-            listing={listing}
-            onClick={() => onSelectListing(listing.id)}
-          />
-        ))}
+        {listings.length === 0
+          ? [...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="h-64 sm:h-72 rounded-3xl bg-slate-900/60 border border-slate-800 animate-pulse"
+              />
+            ))
+          : listings.slice(0, 8).map((listing) => (
+              <ListingCard
+                key={listing.id}
+                listing={listing}
+                onClick={() => onSelectListing(listing.id)}
+              />
+            ))}
       </div>
     </section>
   );
