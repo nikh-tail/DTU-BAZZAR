@@ -10,11 +10,17 @@ export const API_BASE_URL = rawApiUrl
   ? `${rawApiUrl.replace(/\/$/, '')}/api`
   : '/api';
 
+// Instant background warm-up for Render serverless container on client boot
+if (isBrowser && !isLocalhost) {
+  fetch(`${DEFAULT_PROD_URL}/api/health`, { mode: 'no-cors' }).catch(() => {});
+}
+
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 45000, // 45s timeout to handle initial Render wakeups cleanly
 });
 
 // Intercept requests to inject JWT bearer token
@@ -30,13 +36,6 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Clear token on expired / invalid session if requested by protected route
-      const isAuthRoute = error.config.url?.includes('/auth/request-otp') || error.config.url?.includes('/auth/verify-otp');
-      if (!isAuthRoute) {
-        // localStorage.removeItem('dtu_bazaar_token');
-      }
-    }
     return Promise.reject(error);
   }
 );

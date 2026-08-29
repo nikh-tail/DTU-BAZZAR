@@ -99,6 +99,11 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`💬 Real-time Socket.io active`);
     console.log(`📁 Local storage uploads ready at ${uploadPath}\n`);
   });
+
+  // Keep-alive ping to prevent idle timeout during active usage
+  setInterval(() => {
+    http.get(`http://localhost:${config.port}/api/health`, () => {}).on('error', () => {});
+  }, 5 * 60 * 1000);
 }
 
 export default app;
