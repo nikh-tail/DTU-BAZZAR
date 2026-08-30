@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
+import https from 'https';
 import { config } from '../config/env.js';
 
 export class EmailService {
@@ -47,7 +48,7 @@ export class EmailService {
           .otp-box { background: linear-gradient(135deg, rgba(198, 255, 61, 0.1) 0%, rgba(198, 255, 61, 0.03) 100%); border: 2px dashed #C6FF3D; border-radius: 16px; padding: 18px 24px; margin: 24px 0; }
           .otp-code { font-size: 36px; font-family: monospace; font-weight: 900; letter-spacing: 8px; color: #C6FF3D; }
           .expiry { font-size: 12px; color: #8E9EB5; margin-top: 16px; }
-          .footer { font-size: 11px; color: #64748B; margin-top: 32px; border-top: 1px solid #1E293B; pt: 16px; }
+          .footer { font-size: 11px; color: #64748B; margin-top: 32px; border-top: 1px solid #1E293B; padding-top: 16px; }
         </style>
       </head>
       <body>
@@ -72,6 +73,51 @@ export class EmailService {
   }
 
   /**
+   * Sends real email via Brevo REST API
+   */
+  private static async sendViaBrevoApi(apiKey: string, email: string, otp: string, purpose: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      const payload = JSON.stringify({
+        sender: { name: 'DTU Bazaar', email: config.email.smtp.user || 'dtubazaar.help@gmail.com' },
+        to: [{ email }],
+        subject: `⚡ Your DTU Bazaar Verification Code: ${otp}`,
+        htmlContent: this.generateEmailHtml(otp, purpose),
+        textContent: `Your DTU Bazaar verification code is: ${otp}`,
+      });
+
+      const req = https.request('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': apiKey,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Content-Length': Buffer.byteLength(payload),
+        },
+      }, (res) => {
+        let body = '';
+        res.on('data', (chunk) => body += chunk);
+        res.on('end', () => {
+          if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+            console.log(`✅ Real email delivered via Brevo API to ${email}! Response: ${body}`);
+            resolve(true);
+          } else {
+            console.error(`❌ Brevo API error (${res.statusCode}):`, body);
+            resolve(false);
+          }
+        });
+      });
+
+      req.on('error', (err) => {
+        console.error('❌ Brevo API Network error:', err);
+        resolve(false);
+      });
+
+      req.write(payload);
+      req.end();
+    });
+  }
+
+  /**
    * Sends actual real OTP to the student's email inbox
    */
   static async sendOtp(email: string, otp: string, purpose: 'SIGNUP' | 'LOGIN' = 'SIGNUP'): Promise<boolean> {
@@ -79,36 +125,19 @@ export class EmailService {
     const htmlContent = this.generateEmailHtml(otp, purpose);
     const textContent = `Your DTU Bazaar verification code is: ${otp}. Valid for ${config.otpExpiryMinutes} minutes.`;
 
-    // 1. Try Resend API (Recommended)
-    const resend = this.getResend();
-    if (resend) {
-      try {
-        console.log(`📧 Sending real email via Resend to ${email}...`);
-        const { data, error } = await resend.emails.send({
-          from: config.email.from,
-          to: email,
-          subject,
-          html: htmlContent,
-          text: textContent,
-        });
-
-        if (error) {
-          console.error('❌ Resend API Error:', error);
-          // Fall through to fallback/logging
-        } else {
-          console.log(`✅ Real email successfully delivered via Resend to ${email}! (ID: ${data?.id})`);
-          return true;
-        }
-      } catch (err) {
-        console.error('❌ Resend dispatch error:', err);
-      }
+    // 1. Try Brevo API if configured
+    const brevoKey = process.env.BREVO_API_KEY || (config.email.resendApiKey?.startsWith('xkeysib-') ? config.email.resendApiKey : null);
+    if (brevoKey) {
+      console.log(`📧 Sending real email via Brevo API to ${email}...`);
+      const sent = await this.sendViaBrevoApi(brevoKey, email, otp, purpose);
+      if (sent) return true;
     }
 
-    // 2. Try Nodemailer SMTP (Gmail / Outlook / Custom SMTP)
+    // 2. Try Brevo / Custom Nodemailer SMTP
     const transporter = this.getTransporter();
     if (transporter) {
       try {
-        console.log(`📧 Sending real email via SMTP to ${email}...`);
+        console.log(`📧 Sending real email via SMTP (${config.email.smtp.host}) to ${email}...`);
         const info = await transporter.sendMail({
           from: `"DTU Bazaar" <${config.email.smtp.user}>`,
           to: email,
@@ -123,15 +152,36 @@ export class EmailService {
       }
     }
 
-    // 3. Fallback / Dev mode logger
+    // 3. Try Resend API
+    const resend = this.getResend();
+    if (resend && !config.email.resendApiKey?.startsWith('xkeysib-') && !config.email.resendApiKey?.startsWith('xsmtpsib-')) {
+      try {
+        console.log(`📧 Sending real email via Resend to ${email}...`);
+        const { data, error } = await resend.emails.send({
+          from: config.email.from,
+          to: email,
+          subject,
+          html: htmlContent,
+          text: textContent,
+        });
+
+        if (error) {
+          console.error('❌ Resend API Error:', error);
+        } else {
+          console.log(`✅ Real email successfully delivered via Resend to ${email}! (ID: ${data?.id})`);
+          return true;
+        }
+      } catch (err) {
+        console.error('❌ Resend dispatch error:', err);
+      }
+    }
+
+    // 4. Server console logger fallback
     console.log('\n======================================================');
     console.log(`🎓 [DTU BAZAAR EMAIL SERVICE] -> TO: ${email}`);
     console.log(`🔑 PURPOSE: ${purpose}`);
     console.log(`⚡ OTP CODE: >>>  ${otp}  <<<`);
     console.log(`⏰ VALID FOR: ${config.otpExpiryMinutes} minutes`);
-    if (!config.email.resendApiKey && !config.email.smtp.user) {
-      console.log('💡 Note: Add RESEND_API_KEY or SMTP credentials in .env to send real emails to inbox');
-    }
     console.log('======================================================\n');
     return false;
   }
