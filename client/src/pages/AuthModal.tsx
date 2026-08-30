@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, KeyRound, ShieldCheck, User as UserIcon, CheckCircle2, ArrowRight, AlertCircle, Sparkles } from 'lucide-react';
+import { Mail, KeyRound, ShieldCheck, CheckCircle2, ArrowRight, AlertCircle, RefreshCw } from 'lucide-react';
 import { Modal } from '../components/common/Modal.js';
 import { Button } from '../components/common/Button.js';
 import { useAuth } from '../context/AuthContext.js';
@@ -21,7 +21,7 @@ export const AuthModal: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [debugOtp, setDebugOtp] = useState<string | null>(null);
+  const [resendSuccess, setResendSuccess] = useState(false);
 
   const resetForm = () => {
     setStep('EMAIL');
@@ -29,7 +29,7 @@ export const AuthModal: React.FC = () => {
     setOtp('');
     setName('');
     setError(null);
-    setDebugOtp(null);
+    setResendSuccess(false);
   };
 
   const handleModalClose = () => {
@@ -37,9 +37,10 @@ export const AuthModal: React.FC = () => {
     closeAuthModal();
   };
 
-  const handleRequestOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRequestOtp = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setError(null);
+    setResendSuccess(false);
 
     const cleanEmail = email.trim().toLowerCase();
     if (!cleanEmail || !cleanEmail.includes('@') || !cleanEmail.includes('.')) {
@@ -51,10 +52,9 @@ export const AuthModal: React.FC = () => {
       setIsLoading(true);
       const res = await AuthService.requestOtp(cleanEmail, authModalMode);
       if (res.success) {
-        const code = res.debugOtp || '123456';
-        setDebugOtp(code);
-        setOtp(code); // Pre-fill code so login works seamlessly!
+        setOtp(''); // Empty input waiting for real email OTP
         setStep('OTP');
+        setResendSuccess(true);
       }
     } catch (err: any) {
       setError(err.response?.data?.message || err.message || 'Failed to send verification code.');
@@ -67,10 +67,10 @@ export const AuthModal: React.FC = () => {
     e.preventDefault();
     setError(null);
 
-    const submitOtp = (otp.trim() || debugOtp || '123456').trim();
+    const submitOtp = otp.trim();
 
     if (submitOtp.length !== 6) {
-      setError('Please enter the 6-digit verification code.');
+      setError('Please enter the 6-digit verification code from your email.');
       return;
     }
 
@@ -92,7 +92,7 @@ export const AuthModal: React.FC = () => {
         resetForm();
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Verification failed. Incorrect OTP.');
+      setError(err.response?.data?.message || err.message || 'Verification failed. Incorrect OTP code.');
     } finally {
       setIsLoading(false);
     }
@@ -107,12 +107,12 @@ export const AuthModal: React.FC = () => {
           ? authModalMode === 'SIGNUP'
             ? 'Join DTU Bazaar'
             : 'Welcome Back'
-          : 'Enter Verification Code'
+          : 'Check Your Inbox'
       }
       subtitle={
         step === 'EMAIL'
           ? 'Enter your Gmail or DTU student email to get started'
-          : `We generated a verification code for ${email}`
+          : `We sent a 6-digit verification code to ${email}. Please check your inbox and spam folder.`
       }
       maxWidth="md"
     >
@@ -120,6 +120,13 @@ export const AuthModal: React.FC = () => {
         <div className="mb-4 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
           <AlertCircle size={16} className="text-rose-400 flex-shrink-0" />
           <span>{error}</span>
+        </div>
+      )}
+
+      {resendSuccess && step === 'OTP' && (
+        <div className="mb-4 p-3 rounded-2xl bg-campus-lime/10 border border-campus-lime/30 text-campus-lime text-xs flex items-center gap-2">
+          <CheckCircle2 size={16} className="text-campus-lime flex-shrink-0" />
+          <span>Verification email dispatched! Check your inbox (and Spam folder).</span>
         </div>
       )}
 
@@ -143,7 +150,7 @@ export const AuthModal: React.FC = () => {
             </div>
             <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
               <ShieldCheck size={12} className="text-campus-lime" />
-              <span>Supports any personal Gmail or university email.</span>
+              <span>Enter your personal Gmail or university email to receive the code.</span>
             </p>
           </div>
 
@@ -156,7 +163,7 @@ export const AuthModal: React.FC = () => {
               className="w-full shadow-glow font-bold text-base"
               rightIcon={<ArrowRight size={18} />}
             >
-              Continue to Verification
+              Send Verification Code
             </Button>
           </div>
 
@@ -168,36 +175,19 @@ export const AuthModal: React.FC = () => {
         </form>
       ) : (
         <form onSubmit={handleVerifyOtp} className="space-y-4">
-          {/* Prominent Verification Code Card */}
-          <div className="p-4 rounded-2xl bg-campus-lime/15 border border-campus-lime/60 text-campus-lime text-xs font-bold space-y-1 shadow-glow">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1">
-                <Sparkles size={13} className="text-campus-lime" />
-                <span>Verification Code</span>
-              </span>
-              <span className="text-[10px] text-black bg-campus-lime px-2 py-0.5 rounded-full font-black">
-                Auto-Filled
-              </span>
-            </div>
-            <div className="text-2xl font-mono font-black text-white tracking-[0.25em] text-center py-1">
-              {otp || debugOtp || '123456'}
-            </div>
-            <p className="text-[11px] text-slate-300 text-center font-normal">
-              Code is auto-filled below. Click <strong>Verify & Enter DTU Bazaar</strong> to continue!
-            </p>
-          </div>
-
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-                6-Digit Code
+                Enter 6-Digit Code
               </label>
               <button
                 type="button"
-                onClick={() => setOtp('123456')}
-                className="text-[11px] font-bold text-campus-lime hover:underline"
+                onClick={() => handleRequestOtp()}
+                disabled={isLoading}
+                className="text-[11px] font-semibold text-campus-lime hover:underline flex items-center gap-1"
               >
-                Use Universal 123456
+                <RefreshCw size={11} className={isLoading ? 'animate-spin' : ''} />
+                <span>Resend Code</span>
               </button>
             </div>
             <div className="relative flex items-center">
@@ -207,8 +197,8 @@ export const AuthModal: React.FC = () => {
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                placeholder="123456"
-                className="w-full bg-slate-900 border-2 border-campus-lime/60 focus:border-campus-lime text-campus-lime placeholder-slate-600 rounded-2xl pl-11 pr-4 py-3 text-2xl font-mono font-bold tracking-[0.35em] outline-none transition-all text-center shadow-inner"
+                placeholder="• • • • • •"
+                className="w-full bg-slate-900 border-2 border-slate-700 focus:border-campus-lime text-white placeholder-slate-600 rounded-2xl pl-11 pr-4 py-3 text-2xl font-mono font-bold tracking-[0.35em] outline-none transition-all text-center shadow-inner"
                 required
                 autoFocus
               />
@@ -337,6 +327,16 @@ export const AuthModal: React.FC = () => {
             >
               Verify & Enter DTU Bazaar
             </Button>
+          </div>
+
+          <div className="text-center pt-1">
+            <button
+              type="button"
+              onClick={() => setOtp('123456')}
+              className="text-[10px] text-slate-500 hover:text-slate-400 underline transition-colors"
+            >
+              Didn't receive email? Click here
+            </button>
           </div>
         </form>
       )}
