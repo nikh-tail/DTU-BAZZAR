@@ -26,14 +26,14 @@ export const config = {
     folder: process.env.CLOUDINARY_FOLDER || 'dtu-bazaar/listings',
   },
 
-  // Real Email Service Config (Resend or Nodemailer SMTP)
+  // Real Email Service Config (Brevo SMTP, Brevo API, or Resend API)
   email: {
     resendApiKey: process.env.RESEND_API_KEY || '',
-    from: process.env.EMAIL_FROM || 'DTU Bazaar <onboarding@resend.dev>',
+    from: process.env.EMAIL_FROM || 'DTU Bazaar <nikhilrathorq@gmail.com>',
     smtp: {
-      host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: parseInt(process.env.SMTP_PORT || '465', 10),
-      secure: process.env.SMTP_SECURE !== 'false',
+      host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+      port: parseInt(process.env.SMTP_PORT || '587', 10),
+      secure: process.env.SMTP_SECURE === 'true',
       user: process.env.SMTP_USER || '',
       pass: process.env.SMTP_PASS || '',
     },
