@@ -28,7 +28,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
     }
   };
 
-  // 6 Big Visual Floating Gear Elements (SharePal Style)
+  // 6 Big Visual Floating Gear Elements orbiting tightly around the center text (SharePal Style)
   const floatingItems = [
     {
       id: 'keyboard',
@@ -37,10 +37,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Keyboard',
       image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&auto=format&fit=crop&q=80',
-      position: 'top-2 left-2 xl:left-10',
+      position: 'top-[-10px] left-[-45px] xl:left-[-85px]',
       rotation: '-rotate-6',
       animation: 'animate-float-slow',
-      borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.45)]',
+      borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.5)]',
       accentColor: 'text-cyan-400',
     },
     {
@@ -50,10 +50,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Calculator',
       image: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500&auto=format&fit=crop&q=80',
-      position: 'top-1 right-2 xl:right-10',
+      position: 'top-[-15px] right-[-45px] xl:right-[-85px]',
       rotation: 'rotate-8',
       animation: 'animate-float-fast',
-      borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.45)]',
+      borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.5)]',
       accentColor: 'text-campus-lime',
     },
     {
@@ -63,10 +63,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'CYCLES',
       search: 'Cycle',
       image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=500&auto=format&fit=crop&q=80',
-      position: 'top-48 left-0 xl:left-6',
+      position: 'top-[115px] left-[-75px] xl:left-[-120px]',
       rotation: '-rotate-8',
       animation: 'animate-float-medium',
-      borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.45)]',
+      borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]',
       accentColor: 'text-amber-400',
     },
     {
@@ -76,10 +76,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'BOOKS_ACADEMICS',
       search: 'Books',
       image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&auto=format&fit=crop&q=80',
-      position: 'top-52 right-0 xl:right-6',
+      position: 'top-[120px] right-[-75px] xl:right-[-120px]',
       rotation: 'rotate-6',
       animation: 'animate-float-slow',
-      borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.45)]',
+      borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.5)]',
       accentColor: 'text-rose-400',
     },
     {
@@ -89,10 +89,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'LAB_STATIONERY',
       search: 'Lab Coat',
       image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=80',
-      position: 'bottom-0 left-4 xl:left-16',
+      position: 'bottom-[20px] left-[-50px] xl:left-[-95px]',
       rotation: '-rotate-4',
       animation: 'animate-float-fast',
-      borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.45)]',
+      borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.5)]',
       accentColor: 'text-emerald-400',
     },
     {
@@ -102,16 +102,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'HOSTEL_ESSENTIALS',
       search: 'Cooler',
       image: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=500&auto=format&fit=crop&q=80',
-      position: 'bottom-0 right-4 xl:right-16',
+      position: 'bottom-[20px] right-[-50px] xl:right-[-95px]',
       rotation: 'rotate-8',
       animation: 'animate-float-medium',
-      borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.45)]',
+      borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.5)]',
       accentColor: 'text-purple-400',
     },
   ];
 
   return (
-    <section className="relative pt-6 pb-12 sm:pt-14 sm:pb-20 overflow-hidden text-center select-none">
+    <section className="relative pt-8 pb-14 sm:pt-16 sm:pb-24 overflow-visible text-center select-none">
       {/* 1. Concentric Radial Perspective Rings (SharePal style background) */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] sm:w-[1300px] h-[850px] sm:h-[1300px] pointer-events-none -z-10 flex items-center justify-center">
         <div className="w-[320px] h-[320px] rounded-full border border-slate-800/40" />
@@ -124,46 +124,46 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       {/* 2. Ambient Lighting Center Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] sm:w-[700px] h-[280px] sm:h-[420px] bg-campus-lime/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-      {/* 3. Big Visual 3D Floating Gear Items (SharePal Style) - Visible on lg+ screens */}
-      <div className="hidden lg:block absolute inset-0 pointer-events-none max-w-7xl mx-auto z-10">
-        {floatingItems.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => onNavigate('browse', { category: item.category, search: item.search })}
-            className={`absolute ${item.position} ${item.rotation} ${item.animation} pointer-events-auto cursor-pointer group`}
-            title={`Buy / Sell ${item.shortName} (${item.price}) on DTU Bazaar`}
-          >
-            {/* Big Rounded Visual Tile */}
+      {/* 3. Main Hero Central Content with Orbiting Floating Gear Elements */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-20">
+        {/* Floating Items Orbiting Directly Around Central Content (Visible on lg+ screens) */}
+        <div className="hidden lg:block absolute inset-0 pointer-events-none z-30">
+          {floatingItems.map((item) => (
             <div
-              className={`relative w-24 h-24 xl:w-28 xl:h-28 rounded-3xl overflow-hidden bg-slate-900 border-2 border-slate-700/80 shadow-[0_15px_35px_rgba(0,0,0,0.6)] transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
+              key={item.id}
+              onClick={() => onNavigate('browse', { category: item.category, search: item.search })}
+              className={`absolute ${item.position} ${item.rotation} ${item.animation} pointer-events-auto cursor-pointer group`}
+              title={`Buy / Sell ${item.shortName} (${item.price}) on DTU Bazaar`}
             >
-              <img
-                src={item.image}
-                alt={item.shortName}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                loading="eager"
-                decoding="async"
-              />
+              {/* Big Rounded Visual Tile */}
+              <div
+                className={`relative w-24 h-24 xl:w-28 xl:h-28 rounded-3xl overflow-hidden bg-slate-900 border-2 border-slate-700/80 shadow-[0_20px_40px_rgba(0,0,0,0.7)] transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
+              >
+                <img
+                  src={item.image}
+                  alt={item.shortName}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  loading="eager"
+                  decoding="async"
+                />
 
-              {/* Gradient dark scrim on bottom for high contrast text */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
+                {/* Gradient dark scrim on bottom for high contrast text */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
 
-              {/* Minimal Bottom Pill: Short Name + Price */}
-              <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between px-2 py-0.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-[10px] font-black">
-                <span className="text-white truncate max-w-[55px] font-bold">
-                  {item.shortName}
-                </span>
-                <span className={item.accentColor}>
-                  {item.price}
-                </span>
+                {/* Minimal Bottom Pill: Short Name + Price */}
+                <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between px-2 py-0.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-[10px] font-black">
+                  <span className="text-white truncate max-w-[55px] font-bold">
+                    {item.shortName}
+                  </span>
+                  <span className={item.accentColor}>
+                    {item.price}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      {/* 4. Main Hero Central Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-20">
         {/* Trust Pill */}
         <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-slate-900/90 border border-slate-700/70 text-slate-300 text-[11px] sm:text-xs font-semibold mb-5 sm:mb-6 shadow-sm backdrop-blur-md">
           <ShieldCheck size={14} className="text-campus-lime flex-shrink-0" />
