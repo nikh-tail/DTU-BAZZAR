@@ -82,6 +82,46 @@
   scrollbar-width: none;
 }
 
+/* SharePal Style 3D Floating Gear Keyframes */
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(var(--rot, 0deg));
+  }
+  50% {
+    transform: translateY(-15px) rotate(calc(var(--rot, 0deg) + 2deg));
+  }
+}
+
+@keyframes float-medium {
+  0%, 100% {
+    transform: translateY(0px) rotate(var(--rot, 0deg));
+  }
+  50% {
+    transform: translateY(-22px) rotate(calc(var(--rot, 0deg) - 2.5deg));
+  }
+}
+
+@keyframes float-fast {
+  0%, 100% {
+    transform: translateY(0px) rotate(var(--rot, 0deg));
+  }
+  50% {
+    transform: translateY(-12px) rotate(calc(var(--rot, 0deg) + 3deg));
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float-medium 5s ease-in-out infinite 0.5s;
+}
+
+.animate-float-fast {
+  animation: float-fast 4.2s ease-in-out infinite 1s;
+}
+
 /* Suppress any unwanted third-party dev tool overlays / feedback badges */
 vercel-live-feedback,
 #vercel-live-feedback,
