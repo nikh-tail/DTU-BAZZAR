@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, PlusCircle, ShieldCheck, ArrowUpRight } from 'lucide-react';
+import { Search, PlusCircle, ShieldCheck } from 'lucide-react';
 import { Button } from '../common/Button.js';
 import { useAuth } from '../../context/AuthContext.js';
 
@@ -28,91 +28,85 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
     }
   };
 
-  // 6 Floating Campus Gear Items (SharePal Style)
+  // 6 Big Visual Floating Gear Elements (SharePal Style)
   const floatingItems = [
     {
-      id: 'laptop',
-      name: 'Keychron RGB Keyboard',
-      price: '₹4,500',
-      tag: 'Tech',
+      id: 'keyboard',
+      shortName: 'Keyboard',
+      price: '₹4.5k',
       category: 'ELECTRONICS',
       search: 'Keyboard',
-      image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&auto=format&fit=crop&q=80',
-      position: 'top-6 left-3 xl:left-12',
+      image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&auto=format&fit=crop&q=80',
+      position: 'top-2 left-2 xl:left-10',
       rotation: '-rotate-6',
       animation: 'animate-float-slow',
-      badgeColor: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30',
-      borderGlow: 'hover:border-cyan-400/80 hover:shadow-[0_0_25px_rgba(34,211,238,0.35)]',
+      borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.45)]',
+      accentColor: 'text-cyan-400',
     },
     {
       id: 'calculator',
-      name: 'Casio 991EX Classwiz',
+      shortName: 'Casio 991EX',
       price: '₹790',
-      tag: 'Must-Have',
       category: 'ELECTRONICS',
       search: 'Calculator',
-      image: 'https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=300&auto=format&fit=crop&q=80',
-      position: 'top-4 right-3 xl:right-12',
-      rotation: 'rotate-6',
+      image: 'https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=500&auto=format&fit=crop&q=80',
+      position: 'top-1 right-2 xl:right-10',
+      rotation: 'rotate-8',
       animation: 'animate-float-fast',
-      badgeColor: 'text-campus-lime bg-campus-lime/10 border-campus-lime/30',
-      borderGlow: 'hover:border-campus-lime/80 hover:shadow-[0_0_25px_rgba(198,255,61,0.35)]',
+      borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.45)]',
+      accentColor: 'text-campus-lime',
     },
     {
       id: 'bicycle',
-      name: 'Hero Sprint Geared Bike',
-      price: '₹3,400',
-      tag: 'Campus Ride',
+      shortName: 'Cycle',
+      price: '₹3.4k',
       category: 'CYCLES',
       search: 'Cycle',
-      image: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=300&auto=format&fit=crop&q=80',
-      position: 'top-48 left-1 xl:left-8',
-      rotation: '-rotate-3',
+      image: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=500&auto=format&fit=crop&q=80',
+      position: 'top-48 left-0 xl:left-6',
+      rotation: '-rotate-8',
       animation: 'animate-float-medium',
-      badgeColor: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
-      borderGlow: 'hover:border-amber-400/80 hover:shadow-[0_0_25px_rgba(251,191,36,0.35)]',
+      borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.45)]',
+      accentColor: 'text-amber-400',
     },
     {
       id: 'books',
-      name: 'CSE Books & Notes Bundle',
+      shortName: 'CSE Books',
       price: '₹850',
-      tag: 'Curriculum',
       category: 'BOOKS_ACADEMICS',
       search: 'Books',
-      image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&auto=format&fit=crop&q=80',
-      position: 'top-52 right-1 xl:right-8',
-      rotation: 'rotate-3',
+      image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&auto=format&fit=crop&q=80',
+      position: 'top-52 right-0 xl:right-6',
+      rotation: 'rotate-6',
       animation: 'animate-float-slow',
-      badgeColor: 'text-rose-400 bg-rose-500/10 border-rose-500/30',
-      borderGlow: 'hover:border-rose-400/80 hover:shadow-[0_0_25px_rgba(244,63,94,0.35)]',
+      borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.45)]',
+      accentColor: 'text-rose-400',
     },
     {
       id: 'cloths',
-      name: 'White Lab Coat (Size 40)',
+      shortName: 'Lab Coat',
       price: '₹260',
-      tag: 'Lab Kit',
       category: 'LAB_STATIONERY',
       search: 'Lab Coat',
-      image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300&auto=format&fit=crop&q=80',
-      position: 'bottom-2 left-6 xl:left-20',
-      rotation: '-rotate-6',
+      image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=80',
+      position: 'bottom-0 left-4 xl:left-16',
+      rotation: '-rotate-4',
       animation: 'animate-float-fast',
-      badgeColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
-      borderGlow: 'hover:border-emerald-400/80 hover:shadow-[0_0_25px_rgba(52,211,153,0.35)]',
+      borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.45)]',
+      accentColor: 'text-emerald-400',
     },
     {
       id: 'mattress',
-      name: 'Sleepwell 4" Mattress',
-      price: '₹1,100',
-      tag: 'Hostel Gear',
+      shortName: 'Mattress',
+      price: '₹1.1k',
       category: 'HOSTEL_ESSENTIALS',
       search: 'Mattress',
-      image: 'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=300&auto=format&fit=crop&q=80',
-      position: 'bottom-2 right-6 xl:right-20',
-      rotation: 'rotate-6',
+      image: 'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=500&auto=format&fit=crop&q=80',
+      position: 'bottom-0 right-4 xl:right-16',
+      rotation: 'rotate-8',
       animation: 'animate-float-medium',
-      badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
-      borderGlow: 'hover:border-purple-400/80 hover:shadow-[0_0_25px_rgba(168,85,247,0.35)]',
+      borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.45)]',
+      accentColor: 'text-purple-400',
     },
   ];
 
@@ -130,43 +124,38 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       {/* 2. Ambient Lighting Center Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] sm:w-[700px] h-[280px] sm:h-[420px] bg-campus-lime/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-      {/* 3. 3D Floating Campus Gear Cutouts (SharePal Style) - Visible on lg+ screens */}
+      {/* 3. Big Visual 3D Floating Gear Items (SharePal Style) - Visible on lg+ screens */}
       <div className="hidden lg:block absolute inset-0 pointer-events-none max-w-7xl mx-auto z-10">
         {floatingItems.map((item) => (
           <div
             key={item.id}
             onClick={() => onNavigate('browse', { category: item.category, search: item.search })}
             className={`absolute ${item.position} ${item.rotation} ${item.animation} pointer-events-auto cursor-pointer group`}
-            title={`Buy / Sell ${item.name} on DTU Bazaar`}
+            title={`Buy / Sell ${item.shortName} (${item.price}) on DTU Bazaar`}
           >
+            {/* Big Rounded Visual Tile */}
             <div
-              className={`flex items-center gap-2.5 p-2 pr-3.5 rounded-2xl bg-[#0B1120]/95 backdrop-blur-xl border border-slate-700/80 shadow-2xl transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1 ${item.borderGlow}`}
+              className={`relative w-24 h-24 xl:w-28 xl:h-28 rounded-3xl overflow-hidden bg-slate-900 border-2 border-slate-700/80 shadow-[0_15px_35px_rgba(0,0,0,0.6)] transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
             >
-              {/* Product Thumbnail with clean frame */}
-              <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-900 border border-slate-700/50 flex-shrink-0 relative">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  loading="eager"
-                  decoding="async"
-                />
-              </div>
+              <img
+                src={item.image}
+                alt={item.shortName}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="eager"
+                decoding="async"
+              />
 
-              {/* Text / Price Chip */}
-              <div className="text-left">
-                <div className="flex items-center gap-1">
-                  <span className={`text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded-md border ${item.badgeColor}`}>
-                    {item.tag}
-                  </span>
-                  <ArrowUpRight size={10} className="text-slate-400 group-hover:text-campus-lime transition-colors" />
-                </div>
-                <div className="text-xs font-bold text-white max-w-[120px] truncate group-hover:text-campus-lime transition-colors mt-0.5">
-                  {item.name}
-                </div>
-                <div className="text-[11px] font-extrabold text-slate-300">
+              {/* Gradient dark scrim on bottom for high contrast text */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
+
+              {/* Minimal Bottom Pill: Short Name + Price */}
+              <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between px-2 py-0.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/10 text-[10px] font-black">
+                <span className="text-white truncate max-w-[55px] font-bold">
+                  {item.shortName}
+                </span>
+                <span className={item.accentColor}>
                   {item.price}
-                </div>
+                </span>
               </div>
             </div>
           </div>
