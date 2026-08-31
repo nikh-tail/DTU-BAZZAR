@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
-import { Mail, KeyRound, ShieldCheck, CheckCircle2, ArrowRight, AlertCircle, RefreshCw } from 'lucide-react';
+import {
+  Mail,
+  KeyRound,
+  ShieldCheck,
+  CheckCircle2,
+  ArrowRight,
+  ArrowLeft,
+  AlertCircle,
+  RefreshCw,
+  User as UserIcon,
+  GraduationCap,
+  Calendar,
+  Building2,
+  Phone,
+  Sparkles,
+} from 'lucide-react';
 import { Modal } from '../components/common/Modal.js';
 import { Button } from '../components/common/Button.js';
 import { useAuth } from '../context/AuthContext.js';
@@ -9,9 +24,13 @@ import { DTU_BRANCHES, DTU_HOSTELS, DTU_YEARS } from '../utils/constants.js';
 export const AuthModal: React.FC = () => {
   const { isAuthModalOpen, closeAuthModal, authModalMode, login } = useAuth();
 
-  const [step, setStep] = useState<'EMAIL' | 'OTP'>('EMAIL');
+  // 3-Step Flow: EMAIL ➔ OTP ➔ PROFILE (if new user)
+  const [step, setStep] = useState<'EMAIL' | 'OTP' | 'PROFILE'>('EMAIL');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
+  const [authenticatedSession, setAuthenticatedSession] = useState<{ token: string; user: any } | null>(null);
+
+  // Profile Onboarding Fields
   const [name, setName] = useState('');
   const [branch, setBranch] = useState(DTU_BRANCHES[0]);
   const [year, setYear] = useState(DTU_YEARS[1]);
@@ -28,6 +47,7 @@ export const AuthModal: React.FC = () => {
     setEmail('');
     setOtp('');
     setName('');
+    setAuthenticatedSession(null);
     setError(null);
     setResendSuccess(false);
   };
@@ -37,6 +57,7 @@ export const AuthModal: React.FC = () => {
     closeAuthModal();
   };
 
+  // 1. Step 1: Request OTP
   const handleRequestOtp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setError(null);
@@ -52,7 +73,7 @@ export const AuthModal: React.FC = () => {
       setIsLoading(true);
       const res = await AuthService.requestOtp(cleanEmail, authModalMode);
       if (res.success) {
-        setOtp(''); // Empty input waiting for real email OTP
+        setOtp('');
         setStep('OTP');
         setResendSuccess(true);
       }
@@ -63,12 +84,12 @@ export const AuthModal: React.FC = () => {
     }
   };
 
+  // 2. Step 2: Verify OTP
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     const submitOtp = otp.trim();
-
     if (submitOtp.length !== 6) {
       setError('Please enter the 6-digit verification code from your email.');
       return;
@@ -79,20 +100,78 @@ export const AuthModal: React.FC = () => {
       const res = await AuthService.verifyOtp({
         email: email.trim().toLowerCase(),
         otp: submitOtp,
-        name: name.trim() || undefined,
-        branch,
-        year,
-        userType,
-        hostel,
-        phone: phone.trim() || undefined,
       });
 
       if (res.success && res.token && res.user) {
-        login(res.token, res.user);
-        resetForm();
+        // Check if user is a brand new user or hasn't finished profile setup
+        const isFreshUser =
+          res.isNewUser ||
+          !res.user.name ||
+          res.user.name === email.split('@')[0] ||
+          res.user.name === email.split('@')[0].toUpperCase();
+
+        if (isFreshUser) {
+          // Store session & transition to Step 3: Profile Creation
+          setAuthenticatedSession({ token: res.token, user: res.user });
+          setStep('PROFILE');
+        } else {
+          // Returning user: Log in instantly & close modal
+          login(res.token, res.user);
+          handleModalClose();
+        }
       }
     } catch (err: any) {
       setError(err.response?.data?.message || err.message || 'Verification failed. Incorrect OTP code.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 3. Step 3: Complete Student Profile
+  const handleCompleteProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!name.trim()) {
+      setError('Please enter your full name.');
+      return;
+    }
+
+    if (!authenticatedSession) {
+      setError('Session expired. Please verify your email again.');
+      setStep('EMAIL');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const res = await AuthService.updateProfile({
+        name: name.trim(),
+        branch,
+        year,
+        userType,
+        hostel: userType === 'HOSTELER' ? hostel : undefined,
+        phone: phone.trim() || undefined,
+      });
+
+      if (res.success && res.data) {
+        login(authenticatedSession.token, res.data);
+        handleModalClose();
+      } else {
+        // Fallback login with existing user data
+        login(authenticatedSession.token, {
+          ...authenticatedSession.user,
+          name: name.trim(),
+          branch,
+          year,
+          userType,
+          hostel: userType === 'HOSTELER' ? hostel : null,
+          phone: phone.trim() || null,
+        });
+        handleModalClose();
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.message || 'Failed to save profile.');
     } finally {
       setIsLoading(false);
     }
@@ -104,18 +183,21 @@ export const AuthModal: React.FC = () => {
       onClose={handleModalClose}
       title={
         step === 'EMAIL'
-          ? authModalMode === 'SIGNUP'
-            ? 'Join DTU Bazaar'
-            : 'Welcome Back'
-          : 'Check Your Inbox'
+          ? 'Welcome to DTU Bazaar'
+          : step === 'OTP'
+          ? 'Check Your Inbox'
+          : 'Complete Your Student Profile'
       }
       subtitle={
         step === 'EMAIL'
           ? 'Enter your Gmail or DTU student email to get started'
-          : `We sent a 6-digit verification code to ${email}. Please check your inbox and spam folder.`
+          : step === 'OTP'
+          ? `We sent a 6-digit verification code to ${email}`
+          : 'Set up your campus profile to buy, sell, and message DTU peers'
       }
       maxWidth="md"
     >
+      {/* Error Alert */}
       {error && (
         <div className="mb-4 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
           <AlertCircle size={16} className="text-rose-400 flex-shrink-0" />
@@ -123,14 +205,16 @@ export const AuthModal: React.FC = () => {
         </div>
       )}
 
+      {/* Resend Success Banner */}
       {resendSuccess && step === 'OTP' && (
         <div className="mb-4 p-3 rounded-2xl bg-campus-lime/10 border border-campus-lime/30 text-campus-lime text-xs flex items-center gap-2">
           <CheckCircle2 size={16} className="text-campus-lime flex-shrink-0" />
-          <span>Verification email dispatched! Check your inbox (and Spam folder).</span>
+          <span>Verification email dispatched! Check your inbox & Spam folder.</span>
         </div>
       )}
 
-      {step === 'EMAIL' ? (
+      {/* STEP 1: Enter Email */}
+      {step === 'EMAIL' && (
         <form onSubmit={handleRequestOtp} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
@@ -143,14 +227,14 @@ export const AuthModal: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@gmail.com or @dtu.ac.in"
-                className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-2xl pl-11 pr-4 py-3 text-sm outline-none transition-all"
+                className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-2xl pl-11 pr-4 py-3.5 text-sm outline-none transition-all"
                 required
                 autoFocus
               />
             </div>
             <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
               <ShieldCheck size={12} className="text-campus-lime" />
-              <span>Enter your personal Gmail or university email to receive the code.</span>
+              <span>We'll send a 6-digit verification code to this inbox.</span>
             </p>
           </div>
 
@@ -160,7 +244,7 @@ export const AuthModal: React.FC = () => {
               variant="lime"
               size="lg"
               isLoading={isLoading}
-              className="w-full shadow-glow font-bold text-base"
+              className="w-full shadow-glow font-bold text-base py-3.5"
               rightIcon={<ArrowRight size={18} />}
             >
               Send Verification Code
@@ -169,87 +253,130 @@ export const AuthModal: React.FC = () => {
 
           <div className="text-center pt-2">
             <p className="text-xs text-slate-500">
-              By continuing, you agree to DTU Bazaar's campus community honor code and safety guidelines.
+              Verified for all DTU students, hostellers & day scholars. Zero brokerage.
             </p>
           </div>
         </form>
-      ) : (
-        <form onSubmit={handleVerifyOtp} className="space-y-4">
+      )}
+
+      {/* STEP 2: Enter 6-Digit OTP */}
+      {step === 'OTP' && (
+        <form onSubmit={handleVerifyOtp} className="space-y-5">
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
-                Enter 6-Digit Code
-              </label>
+            <div className="flex items-center justify-between mb-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setError(null);
+                  setStep('EMAIL');
+                }}
+                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+              >
+                <ArrowLeft size={14} />
+                <span>Change Email</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => handleRequestOtp()}
                 disabled={isLoading}
-                className="text-[11px] font-semibold text-campus-lime hover:underline flex items-center gap-1"
+                className="text-xs font-semibold text-campus-lime hover:underline flex items-center gap-1"
               >
-                <RefreshCw size={11} className={isLoading ? 'animate-spin' : ''} />
+                <RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />
                 <span>Resend Code</span>
               </button>
             </div>
+
             <div className="relative flex items-center">
-              <KeyRound size={18} className="absolute left-3.5 text-slate-400 pointer-events-none" />
+              <KeyRound size={20} className="absolute left-3.5 text-slate-400 pointer-events-none" />
               <input
                 type="text"
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                 placeholder="• • • • • •"
-                className="w-full bg-slate-900 border-2 border-slate-700 focus:border-campus-lime text-white placeholder-slate-600 rounded-2xl pl-11 pr-4 py-3 text-2xl font-mono font-bold tracking-[0.35em] outline-none transition-all text-center shadow-inner"
+                className="w-full bg-slate-900 border-2 border-slate-700 focus:border-campus-lime text-white placeholder-slate-600 rounded-2xl pl-11 pr-4 py-3.5 text-3xl font-mono font-black tracking-[0.4em] outline-none transition-all text-center shadow-inner"
+                required
+                autoFocus
+              />
+            </div>
+            <p className="text-[11px] text-slate-500 text-center mt-2">
+              Check your inbox and spam folder for the 6-digit code.
+            </p>
+          </div>
+
+          <Button
+            type="submit"
+            variant="lime"
+            size="lg"
+            isLoading={isLoading}
+            className="w-full shadow-glow font-black text-base py-3.5"
+            rightIcon={<ArrowRight size={18} />}
+          >
+            Verify & Continue
+          </Button>
+        </form>
+      )}
+
+      {/* STEP 3: Complete Student Profile Setup (New User) */}
+      {step === 'PROFILE' && (
+        <form onSubmit={handleCompleteProfile} className="space-y-4">
+          <div className="p-3 rounded-2xl bg-campus-lime/10 border border-campus-lime/20 flex items-center gap-2.5 text-xs text-campus-lime">
+            <Sparkles size={18} className="flex-shrink-0" />
+            <span><strong>Email Verified!</strong> Complete your DTU student profile to finish setup.</span>
+          </div>
+
+          {/* Full Name */}
+          <div>
+            <label className="block text-xs font-bold text-slate-300 mb-1">
+              Full Name *
+            </label>
+            <div className="relative flex items-center">
+              <UserIcon size={16} className="absolute left-3.5 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Rohan Sharma"
+                className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-xl pl-10 pr-3.5 py-2.5 text-sm outline-none transition-all"
                 required
                 autoFocus
               />
             </div>
           </div>
 
-          {/* Student Profile Quick Onboarding Fields (if new user) */}
-          <div className="space-y-3 pt-2 border-t border-slate-800">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-              Student Profile Setup
-            </span>
-
+          {/* Branch & Year Grid */}
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
-                Your Name
+              <label className="block text-xs font-bold text-slate-300 mb-1">
+                Branch / Major
               </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Rohan Sharma"
-                className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-3.5 py-2 text-xs focus:border-campus-lime outline-none"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Branch
-                </label>
+              <div className="relative flex items-center">
+                <GraduationCap size={16} className="absolute left-3 text-slate-400 pointer-events-none" />
                 <select
                   value={branch}
                   onChange={(e) => setBranch(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-2.5 py-2 text-xs focus:border-campus-lime outline-none"
+                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl pl-9 pr-2.5 py-2.5 text-xs focus:border-campus-lime outline-none"
                 >
                   {DTU_BRANCHES.map((b, i) => (
                     <option key={i} value={b}>
-                      {b.split(' ')[0]}
+                      {b}
                     </option>
                   ))}
                 </select>
               </div>
+            </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Year
-                </label>
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1">
+                Year of Study
+              </label>
+              <div className="relative flex items-center">
+                <Calendar size={16} className="absolute left-3 text-slate-400 pointer-events-none" />
                 <select
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-2.5 py-2 text-xs focus:border-campus-lime outline-none"
+                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl pl-9 pr-2.5 py-2.5 text-xs focus:border-campus-lime outline-none"
                 >
                   {DTU_YEARS.map((y, i) => (
                     <option key={i} value={y}>
@@ -259,84 +386,91 @@ export const AuthModal: React.FC = () => {
                 </select>
               </div>
             </div>
+          </div>
 
+          {/* Student Residency Type Toggle */}
+          <div>
+            <label className="block text-xs font-bold text-slate-300 mb-1.5">
+              Campus Residence Type
+            </label>
             <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Student Type
-                </label>
-                <select
-                  value={userType}
-                  onChange={(e) => setUserType(e.target.value as any)}
-                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-2.5 py-2 text-xs focus:border-campus-lime outline-none"
-                >
-                  <option value="HOSTELER">Hosteler</option>
-                  <option value="DAY_SCHOLAR">Day Scholar</option>
-                </select>
-              </div>
+              <button
+                type="button"
+                onClick={() => setUserType('HOSTELER')}
+                className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                  userType === 'HOSTELER'
+                    ? 'bg-campus-lime/15 border-campus-lime text-campus-lime'
+                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                }`}
+              >
+                <span>🏢 Hosteler</span>
+              </button>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Hostel / Locality
-                </label>
+              <button
+                type="button"
+                onClick={() => setUserType('DAY_SCHOLAR')}
+                className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                  userType === 'DAY_SCHOLAR'
+                    ? 'bg-campus-lime/15 border-campus-lime text-campus-lime'
+                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                }`}
+              >
+                <span>🏠 Day Scholar</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Hostel Name (Only for Hosteler) */}
+          {userType === 'HOSTELER' && (
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1">
+                Hostel Name
+              </label>
+              <div className="relative flex items-center">
+                <Building2 size={16} className="absolute left-3 text-slate-400 pointer-events-none" />
                 <select
                   value={hostel}
                   onChange={(e) => setHostel(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-2.5 py-2 text-xs focus:border-campus-lime outline-none"
+                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl pl-9 pr-2.5 py-2.5 text-xs focus:border-campus-lime outline-none"
                 >
                   {DTU_HOSTELS.map((h, i) => (
                     <option key={i} value={h}>
-                      {h.replace(' Hostel', '')}
+                      {h}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
+          )}
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
-                WhatsApp Phone Number (Optional)
-              </label>
+          {/* Optional Phone / WhatsApp */}
+          <div>
+            <label className="block text-xs font-bold text-slate-300 mb-1">
+              WhatsApp / Phone <span className="text-slate-500 font-normal">(Optional)</span>
+            </label>
+            <div className="relative flex items-center">
+              <Phone size={16} className="absolute left-3.5 text-slate-400 pointer-events-none" />
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="e.g. 9876543210 (For 1-tap buyer connect)"
-                className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-3.5 py-2 text-xs focus:border-campus-lime outline-none"
+                placeholder="+91 98765 43210"
+                className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-xl pl-10 pr-3.5 py-2.5 text-xs outline-none transition-all"
               />
             </div>
           </div>
 
-          <div className="pt-2 flex gap-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="md"
-              onClick={() => setStep('EMAIL')}
-              className="flex-1"
-            >
-              Back
-            </Button>
+          <div className="pt-2">
             <Button
               type="submit"
               variant="lime"
               size="lg"
               isLoading={isLoading}
-              className="flex-2 shadow-glow font-bold text-sm"
-              rightIcon={<CheckCircle2 size={18} />}
+              className="w-full shadow-glow font-black text-sm py-3.5"
+              rightIcon={<ArrowRight size={18} />}
             >
-              Verify & Enter DTU Bazaar
+              Complete Setup & Enter DTU Bazaar 🚀
             </Button>
-          </div>
-
-          <div className="text-center pt-1">
-            <button
-              type="button"
-              onClick={() => setOtp('123456')}
-              className="text-[10px] text-slate-500 hover:text-slate-400 underline transition-colors"
-            >
-              Didn't receive email? Click here
-            </button>
           </div>
         </form>
       )}

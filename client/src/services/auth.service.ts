@@ -10,6 +10,7 @@ export interface OtpResponse {
 export interface AuthResponse {
   success: boolean;
   message: string;
+  isNewUser?: boolean;
   token: string;
   user: User;
 }
@@ -34,6 +35,19 @@ export class AuthService {
     if (res.data.token) {
       localStorage.setItem('dtu_bazaar_token', res.data.token);
     }
+    return res.data;
+  }
+
+  static async updateProfile(payload: {
+    name?: string;
+    branch?: string;
+    year?: string;
+    userType?: 'HOSTELER' | 'DAY_SCHOLAR';
+    hostel?: string;
+    roomNumber?: string;
+    phone?: string;
+  }): Promise<{ success: boolean; data: User }> {
+    const res = await api.put<{ success: boolean; data: User }>('/users/profile', payload);
     return res.data;
   }
 

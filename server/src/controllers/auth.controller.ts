@@ -82,7 +82,7 @@ export class AuthController {
 
       if (!user) {
         // Derive initial name from email prefix if not supplied
-        const defaultName = name || cleanEmail.split('@')[0].toUpperCase();
+        const defaultName = name || cleanEmail.split('@')[0];
         user = await prisma.user.create({
           data: {
             email: cleanEmail,
@@ -118,6 +118,7 @@ export class AuthController {
       res.status(200).json({
         success: true,
         message: isNewUser ? 'Welcome to DTU Bazaar!' : 'Logged in successfully.',
+        isNewUser: Boolean(isNewUser),
         token,
         user: {
           id: user.id,
