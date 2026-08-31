@@ -28,7 +28,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
     }
   };
 
-  // 6 Big Visual Floating Gear Elements arranged in a spacious circular orbit ring (SharePal Style)
+  // 6 Visual Floating Gear Elements arranged in a balanced circular orbit ring (Mobile & Desktop)
   const floatingItems = [
     {
       id: 'keyboard',
@@ -37,7 +37,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Keyboard',
       image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[-15px] left-[-25px] xl:left-[-65px]',
+      position: 'top-[-8px] left-[-4px] sm:top-[-15px] sm:left-[10px] lg:top-[-15px] lg:left-[-25px] xl:left-[-65px]',
       rotation: '-rotate-6',
       animation: 'animate-orbit-11',
       borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.5)]',
@@ -50,7 +50,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Calculator',
       image: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[-15px] right-[-25px] xl:right-[-65px]',
+      position: 'top-[-8px] right-[-4px] sm:top-[-15px] sm:right-[10px] lg:top-[-15px] lg:right-[-25px] xl:right-[-65px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-1',
       borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.5)]',
@@ -63,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'CYCLES',
       search: 'Cycle',
       image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[125px] left-[-90px] xl:left-[-135px]',
+      position: 'top-[80px] left-[-10px] sm:top-[100px] sm:left-[-25px] lg:top-[125px] lg:left-[-90px] xl:left-[-135px]',
       rotation: '-rotate-8',
       animation: 'animate-orbit-9',
       borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]',
@@ -76,7 +76,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'BOOKS_ACADEMICS',
       search: 'Books',
       image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[125px] right-[-90px] xl:right-[-135px]',
+      position: 'top-[80px] right-[-10px] sm:top-[100px] sm:right-[-25px] lg:top-[125px] lg:right-[-90px] xl:right-[-135px]',
       rotation: 'rotate-6',
       animation: 'animate-orbit-3',
       borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.5)]',
@@ -89,7 +89,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'LAB_STATIONERY',
       search: 'Lab Coat',
       image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=350&auto=format&fit=crop&q=80',
-      position: 'bottom-[15px] left-[-45px] xl:left-[-85px]',
+      position: 'bottom-[55px] left-[-6px] sm:bottom-[30px] sm:left-[-15px] lg:bottom-[15px] lg:left-[-45px] xl:left-[-85px]',
       rotation: '-rotate-4',
       animation: 'animate-orbit-7',
       borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.5)]',
@@ -102,7 +102,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Audio',
       image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=350&auto=format&fit=crop&q=80',
-      position: 'bottom-[15px] right-[-45px] xl:right-[-85px]',
+      position: 'bottom-[55px] right-[-6px] sm:bottom-[30px] sm:right-[-15px] lg:bottom-[15px] lg:right-[-45px] xl:right-[-85px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-5',
       borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.5)]',
@@ -111,23 +111,23 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
   ];
 
   return (
-    <section className="relative pt-10 pb-16 sm:pt-18 sm:pb-26 overflow-visible text-center select-none">
+    <section className="relative pt-8 pb-14 sm:pt-18 sm:pb-26 overflow-x-clip text-center select-none">
       {/* 1. Concentric Radial Perspective Rings (SharePal style background) */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] sm:w-[1300px] h-[850px] sm:h-[1300px] pointer-events-none -z-10 flex items-center justify-center">
-        <div className="w-[320px] h-[320px] rounded-full border border-slate-800/40" />
-        <div className="absolute w-[560px] h-[560px] rounded-full border border-slate-800/30" />
-        <div className="absolute w-[820px] h-[820px] rounded-full border border-slate-800/20" />
-        <div className="absolute w-[1080px] h-[1080px] rounded-full border border-slate-800/15" />
-        <div className="absolute w-[1340px] h-[1340px] rounded-full border border-slate-800/10" />
+        <div className="w-[280px] sm:w-[320px] h-[280px] sm:h-[320px] rounded-full border border-slate-800/40" />
+        <div className="absolute w-[460px] sm:w-[560px] h-[460px] sm:h-[560px] rounded-full border border-slate-800/30" />
+        <div className="absolute w-[680px] sm:w-[820px] h-[680px] sm:h-[820px] rounded-full border border-slate-800/20" />
+        <div className="absolute w-[900px] sm:w-[1080px] h-[900px] sm:h-[1080px] rounded-full border border-slate-800/15" />
+        <div className="absolute w-[1140px] sm:w-[1340px] h-[1140px] sm:h-[1340px] rounded-full border border-slate-800/10" />
       </div>
 
       {/* 2. Ambient Lighting Center Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] sm:w-[700px] h-[280px] sm:h-[420px] bg-campus-lime/10 blur-[130px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[700px] h-[220px] sm:h-[420px] bg-campus-lime/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-      {/* 3. Main Hero Central Content with Spacious Circular Orbiting Floating Gear Elements */}
+      {/* 3. Main Hero Central Content with Responsive Circular Orbiting Floating Gear Elements */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-20">
-        {/* Floating Items Orbiting in a 360-Degree Ring Around Central Content (Visible on lg+ screens) */}
-        <div className="hidden lg:block absolute inset-0 pointer-events-none z-30">
+        {/* Floating Items Orbiting in a 360-Degree Ring Around Central Content (Mobile + Desktop) */}
+        <div className="absolute inset-0 pointer-events-none z-30">
           {floatingItems.map((item) => (
             <div
               key={item.id}
@@ -135,9 +135,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
               className={`absolute ${item.position} ${item.rotation} ${item.animation} pointer-events-auto cursor-pointer group`}
               title={`Buy / Sell ${item.shortName} (${item.price}) on DTU Bazaar`}
             >
-              {/* Big Rounded Visual Tile */}
+              {/* Responsive Rounded Visual Tile */}
               <div
-                className={`relative w-24 h-24 xl:w-28 xl:h-28 rounded-3xl overflow-hidden bg-slate-900 border-2 border-slate-700/80 shadow-[0_20px_40px_rgba(0,0,0,0.7)] transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
+                className={`relative w-14 h-14 sm:w-20 sm:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900 border sm:border-2 border-slate-700/80 shadow-[0_12px_28px_rgba(0,0,0,0.6)] sm:shadow-[0_20px_40px_rgba(0,0,0,0.7)] transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
               >
                 <img
                   src={item.image}
@@ -151,11 +151,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
                 <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
 
                 {/* Minimal Bottom Pill: Short Name + Price */}
-                <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between px-2 py-0.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-[10px] font-black">
-                  <span className="text-white truncate max-w-[55px] font-bold">
+                <div className="absolute bottom-1 left-1 right-1 sm:bottom-1.5 sm:left-1.5 sm:right-1.5 flex items-center justify-between px-1 py-0.2 sm:px-2 sm:py-0.5 rounded-lg sm:rounded-xl bg-black/85 backdrop-blur-md border border-white/10 text-[8px] sm:text-[10px] font-black">
+                  <span className="hidden sm:inline text-white truncate max-w-[55px] font-bold">
                     {item.shortName}
                   </span>
-                  <span className={item.accentColor}>
+                  <span className={`${item.accentColor} mx-auto sm:mx-0`}>
                     {item.price}
                   </span>
                 </div>
@@ -171,13 +171,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
         </div>
 
         {/* Headline */}
-        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.12] mb-3 sm:mb-4">
+        <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.12] mb-3 sm:mb-4 px-3 sm:px-0">
           Buy & Sell <span className="text-gradient-lime drop-shadow-sm">Within DTU</span>,<br className="hidden sm:inline" />
           Zero Campus Hassle
         </h1>
 
         {/* Subtext */}
-        <p className="text-xs sm:text-base text-slate-300 max-w-xl mx-auto mb-6 sm:mb-8 font-normal leading-relaxed">
+        <p className="text-xs sm:text-base text-slate-300 max-w-xl mx-auto mb-6 sm:mb-8 font-normal leading-relaxed px-4 sm:px-0">
           Buy and sell second-hand cycles, coolers, books, and lab gear directly with DTU peers.
         </p>
 
