@@ -37,7 +37,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Keyboard',
       image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[-10px] left-[-2px] sm:top-[-15px] sm:left-[10px] lg:top-[-15px] lg:left-[-25px] xl:left-[-65px]',
+      position: 'top-[-8px] left-[0px] sm:top-[-15px] sm:left-[10px] lg:top-[-15px] lg:left-[-25px] xl:left-[-65px]',
       rotation: '-rotate-6',
       animation: 'animate-orbit-11',
       borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.5)]',
@@ -50,7 +50,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Calculator',
       image: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[-10px] right-[-2px] sm:top-[-15px] sm:right-[10px] lg:top-[-15px] lg:right-[-25px] xl:right-[-65px]',
+      position: 'top-[-8px] right-[0px] sm:top-[-15px] sm:right-[10px] lg:top-[-15px] lg:right-[-25px] xl:right-[-65px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-1',
       borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.5)]',
@@ -63,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'CYCLES',
       search: 'Cycle',
       image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[75px] left-[-6px] sm:top-[100px] sm:left-[-25px] lg:top-[125px] lg:left-[-90px] xl:left-[-135px]',
+      position: 'top-[75px] left-[-4px] sm:top-[100px] sm:left-[-25px] lg:top-[125px] lg:left-[-90px] xl:left-[-135px]',
       rotation: '-rotate-8',
       animation: 'animate-orbit-9',
       borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]',
@@ -76,7 +76,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'BOOKS_ACADEMICS',
       search: 'Books',
       image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[75px] right-[-6px] sm:top-[100px] sm:right-[-25px] lg:top-[125px] lg:right-[-90px] xl:right-[-135px]',
+      position: 'top-[75px] right-[-4px] sm:top-[100px] sm:right-[-25px] lg:top-[125px] lg:right-[-90px] xl:right-[-135px]',
       rotation: 'rotate-6',
       animation: 'animate-orbit-3',
       borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.5)]',
@@ -89,7 +89,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'LAB_STATIONERY',
       search: 'Lab Coat',
       image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=350&auto=format&fit=crop&q=80',
-      position: 'bottom-[55px] left-[-2px] sm:bottom-[30px] sm:left-[-15px] lg:bottom-[15px] lg:left-[-45px] xl:left-[-85px]',
+      position: 'bottom-[55px] left-[0px] sm:bottom-[30px] sm:left-[-15px] lg:bottom-[15px] lg:left-[-45px] xl:left-[-85px]',
       rotation: '-rotate-4',
       animation: 'animate-orbit-7',
       borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.5)]',
@@ -102,7 +102,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Audio',
       image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=350&auto=format&fit=crop&q=80',
-      position: 'bottom-[55px] right-[-2px] sm:bottom-[30px] sm:right-[-15px] lg:bottom-[15px] lg:right-[-45px] xl:right-[-85px]',
+      position: 'bottom-[55px] right-[0px] sm:bottom-[30px] sm:right-[-15px] lg:bottom-[15px] lg:right-[-45px] xl:right-[-85px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-5',
       borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.5)]',
@@ -135,9 +135,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
               className={`absolute ${item.position} ${item.rotation} ${item.animation} pointer-events-auto cursor-pointer group`}
               title={`Buy / Sell ${item.shortName} (${item.price}) on DTU Bazaar`}
             >
-              {/* Responsive Rounded Visual Tile */}
+              {/* Responsive Rounded Visual Tile with strict width & height */}
               <div
-                className={`relative w-13 h-13 sm:w-20 sm:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900 border sm:border-2 border-slate-700/80 shadow-[0_12px_28px_rgba(0,0,0,0.6)] sm:shadow-[0_20px_40px_rgba(0,0,0,0.7)] transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
+                className={`relative w-14 h-14 sm:w-20 sm:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 aspect-square rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900 border sm:border-2 border-slate-700/80 shadow-[0_12px_28px_rgba(0,0,0,0.6)] sm:shadow-[0_20px_40px_rgba(0,0,0,0.7)] transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
               >
                 <img
                   src={item.image}
