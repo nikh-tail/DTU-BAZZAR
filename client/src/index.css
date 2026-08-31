@@ -82,44 +82,96 @@
   scrollbar-width: none;
 }
 
-/* SharePal Style 3D Floating Gear Keyframes */
-@keyframes float-slow {
+/* Circular orbital floating animations (SharePal 3D Ring Flow) */
+@keyframes orbit-11oclock {
   0%, 100% {
-    transform: translateY(0px) rotate(var(--rot, 0deg));
+    transform: translate(0px, 0px) rotate(-6deg);
   }
-  50% {
-    transform: translateY(-15px) rotate(calc(var(--rot, 0deg) + 2deg));
+  33% {
+    transform: translate(6px, -12px) rotate(-4deg);
+  }
+  66% {
+    transform: translate(-6px, -6px) rotate(-8deg);
   }
 }
 
-@keyframes float-medium {
+@keyframes orbit-1oclock {
   0%, 100% {
-    transform: translateY(0px) rotate(var(--rot, 0deg));
+    transform: translate(0px, 0px) rotate(8deg);
   }
-  50% {
-    transform: translateY(-22px) rotate(calc(var(--rot, 0deg) - 2.5deg));
+  33% {
+    transform: translate(-6px, -12px) rotate(6deg);
+  }
+  66% {
+    transform: translate(6px, -6px) rotate(10deg);
   }
 }
 
-@keyframes float-fast {
+@keyframes orbit-3oclock {
   0%, 100% {
-    transform: translateY(0px) rotate(var(--rot, 0deg));
+    transform: translate(0px, 0px) rotate(6deg);
   }
-  50% {
-    transform: translateY(-12px) rotate(calc(var(--rot, 0deg) + 3deg));
+  33% {
+    transform: translate(12px, -6px) rotate(4deg);
+  }
+  66% {
+    transform: translate(6px, 8px) rotate(8deg);
   }
 }
 
-.animate-float-slow {
-  animation: float-slow 6s ease-in-out infinite;
+@keyframes orbit-5oclock {
+  0%, 100% {
+    transform: translate(0px, 0px) rotate(6deg);
+  }
+  33% {
+    transform: translate(-8px, 8px) rotate(4deg);
+  }
+  66% {
+    transform: translate(8px, 6px) rotate(8deg);
+  }
 }
 
-.animate-float-medium {
-  animation: float-medium 5s ease-in-out infinite 0.5s;
+@keyframes orbit-7oclock {
+  0%, 100% {
+    transform: translate(0px, 0px) rotate(-4deg);
+  }
+  33% {
+    transform: translate(8px, 8px) rotate(-2deg);
+  }
+  66% {
+    transform: translate(-8px, 6px) rotate(-6deg);
+  }
 }
 
-.animate-float-fast {
-  animation: float-fast 4.2s ease-in-out infinite 1s;
+@keyframes orbit-9oclock {
+  0%, 100% {
+    transform: translate(0px, 0px) rotate(-8deg);
+  }
+  33% {
+    transform: translate(-12px, -6px) rotate(-6deg);
+  }
+  66% {
+    transform: translate(-6px, 8px) rotate(-10deg);
+  }
+}
+
+.animate-orbit-11 {
+  animation: orbit-11oclock 7s ease-in-out infinite;
+}
+.animate-orbit-1 {
+  animation: orbit-1oclock 6.5s ease-in-out infinite 0.4s;
+}
+.animate-orbit-3 {
+  animation: orbit-3oclock 7.2s ease-in-out infinite 0.8s;
+}
+.animate-orbit-5 {
+  animation: orbit-5oclock 6.8s ease-in-out infinite 1.2s;
+}
+.animate-orbit-7 {
+  animation: orbit-7oclock 7.5s ease-in-out infinite 1.6s;
+}
+.animate-orbit-9 {
+  animation: orbit-9oclock 6.6s ease-in-out infinite 2s;
 }
 
 /* Suppress any unwanted third-party dev tool overlays / feedback badges */

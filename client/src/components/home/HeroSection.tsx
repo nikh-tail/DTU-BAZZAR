@@ -28,7 +28,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
     }
   };
 
-  // 6 Big Visual Floating Gear Elements orbiting tightly around the center text (SharePal Style)
+  // 6 Big Visual Floating Gear Elements arranged in an elliptical orbit ring (SharePal Style)
   const floatingItems = [
     {
       id: 'keyboard',
@@ -37,9 +37,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Keyboard',
       image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&auto=format&fit=crop&q=80',
-      position: 'top-[-10px] left-[-45px] xl:left-[-85px]',
+      position: 'top-[-28px] left-[20px] xl:left-[55px]',
       rotation: '-rotate-6',
-      animation: 'animate-float-slow',
+      animation: 'animate-orbit-11',
       borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.5)]',
       accentColor: 'text-cyan-400',
     },
@@ -50,9 +50,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Calculator',
       image: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=400&auto=format&fit=crop&q=80',
-      position: 'top-[-15px] right-[-45px] xl:right-[-85px]',
+      position: 'top-[-28px] right-[20px] xl:right-[55px]',
       rotation: 'rotate-8',
-      animation: 'animate-float-fast',
+      animation: 'animate-orbit-1',
       borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.5)]',
       accentColor: 'text-campus-lime',
     },
@@ -63,9 +63,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'CYCLES',
       search: 'Cycle',
       image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400&auto=format&fit=crop&q=80',
-      position: 'top-[115px] left-[-75px] xl:left-[-120px]',
+      position: 'top-[135px] left-[-80px] xl:left-[-125px]',
       rotation: '-rotate-8',
-      animation: 'animate-float-medium',
+      animation: 'animate-orbit-9',
       borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]',
       accentColor: 'text-amber-400',
     },
@@ -76,9 +76,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'BOOKS_ACADEMICS',
       search: 'Books',
       image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&auto=format&fit=crop&q=80',
-      position: 'top-[120px] right-[-75px] xl:right-[-120px]',
+      position: 'top-[135px] right-[-80px] xl:right-[-125px]',
       rotation: 'rotate-6',
-      animation: 'animate-float-slow',
+      animation: 'animate-orbit-3',
       borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.5)]',
       accentColor: 'text-rose-400',
     },
@@ -89,9 +89,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'LAB_STATIONERY',
       search: 'Lab Coat',
       image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80',
-      position: 'bottom-[20px] left-[-50px] xl:left-[-95px]',
+      position: 'bottom-[-15px] left-[30px] xl:left-[70px]',
       rotation: '-rotate-4',
-      animation: 'animate-float-fast',
+      animation: 'animate-orbit-7',
       borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.5)]',
       accentColor: 'text-emerald-400',
     },
@@ -102,16 +102,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Audio',
       image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80',
-      position: 'bottom-[20px] right-[-50px] xl:right-[-95px]',
+      position: 'bottom-[-15px] right-[30px] xl:right-[70px]',
       rotation: 'rotate-8',
-      animation: 'animate-float-medium',
+      animation: 'animate-orbit-5',
       borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.5)]',
       accentColor: 'text-purple-400',
     },
   ];
 
   return (
-    <section className="relative pt-8 pb-14 sm:pt-16 sm:pb-24 overflow-visible text-center select-none">
+    <section className="relative pt-10 pb-16 sm:pt-18 sm:pb-26 overflow-visible text-center select-none">
       {/* 1. Concentric Radial Perspective Rings (SharePal style background) */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] sm:w-[1300px] h-[850px] sm:h-[1300px] pointer-events-none -z-10 flex items-center justify-center">
         <div className="w-[320px] h-[320px] rounded-full border border-slate-800/40" />
@@ -124,9 +124,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       {/* 2. Ambient Lighting Center Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] sm:w-[700px] h-[280px] sm:h-[420px] bg-campus-lime/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-      {/* 3. Main Hero Central Content with Orbiting Floating Gear Elements */}
+      {/* 3. Main Hero Central Content with Circular Orbiting Floating Gear Elements */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-20">
-        {/* Floating Items Orbiting Directly Around Central Content (Visible on lg+ screens) */}
+        {/* Floating Items Orbiting in a 360-Degree Ring Around Central Content (Visible on lg+ screens) */}
         <div className="hidden lg:block absolute inset-0 pointer-events-none z-30">
           {floatingItems.map((item) => (
             <div
