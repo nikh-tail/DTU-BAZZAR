@@ -128,6 +128,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onSearch, onNavigate, activePage
             <span className="sm:hidden">Sell</span>
           </Button>
 
+          {/* Download App Link */}
+          <button
+            onClick={() => onNavigate('download')}
+            className={`px-3 py-2 text-xs font-bold rounded-full border transition-all min-h-[44px] ${
+              activePage === 'download'
+                ? 'bg-campus-lime/20 text-campus-lime border-campus-lime'
+                : 'text-slate-300 border-slate-700/70 hover:border-campus-lime/50 hover:bg-slate-800/80'
+            } inline-flex items-center gap-1.5`}
+            title="Download DTU Bazaar Android APK & iOS App"
+          >
+            <span>📲</span>
+            <span className="hidden sm:inline">Get App</span>
+          </button>
+
           {/* Browse Link (Desktop) */}
           <button
             onClick={() => onNavigate('browse')}

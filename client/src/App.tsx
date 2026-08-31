@@ -12,6 +12,7 @@ import { BrowsePage } from './pages/BrowsePage.js';
 import { ListingDetailPage } from './pages/ListingDetailPage.js';
 import { CreateListingPage } from './pages/CreateListingPage.js';
 import { ProfilePage } from './pages/ProfilePage.js';
+import { DownloadAppPage } from './pages/DownloadAppPage.js';
 
 export function AppContent() {
   const [currentPage, setCurrentPage] = useState<string>('home');
@@ -34,6 +35,9 @@ export function AppContent() {
         });
       } else if (hash === 'sell') {
         setCurrentPage('create-listing');
+        setPageParams({});
+      } else if (hash === 'download' || hash === 'get-app') {
+        setCurrentPage('download');
         setPageParams({});
       } else if (hash.startsWith('profile')) {
         setCurrentPage('profile');
@@ -64,6 +68,8 @@ export function AppContent() {
       window.location.hash = `listing/${params.id}`;
     } else if (page === 'create-listing') {
       window.location.hash = 'sell';
+    } else if (page === 'download') {
+      window.location.hash = 'download';
     } else if (page === 'profile') {
       window.location.hash = 'profile';
     }
@@ -94,6 +100,10 @@ export function AppContent() {
 
         {currentPage === 'create-listing' && (
           <CreateListingPage onNavigate={navigate} />
+        )}
+
+        {currentPage === 'download' && (
+          <DownloadAppPage onNavigate={navigate} />
         )}
 
         {currentPage === 'profile' && (

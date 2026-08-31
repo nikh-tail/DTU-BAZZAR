@@ -77,6 +77,15 @@ export const Footer: React.FC<{ onNavigate: (page: string) => void }> = ({ onNav
                 <MapPin size={14} className="text-campus-cyan" />
                 <span>Meet at Mic-Mac Canteen or OAT</span>
               </li>
+              <li className="pt-1">
+                <button
+                  onClick={() => onNavigate('download')}
+                  className="px-2.5 py-1 rounded-lg bg-campus-lime/15 border border-campus-lime/40 text-campus-lime text-[11px] font-bold hover:bg-campus-lime/25 transition-all flex items-center gap-1.5"
+                >
+                  <span>📲</span>
+                  <span>Download Mobile App (APK / iOS)</span>
+                </button>
+              </li>
             </ul>
           </div>
 

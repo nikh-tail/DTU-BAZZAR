@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">DTU Bazaar</string>
+    <string name="title_activity_main">DTU Bazaar</string>
+    <string name="package_name">com.dtubazaar.app</string>
+    <string name="custom_url_scheme">com.dtubazaar.app</string>
+</resources>
