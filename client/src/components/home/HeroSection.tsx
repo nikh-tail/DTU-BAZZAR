@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, PlusCircle, ShieldCheck, Sparkles, ArrowUpRight } from 'lucide-react';
+import { Search, PlusCircle, ShieldCheck, ArrowUpRight } from 'lucide-react';
 import { Button } from '../common/Button.js';
 import { useAuth } from '../../context/AuthContext.js';
 
@@ -32,15 +32,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
   const floatingItems = [
     {
       id: 'laptop',
-      name: 'Coding Monitor / Laptop',
-      price: '₹6,200',
+      name: 'Keychron RGB Keyboard',
+      price: '₹4,500',
       tag: 'Tech',
       category: 'ELECTRONICS',
-      search: 'Monitor',
-      image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=300&auto=format&fit=crop&q=80',
+      search: 'Keyboard',
+      image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=300&auto=format&fit=crop&q=80',
       position: 'top-6 left-3 xl:left-12',
       rotation: '-rotate-6',
       animation: 'animate-float-slow',
+      badgeColor: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30',
       borderGlow: 'hover:border-cyan-400/80 hover:shadow-[0_0_25px_rgba(34,211,238,0.35)]',
     },
     {
@@ -54,6 +55,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       position: 'top-4 right-3 xl:right-12',
       rotation: 'rotate-6',
       animation: 'animate-float-fast',
+      badgeColor: 'text-campus-lime bg-campus-lime/10 border-campus-lime/30',
       borderGlow: 'hover:border-campus-lime/80 hover:shadow-[0_0_25px_rgba(198,255,61,0.35)]',
     },
     {
@@ -63,10 +65,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       tag: 'Campus Ride',
       category: 'CYCLES',
       search: 'Cycle',
-      image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=300&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=300&auto=format&fit=crop&q=80',
       position: 'top-48 left-1 xl:left-8',
       rotation: '-rotate-3',
       animation: 'animate-float-medium',
+      badgeColor: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
       borderGlow: 'hover:border-amber-400/80 hover:shadow-[0_0_25px_rgba(251,191,36,0.35)]',
     },
     {
@@ -76,10 +79,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       tag: 'Curriculum',
       category: 'BOOKS_ACADEMICS',
       search: 'Books',
-      image: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&auto=format&fit=crop&q=80',
       position: 'top-52 right-1 xl:right-8',
       rotation: 'rotate-3',
       animation: 'animate-float-slow',
+      badgeColor: 'text-rose-400 bg-rose-500/10 border-rose-500/30',
       borderGlow: 'hover:border-rose-400/80 hover:shadow-[0_0_25px_rgba(244,63,94,0.35)]',
     },
     {
@@ -93,19 +97,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       position: 'bottom-2 left-6 xl:left-20',
       rotation: '-rotate-6',
       animation: 'animate-float-fast',
+      badgeColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30',
       borderGlow: 'hover:border-emerald-400/80 hover:shadow-[0_0_25px_rgba(52,211,153,0.35)]',
     },
     {
-      id: 'cooler',
-      name: 'Symphony Room Cooler',
-      price: '₹2,450',
+      id: 'mattress',
+      name: 'Sleepwell 4" Mattress',
+      price: '₹1,100',
       tag: 'Hostel Gear',
       category: 'HOSTEL_ESSENTIALS',
-      search: 'Cooler',
-      image: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300&auto=format&fit=crop&q=80',
+      search: 'Mattress',
+      image: 'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=300&auto=format&fit=crop&q=80',
       position: 'bottom-2 right-6 xl:right-20',
       rotation: 'rotate-6',
       animation: 'animate-float-medium',
+      badgeColor: 'text-purple-400 bg-purple-500/10 border-purple-500/30',
       borderGlow: 'hover:border-purple-400/80 hover:shadow-[0_0_25px_rgba(168,85,247,0.35)]',
     },
   ];
@@ -134,27 +140,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
             title={`Buy / Sell ${item.name} on DTU Bazaar`}
           >
             <div
-              className={`flex items-center gap-2.5 p-2 pr-3.5 rounded-2xl bg-[#0B1120]/90 backdrop-blur-xl border border-slate-700/80 shadow-2xl transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1 ${item.borderGlow}`}
+              className={`flex items-center gap-2.5 p-2 pr-3.5 rounded-2xl bg-[#0B1120]/95 backdrop-blur-xl border border-slate-700/80 shadow-2xl transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1 ${item.borderGlow}`}
             >
-              {/* Product Thumbnail with cutout glow */}
-              <div className="w-11 h-11 rounded-xl overflow-hidden bg-slate-900 border border-slate-700/50 flex-shrink-0 relative">
+              {/* Product Thumbnail with clean frame */}
+              <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-900 border border-slate-700/50 flex-shrink-0 relative">
                 <img
                   src={item.image}
                   alt={item.name}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                  loading="lazy"
+                  loading="eager"
+                  decoding="async"
                 />
               </div>
 
               {/* Text / Price Chip */}
               <div className="text-left">
                 <div className="flex items-center gap-1">
-                  <span className="text-[10px] font-bold text-campus-lime uppercase tracking-wider">
+                  <span className={`text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded-md border ${item.badgeColor}`}>
                     {item.tag}
                   </span>
                   <ArrowUpRight size={10} className="text-slate-400 group-hover:text-campus-lime transition-colors" />
                 </div>
-                <div className="text-xs font-bold text-white max-w-[110px] truncate group-hover:text-campus-lime transition-colors">
+                <div className="text-xs font-bold text-white max-w-[120px] truncate group-hover:text-campus-lime transition-colors mt-0.5">
                   {item.name}
                 </div>
                 <div className="text-[11px] font-extrabold text-slate-300">
