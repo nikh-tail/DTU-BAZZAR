@@ -28,7 +28,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
     }
   };
 
-  // 6 Big Visual Floating Gear Elements arranged in a balanced circular orbit ring (SharePal Style)
+  // 6 Big Visual Floating Gear Elements arranged in a spacious circular orbit ring (SharePal Style)
   const floatingItems = [
     {
       id: 'keyboard',
@@ -36,8 +36,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       price: '₹4.5k',
       category: 'ELECTRONICS',
       search: 'Keyboard',
-      image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?w=400&auto=format&fit=crop&q=80',
-      position: 'top-[-32px] left-[60px] xl:left-[100px]',
+      image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=350&auto=format&fit=crop&q=80',
+      position: 'top-[-15px] left-[-25px] xl:left-[-65px]',
       rotation: '-rotate-6',
       animation: 'animate-orbit-11',
       borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.5)]',
@@ -49,8 +49,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       price: '₹790',
       category: 'ELECTRONICS',
       search: 'Calculator',
-      image: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=400&auto=format&fit=crop&q=80',
-      position: 'top-[-32px] right-[60px] xl:right-[100px]',
+      image: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=350&auto=format&fit=crop&q=80',
+      position: 'top-[-15px] right-[-25px] xl:right-[-65px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-1',
       borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.5)]',
@@ -62,8 +62,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       price: '₹3.4k',
       category: 'CYCLES',
       search: 'Cycle',
-      image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400&auto=format&fit=crop&q=80',
-      position: 'top-[135px] left-[-80px] xl:left-[-125px]',
+      image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=350&auto=format&fit=crop&q=80',
+      position: 'top-[125px] left-[-90px] xl:left-[-135px]',
       rotation: '-rotate-8',
       animation: 'animate-orbit-9',
       borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]',
@@ -75,8 +75,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       price: '₹850',
       category: 'BOOKS_ACADEMICS',
       search: 'Books',
-      image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&auto=format&fit=crop&q=80',
-      position: 'top-[135px] right-[-80px] xl:right-[-125px]',
+      image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=350&auto=format&fit=crop&q=80',
+      position: 'top-[125px] right-[-90px] xl:right-[-135px]',
       rotation: 'rotate-6',
       animation: 'animate-orbit-3',
       borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.5)]',
@@ -88,8 +88,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       price: '₹260',
       category: 'LAB_STATIONERY',
       search: 'Lab Coat',
-      image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80',
-      position: 'bottom-[-18px] left-[55px] xl:left-[95px]',
+      image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=350&auto=format&fit=crop&q=80',
+      position: 'bottom-[15px] left-[-45px] xl:left-[-85px]',
       rotation: '-rotate-4',
       animation: 'animate-orbit-7',
       borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.5)]',
@@ -101,8 +101,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       price: '₹1.8k',
       category: 'ELECTRONICS',
       search: 'Audio',
-      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80',
-      position: 'bottom-[-18px] right-[55px] xl:right-[95px]',
+      image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=350&auto=format&fit=crop&q=80',
+      position: 'bottom-[15px] right-[-45px] xl:right-[-85px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-5',
       borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.5)]',
@@ -124,7 +124,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       {/* 2. Ambient Lighting Center Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] sm:w-[700px] h-[280px] sm:h-[420px] bg-campus-lime/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-      {/* 3. Main Hero Central Content with Circular Orbiting Floating Gear Elements */}
+      {/* 3. Main Hero Central Content with Spacious Circular Orbiting Floating Gear Elements */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-20">
         {/* Floating Items Orbiting in a 360-Degree Ring Around Central Content (Visible on lg+ screens) */}
         <div className="hidden lg:block absolute inset-0 pointer-events-none z-30">
