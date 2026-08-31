@@ -49,7 +49,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       price: '₹790',
       category: 'ELECTRONICS',
       search: 'Calculator',
-      image: 'https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=500&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=500&auto=format&fit=crop&q=80',
       position: 'top-1 right-2 xl:right-10',
       rotation: 'rotate-8',
       animation: 'animate-float-fast',
@@ -62,7 +62,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       price: '₹3.4k',
       category: 'CYCLES',
       search: 'Cycle',
-      image: 'https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?w=500&auto=format&fit=crop&q=80',
+      image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=500&auto=format&fit=crop&q=80',
       position: 'top-48 left-0 xl:left-6',
       rotation: '-rotate-8',
       animation: 'animate-float-medium',
@@ -96,12 +96,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       accentColor: 'text-emerald-400',
     },
     {
-      id: 'mattress',
-      shortName: 'Mattress',
-      price: '₹1.1k',
+      id: 'cooler',
+      shortName: 'Room Cooler',
+      price: '₹2.4k',
       category: 'HOSTEL_ESSENTIALS',
-      search: 'Mattress',
-      image: 'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=500&auto=format&fit=crop&q=80',
+      search: 'Cooler',
+      image: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=500&auto=format&fit=crop&q=80',
       position: 'bottom-0 right-4 xl:right-16',
       rotation: 'rotate-8',
       animation: 'animate-float-medium',
@@ -149,7 +149,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
 
               {/* Minimal Bottom Pill: Short Name + Price */}
-              <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between px-2 py-0.5 rounded-xl bg-black/75 backdrop-blur-md border border-white/10 text-[10px] font-black">
+              <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between px-2 py-0.5 rounded-xl bg-black/80 backdrop-blur-md border border-white/10 text-[10px] font-black">
                 <span className="text-white truncate max-w-[55px] font-bold">
                   {item.shortName}
                 </span>
