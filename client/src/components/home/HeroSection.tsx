@@ -28,7 +28,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
     }
   };
 
-  // 6 Big Visual Floating Gear Elements arranged in an elliptical orbit ring (SharePal Style)
+  // 6 Big Visual Floating Gear Elements arranged in a balanced circular orbit ring (SharePal Style)
   const floatingItems = [
     {
       id: 'keyboard',
@@ -36,8 +36,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       price: '₹4.5k',
       category: 'ELECTRONICS',
       search: 'Keyboard',
-      image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400&auto=format&fit=crop&q=80',
-      position: 'top-[-28px] left-[20px] xl:left-[55px]',
+      image: 'https://images.unsplash.com/photo-1595225476474-87563907a212?w=400&auto=format&fit=crop&q=80',
+      position: 'top-[-32px] left-[60px] xl:left-[100px]',
       rotation: '-rotate-6',
       animation: 'animate-orbit-11',
       borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.5)]',
@@ -50,7 +50,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Calculator',
       image: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=400&auto=format&fit=crop&q=80',
-      position: 'top-[-28px] right-[20px] xl:right-[55px]',
+      position: 'top-[-32px] right-[60px] xl:right-[100px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-1',
       borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.5)]',
@@ -89,7 +89,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'LAB_STATIONERY',
       search: 'Lab Coat',
       image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=400&auto=format&fit=crop&q=80',
-      position: 'bottom-[-15px] left-[30px] xl:left-[70px]',
+      position: 'bottom-[-18px] left-[55px] xl:left-[95px]',
       rotation: '-rotate-4',
       animation: 'animate-orbit-7',
       borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.5)]',
@@ -102,7 +102,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Audio',
       image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=80',
-      position: 'bottom-[-15px] right-[30px] xl:right-[70px]',
+      position: 'bottom-[-18px] right-[55px] xl:right-[95px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-5',
       borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.5)]',
