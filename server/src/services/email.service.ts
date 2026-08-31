@@ -15,15 +15,17 @@ export class EmailService {
   }
 
   private static getTransporter(): nodemailer.Transporter | null {
-    if (!this.smtpTransporter && config.email.smtp.user && config.email.smtp.pass) {
+    if (!this.smtpTransporter && (process.env.SMTP_PASS || config.email.smtp.pass)) {
+      const user = process.env.SMTP_USER || config.email.smtp.user || 'b72792001@smtp-brevo.com';
+      const pass = process.env.SMTP_PASS || config.email.smtp.pass;
+      const host = process.env.SMTP_HOST || config.email.smtp.host || 'smtp-relay.brevo.com';
+      const port = parseInt(process.env.SMTP_PORT || `${config.email.smtp.port || 587}`, 10);
+
       this.smtpTransporter = nodemailer.createTransport({
-        host: config.email.smtp.host,
-        port: config.email.smtp.port,
-        secure: config.email.smtp.secure,
-        auth: {
-          user: config.email.smtp.user,
-          pass: config.email.smtp.pass,
-        },
+        host,
+        port,
+        secure: false,
+        auth: { user, pass },
       });
     }
     return this.smtpTransporter;
@@ -77,8 +79,9 @@ export class EmailService {
    */
   private static async sendViaBrevoApi(apiKey: string, email: string, otp: string, purpose: string): Promise<boolean> {
     return new Promise((resolve) => {
+      const senderEmail = process.env.EMAIL_FROM_ADDRESS || 'nikhilrathorq@gmail.com';
       const payload = JSON.stringify({
-        sender: { name: 'DTU Bazaar', email: config.email.smtp.user || 'dtubazaar.help@gmail.com' },
+        sender: { name: 'DTU Bazaar', email: senderEmail },
         to: [{ email }],
         subject: `⚡ Your DTU Bazaar Verification Code: ${otp}`,
         htmlContent: this.generateEmailHtml(otp, purpose),
@@ -125,21 +128,26 @@ export class EmailService {
     const htmlContent = this.generateEmailHtml(otp, purpose);
     const textContent = `Your DTU Bazaar verification code is: ${otp}. Valid for ${config.otpExpiryMinutes} minutes.`;
 
-    // 1. Try Brevo API if configured
+    // 1. Try Brevo REST API (Fastest & Direct HTTP)
     const brevoKey = process.env.BREVO_API_KEY || (config.email.resendApiKey?.startsWith('xkeysib-') ? config.email.resendApiKey : null);
     if (brevoKey) {
-      console.log(`📧 Sending real email via Brevo API to ${email}...`);
-      const sent = await this.sendViaBrevoApi(brevoKey, email, otp, purpose);
-      if (sent) return true;
+      try {
+        console.log(`📧 Sending real email via Brevo API to ${email}...`);
+        const sent = await this.sendViaBrevoApi(brevoKey, email, otp, purpose);
+        if (sent) return true;
+      } catch (e: any) {
+        console.error('Brevo API dispatch failed, falling back to SMTP...', e.message);
+      }
     }
 
-    // 2. Try Brevo / Custom Nodemailer SMTP
+    // 2. Try Brevo Nodemailer SMTP
     const transporter = this.getTransporter();
     if (transporter) {
       try {
+        const senderEmail = process.env.EMAIL_FROM_ADDRESS || 'nikhilrathorq@gmail.com';
         console.log(`📧 Sending real email via SMTP (${config.email.smtp.host}) to ${email}...`);
         const info = await transporter.sendMail({
-          from: `"DTU Bazaar" <${config.email.smtp.user}>`,
+          from: `"DTU Bazaar" <${senderEmail}>`,
           to: email,
           subject,
           text: textContent,
@@ -152,37 +160,33 @@ export class EmailService {
       }
     }
 
-    // 3. Try Resend API
+    // 3. Fallback to Resend API if configured
     const resend = this.getResend();
-    if (resend && !config.email.resendApiKey?.startsWith('xkeysib-') && !config.email.resendApiKey?.startsWith('xsmtpsib-')) {
+    if (resend && !config.email.resendApiKey?.startsWith('xkeysib-')) {
       try {
         console.log(`📧 Sending real email via Resend to ${email}...`);
         const { data, error } = await resend.emails.send({
-          from: config.email.from,
-          to: email,
+          from: config.email.from || 'DTU Bazaar <onboarding@resend.dev>',
+          to: [email],
           subject,
           html: htmlContent,
           text: textContent,
         });
 
         if (error) {
-          console.error('❌ Resend API Error:', error);
-        } else {
-          console.log(`✅ Real email successfully delivered via Resend to ${email}! (ID: ${data?.id})`);
-          return true;
+          console.error('❌ Resend API error:', error);
+          return false;
         }
+
+        console.log(`✅ Real email successfully delivered via Resend to ${email}! (ID: ${data?.id})`);
+        return true;
       } catch (err) {
-        console.error('❌ Resend dispatch error:', err);
+        console.error('❌ Resend email dispatch error:', err);
+        return false;
       }
     }
 
-    // 4. Server console logger fallback
-    console.log('\n======================================================');
-    console.log(`🎓 [DTU BAZAAR EMAIL SERVICE] -> TO: ${email}`);
-    console.log(`🔑 PURPOSE: ${purpose}`);
-    console.log(`⚡ OTP CODE: >>>  ${otp}  <<<`);
-    console.log(`⏰ VALID FOR: ${config.otpExpiryMinutes} minutes`);
-    console.log('======================================================\n');
+    console.warn(`⚠️ No email provider succeeded. Check that BREVO_API_KEY is configured in Environment Variables.`);
     return false;
   }
 }
