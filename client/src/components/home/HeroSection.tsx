@@ -63,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'CYCLES',
       search: 'Cycle',
       image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[86px] left-[4px] sm:top-[100px] sm:left-[-25px] lg:top-[125px] lg:left-[-90px] xl:left-[-135px]',
+      position: 'top-[80px] left-[4px] sm:top-[100px] sm:left-[-25px] lg:top-[125px] lg:left-[-90px] xl:left-[-135px]',
       rotation: '-rotate-8',
       animation: 'animate-orbit-9',
       borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]',
@@ -76,7 +76,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'BOOKS_ACADEMICS',
       search: 'Books',
       image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[86px] right-[4px] sm:top-[100px] sm:right-[-25px] lg:top-[125px] lg:right-[-90px] xl:right-[-135px]',
+      position: 'top-[80px] right-[4px] sm:top-[100px] sm:right-[-25px] lg:top-[125px] lg:right-[-90px] xl:right-[-135px]',
       rotation: 'rotate-6',
       animation: 'animate-orbit-3',
       borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.5)]',
@@ -89,7 +89,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'LAB_STATIONERY',
       search: 'Lab Coat',
       image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=350&auto=format&fit=crop&q=80',
-      position: 'bottom-[48px] left-[18px] sm:bottom-[30px] sm:left-[-15px] lg:bottom-[15px] lg:left-[-45px] xl:left-[-85px]',
+      position: 'bottom-[35px] left-[18px] sm:bottom-[30px] sm:left-[-15px] lg:bottom-[15px] lg:left-[-45px] xl:left-[-85px]',
       rotation: '-rotate-4',
       animation: 'animate-orbit-7',
       borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.5)]',
@@ -102,7 +102,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Audio',
       image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=350&auto=format&fit=crop&q=80',
-      position: 'bottom-[48px] right-[18px] sm:bottom-[30px] sm:right-[-15px] lg:bottom-[15px] lg:right-[-45px] xl:right-[-85px]',
+      position: 'bottom-[35px] right-[18px] sm:bottom-[30px] sm:right-[-15px] lg:bottom-[15px] lg:right-[-45px] xl:right-[-85px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-5',
       borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.5)]',
@@ -126,7 +126,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
 
       {/* 3. Main Hero Central Content Container */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
-        {/* Floating Items Placed in Background Layer (z-0 on mobile, z-10 on desktop) hovering closely around the main text */}
+        {/* Floating Items Placed in Background Layer (z-0 on mobile, z-10 on desktop) */}
         <div className="absolute inset-0 pointer-events-none z-0 lg:z-10">
           {floatingItems.map((item) => (
             <div
@@ -167,21 +167,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
         {/* 4. Text & Actions Layer with Higher Z-Index (z-30) - 100% Unobstructed */}
         <div className="relative z-30 pointer-events-auto">
           {/* Trust Pill */}
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-slate-900/95 border border-slate-700/80 text-slate-300 text-[11px] sm:text-xs font-semibold mb-5 sm:mb-6 shadow-md backdrop-blur-md">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-slate-900/95 border border-slate-700/80 text-slate-300 text-[11px] sm:text-xs font-semibold mb-4 sm:mb-6 shadow-md backdrop-blur-md">
             <ShieldCheck size={14} className="text-campus-lime flex-shrink-0" />
             <span>Verified @dtu.ac.in students only · Zero brokerage</span>
           </div>
 
           {/* Headline */}
-          <h1 className="font-display text-2xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.14] mb-3 sm:mb-4 px-2 sm:px-0 max-w-[280px] sm:max-w-none mx-auto drop-shadow-md">
+          <h1 className="font-display text-2xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.14] mb-6 sm:mb-8 px-2 sm:px-0 max-w-[280px] sm:max-w-none mx-auto drop-shadow-md">
             Buy & Sell <span className="text-gradient-lime drop-shadow-sm">Within DTU</span>,<br className="hidden sm:inline" />
             Zero Campus Hassle
           </h1>
-
-          {/* Subtext */}
-          <p className="text-xs sm:text-base text-slate-300 max-w-[270px] sm:max-w-xl mx-auto mb-6 sm:mb-8 font-normal leading-relaxed px-2 sm:px-0 drop-shadow-sm">
-            Buy and sell second-hand cycles, coolers, books, and lab gear directly with DTU peers.
-          </p>
 
           {/* Prominent Search Bar (z-40 for crystal clear clickability) */}
           <form
