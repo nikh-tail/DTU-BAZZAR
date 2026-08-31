@@ -28,7 +28,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
     }
   };
 
-  // 6 Visual Floating Gear Elements arranged in a balanced circular orbit ring (Mobile & Desktop)
+  // 6 Visual Floating Gear Elements arranged in a balanced circular orbit ring (SharePal Style)
   const floatingItems = [
     {
       id: 'keyboard',
@@ -37,7 +37,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Keyboard',
       image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[-8px] left-[0px] sm:top-[-15px] sm:left-[10px] lg:top-[-15px] lg:left-[-25px] xl:left-[-65px]',
+      position: 'top-[-15px] left-[-15px] sm:top-[-20px] sm:left-[10px] lg:top-[-15px] lg:left-[-35px] xl:left-[-75px]',
       rotation: '-rotate-6',
       animation: 'animate-orbit-11',
       borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.5)]',
@@ -50,7 +50,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Calculator',
       image: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[-8px] right-[0px] sm:top-[-15px] sm:right-[10px] lg:top-[-15px] lg:right-[-25px] xl:right-[-65px]',
+      position: 'top-[-15px] right-[-15px] sm:top-[-20px] sm:right-[10px] lg:top-[-15px] lg:right-[-35px] xl:right-[-75px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-1',
       borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.5)]',
@@ -63,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'CYCLES',
       search: 'Cycle',
       image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[75px] left-[-4px] sm:top-[100px] sm:left-[-25px] lg:top-[125px] lg:left-[-90px] xl:left-[-135px]',
+      position: 'top-[65px] left-[-20px] sm:top-[100px] sm:left-[-25px] lg:top-[125px] lg:left-[-90px] xl:left-[-135px]',
       rotation: '-rotate-8',
       animation: 'animate-orbit-9',
       borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]',
@@ -76,7 +76,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'BOOKS_ACADEMICS',
       search: 'Books',
       image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[75px] right-[-4px] sm:top-[100px] sm:right-[-25px] lg:top-[125px] lg:right-[-90px] xl:right-[-135px]',
+      position: 'top-[65px] right-[-20px] sm:top-[100px] sm:right-[-25px] lg:top-[125px] lg:right-[-90px] xl:right-[-135px]',
       rotation: 'rotate-6',
       animation: 'animate-orbit-3',
       borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.5)]',
@@ -89,7 +89,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'LAB_STATIONERY',
       search: 'Lab Coat',
       image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=350&auto=format&fit=crop&q=80',
-      position: 'bottom-[55px] left-[0px] sm:bottom-[30px] sm:left-[-15px] lg:bottom-[15px] lg:left-[-45px] xl:left-[-85px]',
+      position: 'bottom-[40px] left-[-15px] sm:bottom-[30px] sm:left-[-15px] lg:bottom-[15px] lg:left-[-45px] xl:left-[-85px]',
       rotation: '-rotate-4',
       animation: 'animate-orbit-7',
       borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.5)]',
@@ -102,7 +102,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Audio',
       image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=350&auto=format&fit=crop&q=80',
-      position: 'bottom-[55px] right-[0px] sm:bottom-[30px] sm:right-[-15px] lg:bottom-[15px] lg:right-[-45px] xl:right-[-85px]',
+      position: 'bottom-[40px] right-[-15px] sm:bottom-[30px] sm:right-[-15px] lg:bottom-[15px] lg:right-[-45px] xl:right-[-85px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-5',
       borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.5)]',
@@ -124,20 +124,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       {/* 2. Ambient Lighting Center Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[700px] h-[220px] sm:h-[420px] bg-campus-lime/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-      {/* 3. Main Hero Central Content with Responsive Circular Orbiting Floating Gear Elements */}
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-20">
-        {/* Floating Items Orbiting in a 360-Degree Ring Around Central Content (Mobile + Desktop) */}
-        <div className="absolute inset-0 pointer-events-none z-30">
+      {/* 3. Main Hero Central Content Container */}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
+        {/* Floating Items Placed in Background Layer (z-0 on mobile, z-10 on desktop) so text and buttons ALWAYS stay on top */}
+        <div className="absolute inset-0 pointer-events-none z-0 lg:z-10">
           {floatingItems.map((item) => (
             <div
               key={item.id}
               onClick={() => onNavigate('browse', { category: item.category, search: item.search })}
-              className={`absolute ${item.position} ${item.rotation} ${item.animation} pointer-events-auto cursor-pointer group`}
+              className={`absolute ${item.position} ${item.rotation} ${item.animation} pointer-events-auto cursor-pointer group opacity-60 sm:opacity-85 lg:opacity-100 transition-opacity`}
               title={`Buy / Sell ${item.shortName} (${item.price}) on DTU Bazaar`}
             >
-              {/* Responsive Rounded Visual Tile with strict width & height */}
+              {/* Responsive Rounded Visual Tile */}
               <div
-                className={`relative w-14 h-14 sm:w-20 sm:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 aspect-square rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900 border sm:border-2 border-slate-700/80 shadow-[0_12px_28px_rgba(0,0,0,0.6)] sm:shadow-[0_20px_40px_rgba(0,0,0,0.7)] transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
+                className={`relative w-14 h-14 sm:w-20 sm:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 aspect-square rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900/90 border sm:border-2 border-slate-700/80 shadow-[0_12px_28px_rgba(0,0,0,0.6)] sm:shadow-[0_20px_40px_rgba(0,0,0,0.7)] transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
               >
                 <img
                   src={item.image}
@@ -164,59 +164,62 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
           ))}
         </div>
 
-        {/* Trust Pill */}
-        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-slate-900/90 border border-slate-700/70 text-slate-300 text-[11px] sm:text-xs font-semibold mb-5 sm:mb-6 shadow-sm backdrop-blur-md">
-          <ShieldCheck size={14} className="text-campus-lime flex-shrink-0" />
-          <span>Verified @dtu.ac.in students only · Zero brokerage</span>
-        </div>
+        {/* 4. Text & Actions Layer with Higher Z-Index (z-30) - 100% Unobstructed */}
+        <div className="relative z-30 pointer-events-auto">
+          {/* Trust Pill */}
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-slate-900/95 border border-slate-700/80 text-slate-300 text-[11px] sm:text-xs font-semibold mb-5 sm:mb-6 shadow-md backdrop-blur-md">
+            <ShieldCheck size={14} className="text-campus-lime flex-shrink-0" />
+            <span>Verified @dtu.ac.in students only · Zero brokerage</span>
+          </div>
 
-        {/* Headline (Optimized for Mobile Clearance) */}
-        <h1 className="font-display text-2xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.14] mb-3 sm:mb-4 px-6 sm:px-0 max-w-[260px] sm:max-w-none mx-auto">
-          Buy & Sell <span className="text-gradient-lime drop-shadow-sm">Within DTU</span>,<br className="hidden sm:inline" />
-          Zero Campus Hassle
-        </h1>
+          {/* Headline */}
+          <h1 className="font-display text-2xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.14] mb-3 sm:mb-4 px-2 sm:px-0 max-w-[280px] sm:max-w-none mx-auto drop-shadow-md">
+            Buy & Sell <span className="text-gradient-lime drop-shadow-sm">Within DTU</span>,<br className="hidden sm:inline" />
+            Zero Campus Hassle
+          </h1>
 
-        {/* Subtext */}
-        <p className="text-xs sm:text-base text-slate-300 max-w-[250px] sm:max-w-xl mx-auto mb-6 sm:mb-8 font-normal leading-relaxed px-2 sm:px-0">
-          Buy and sell second-hand cycles, coolers, books, and lab gear directly with DTU peers.
-        </p>
+          {/* Subtext */}
+          <p className="text-xs sm:text-base text-slate-300 max-w-[270px] sm:max-w-xl mx-auto mb-6 sm:mb-8 font-normal leading-relaxed px-2 sm:px-0 drop-shadow-sm">
+            Buy and sell second-hand cycles, coolers, books, and lab gear directly with DTU peers.
+          </p>
 
-        {/* Prominent Search Bar */}
-        <form
-          onSubmit={handleSearchSubmit}
-          className="max-w-2xl mx-auto mb-6 sm:mb-8 relative group"
-        >
-          <div className="relative flex items-center bg-[#0C1220] border-2 border-slate-700/80 group-hover:border-campus-lime/70 focus-within:border-campus-lime rounded-2xl sm:rounded-full p-1.5 shadow-2xl transition-all">
-            <Search size={20} className="ml-3 sm:ml-4 text-slate-400 pointer-events-none flex-shrink-0" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search scientific calculators, cycles, coolers, lab kits, books..."
-              className="w-full bg-transparent text-white placeholder-slate-400 px-3 py-2.5 text-xs sm:text-base outline-none min-w-0"
-            />
+          {/* Prominent Search Bar (z-40 for crystal clear clickability) */}
+          <form
+            onSubmit={handleSearchSubmit}
+            className="max-w-2xl mx-auto mb-6 sm:mb-8 relative group z-40"
+          >
+            <div className="relative flex items-center bg-[#0C1220] border-2 border-slate-700/90 group-hover:border-campus-lime/70 focus-within:border-campus-lime rounded-2xl sm:rounded-full p-1.5 shadow-2xl transition-all">
+              <Search size={20} className="ml-3 sm:ml-4 text-slate-400 pointer-events-none flex-shrink-0" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search scientific calculators, cycles, coolers, lab kits, books..."
+                className="w-full bg-transparent text-white placeholder-slate-400 px-3 py-2.5 text-xs sm:text-base outline-none min-w-0"
+              />
+              <Button
+                type="submit"
+                variant="lime"
+                size="md"
+                className="flex-shrink-0 font-black px-4 sm:px-7 text-xs sm:text-sm shadow-glow cursor-pointer"
+              >
+                Search
+              </Button>
+            </div>
+          </form>
+
+          {/* Primary CTA */}
+          <div className="flex items-center justify-center relative z-40">
             <Button
-              type="submit"
               variant="lime"
-              size="md"
-              className="flex-shrink-0 font-black px-4 sm:px-7 text-xs sm:text-sm shadow-glow"
+              size="lg"
+              onClick={handlePostItem}
+              leftIcon={<PlusCircle size={18} className="stroke-[2.5]" />}
+              className="shadow-glow font-black text-sm sm:text-base px-7 sm:px-9 py-3.5 cursor-pointer"
             >
-              Search
+              Sell Your Unused Gear
             </Button>
           </div>
-        </form>
-
-        {/* Primary CTA */}
-        <div className="flex items-center justify-center">
-          <Button
-            variant="lime"
-            size="lg"
-            onClick={handlePostItem}
-            leftIcon={<PlusCircle size={18} className="stroke-[2.5]" />}
-            className="shadow-glow font-black text-sm sm:text-base px-7 sm:px-9 py-3.5"
-          >
-            Sell Your Unused Gear
-          </Button>
         </div>
       </div>
     </section>
