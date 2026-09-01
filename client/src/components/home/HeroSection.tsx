@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, PlusCircle, ShieldCheck } from 'lucide-react';
+import { Search, PlusCircle } from 'lucide-react';
 import { Button } from '../common/Button.js';
 import { useAuth } from '../../context/AuthContext.js';
 
@@ -37,7 +37,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Keyboard',
       image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[6px] left-[16px] sm:top-[-20px] sm:left-[10px] lg:top-[-15px] lg:left-[-35px] xl:left-[-75px]',
+      position: 'top-[4px] left-[18px] sm:top-[-20px] sm:left-[10px] lg:top-[-15px] lg:left-[-35px] xl:left-[-75px]',
       rotation: '-rotate-6',
       animation: 'animate-orbit-11',
       borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.5)]',
@@ -50,7 +50,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'ELECTRONICS',
       search: 'Calculator',
       image: 'https://images.unsplash.com/photo-1611117775350-ac3950990985?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[6px] right-[16px] sm:top-[-20px] sm:right-[10px] lg:top-[-15px] lg:right-[-35px] xl:right-[-75px]',
+      position: 'top-[4px] right-[18px] sm:top-[-20px] sm:right-[10px] lg:top-[-15px] lg:right-[-35px] xl:right-[-75px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-1',
       borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.5)]',
@@ -63,7 +63,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'CYCLES',
       search: 'Cycle',
       image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[80px] left-[4px] sm:top-[100px] sm:left-[-25px] lg:top-[125px] lg:left-[-90px] xl:left-[-135px]',
+      position: 'top-[65px] left-[4px] sm:top-[85px] sm:left-[-25px] lg:top-[110px] lg:left-[-90px] xl:left-[-135px]',
       rotation: '-rotate-8',
       animation: 'animate-orbit-9',
       borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]',
@@ -76,7 +76,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       category: 'BOOKS_ACADEMICS',
       search: 'Books',
       image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=350&auto=format&fit=crop&q=80',
-      position: 'top-[80px] right-[4px] sm:top-[100px] sm:right-[-25px] lg:top-[125px] lg:right-[-90px] xl:right-[-135px]',
+      position: 'top-[65px] right-[4px] sm:top-[85px] sm:right-[-25px] lg:top-[110px] lg:right-[-90px] xl:right-[-135px]',
       rotation: 'rotate-6',
       animation: 'animate-orbit-3',
       borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.5)]',
@@ -111,7 +111,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
   ];
 
   return (
-    <section className="relative pt-8 pb-14 sm:pt-18 sm:pb-26 overflow-x-clip text-center select-none">
+    <section className="relative pt-10 pb-16 sm:pt-20 sm:pb-28 overflow-x-clip text-center select-none">
       {/* 1. Concentric Radial Perspective Rings (SharePal style background) */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] sm:w-[1300px] h-[850px] sm:h-[1300px] pointer-events-none -z-10 flex items-center justify-center">
         <div className="w-[280px] sm:w-[320px] h-[280px] sm:h-[320px] rounded-full border border-slate-800/40" />
@@ -166,16 +166,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
 
         {/* 4. Text & Actions Layer with Higher Z-Index (z-30) - 100% Unobstructed */}
         <div className="relative z-30 pointer-events-auto">
-          {/* Trust Pill */}
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-slate-900/95 border border-slate-700/80 text-slate-300 text-[11px] sm:text-xs font-semibold mb-4 sm:mb-6 shadow-md backdrop-blur-md">
-            <ShieldCheck size={14} className="text-campus-lime flex-shrink-0" />
-            <span>Verified @dtu.ac.in students only · Zero brokerage</span>
-          </div>
-
-          {/* Headline */}
-          <h1 className="font-display text-2xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-[1.14] mb-6 sm:mb-8 px-2 sm:px-0 max-w-[280px] sm:max-w-none mx-auto drop-shadow-md">
-            Buy & Sell <span className="text-gradient-lime drop-shadow-sm">Within DTU</span>,<br className="hidden sm:inline" />
-            Zero Campus Hassle
+          {/* Main Statement: OLX for DTU */}
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white tracking-tight leading-[1.08] mb-6 sm:mb-8 px-2 sm:px-0 max-w-[320px] sm:max-w-none mx-auto drop-shadow-md">
+            <span className="text-gradient-lime drop-shadow-sm">OLX</span> For DTU
           </h1>
 
           {/* Prominent Search Bar (z-40 for crystal clear clickability) */}
