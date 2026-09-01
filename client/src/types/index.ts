@@ -23,8 +23,15 @@ export interface User {
 }
 
 export type ListingCategory =
-  | 'CYCLES'
+  | 'DRAWING_TOOLS'
   | 'ELECTRONICS'
+  | 'BOOKS_NOTES'
+  | 'FASHION'
+  | 'HOSTEL_REQ'
+  | 'HOBBY_SPORT'
+  | 'OTHERS'
+  // Legacy aliases
+  | 'CYCLES'
   | 'BOOKS_ACADEMICS'
   | 'HOSTEL_ESSENTIALS'
   | 'LAB_STATIONERY'
@@ -58,21 +65,22 @@ export interface Listing {
     id: string;
     name: string;
     email?: string;
-    phone?: string | null;
+    avatar?: string | null;
     branch?: string | null;
     year?: string | null;
-    userType?: string;
     hostel?: string | null;
     rating?: number;
     reviewCount?: number;
-    avatar?: string | null;
+    isVerified?: boolean;
     isProSeller?: boolean;
-    maxListings?: number;
-    _count?: {
-      listings?: number;
-    };
+    phone?: string | null;
   };
   images: ListingImage[];
+  isSaved?: boolean;
+  _count?: {
+    conversations?: number;
+    savedBy?: number;
+  };
 }
 
 export interface ListingsQueryResponse {
@@ -83,6 +91,7 @@ export interface ListingsQueryResponse {
     page: number;
     limit: number;
     totalPages: number;
+    hasMore: boolean;
   };
 }
 
@@ -93,38 +102,49 @@ export interface Message {
   text: string;
   isRead: boolean;
   createdAt: string;
+  sender?: {
+    id: string;
+    name: string;
+    avatar?: string | null;
+  };
 }
 
 export interface Conversation {
   id: string;
   listingId: string;
+  buyerId: string;
+  sellerId: string;
+  lastMessageText?: string | null;
+  lastMessageAt?: string | null;
+  createdAt: string;
+  partner?: {
+    id: string;
+    name: string;
+    avatar?: string | null;
+    branch?: string | null;
+    hostel?: string | null;
+    phone?: string | null;
+  };
   listing: {
     id: string;
     title: string;
     price: number;
     status: ListingStatus;
-    campusLocation?: string | null;
     images: ListingImage[];
+    sellerId: string;
   };
-  partner: {
+  buyer: {
     id: string;
     name: string;
-    phone?: string | null;
-    branch?: string | null;
-    year?: string | null;
-    hostel?: string | null;
     avatar?: string | null;
+    hostel?: string | null;
   };
-  isBuyer: boolean;
-  lastMessageText?: string | null;
-  lastMessageAt?: string | null;
+  seller: {
+    id: string;
+    name: string;
+    avatar?: string | null;
+    hostel?: string | null;
+  };
+  messages?: Message[];
   unreadCount?: number;
-}
-
-export interface AuthResponse {
-  success: boolean;
-  message?: string;
-  token?: string;
-  user?: User;
-  debugOtp?: string;
 }

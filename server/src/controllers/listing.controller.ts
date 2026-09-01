@@ -9,8 +9,15 @@ const createListingSchema = z.object({
   description: z.string().min(10, 'Description must be at least 10 characters'),
   price: z.coerce.number().min(0, 'Price cannot be negative'),
   category: z.enum([
-    'CYCLES',
+    'DRAWING_TOOLS',
     'ELECTRONICS',
+    'BOOKS_NOTES',
+    'FASHION',
+    'HOSTEL_REQ',
+    'HOBBY_SPORT',
+    'OTHERS',
+    // Legacy support
+    'CYCLES',
     'BOOKS_ACADEMICS',
     'HOSTEL_ESSENTIALS',
     'LAB_STATIONERY',
@@ -62,9 +69,23 @@ export class ListingController {
         ];
       }
 
-      // Category filter
+      // Category filter (supports mapping new and legacy categories together)
       if (category && typeof category === 'string' && category !== 'ALL') {
-        where.category = category;
+        const catMap: Record<string, string[]> = {
+          DRAWING_TOOLS: ['DRAWING_TOOLS', 'LAB_STATIONERY'],
+          ELECTRONICS: ['ELECTRONICS'],
+          BOOKS_NOTES: ['BOOKS_NOTES', 'BOOKS_ACADEMICS'],
+          FASHION: ['FASHION'],
+          HOSTEL_REQ: ['HOSTEL_REQ', 'HOSTEL_ESSENTIALS'],
+          HOBBY_SPORT: ['HOBBY_SPORT', 'CYCLES', 'SPORTS_FITNESS'],
+          OTHERS: ['OTHERS', 'OTHER'],
+        };
+        const mappedList = catMap[category];
+        if (mappedList) {
+          where.category = { in: mappedList };
+        } else {
+          where.category = category;
+        }
       }
 
       // Condition filter (support comma-separated conditions)

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShieldCheck, MapPin, Zap, Heart } from 'lucide-react';
 
-export const Footer: React.FC<{ onNavigate: (page: string) => void }> = ({ onNavigate }) => {
+export const Footer: React.FC<{ onNavigate: (page: string, params?: any) => void }> = ({ onNavigate }) => {
   return (
     <footer className="w-full bg-[#05080F] border-t border-slate-800/80 pt-12 pb-8 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,28 +32,38 @@ export const Footer: React.FC<{ onNavigate: (page: string) => void }> = ({ onNav
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
-                <button onClick={() => onNavigate('browse')} className="hover:text-campus-lime transition-colors">
-                  🚲 Cycles & Campus Mobility
+                <button onClick={() => onNavigate('browse', { category: 'DRAWING_TOOLS' })} className="hover:text-campus-lime transition-colors">
+                  📐 Drawing Tools
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('browse')} className="hover:text-campus-lime transition-colors">
-                  💻 Scientific Calculators & Tech
+                <button onClick={() => onNavigate('browse', { category: 'ELECTRONICS' })} className="hover:text-campus-lime transition-colors">
+                  💻 Electronics
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('browse')} className="hover:text-campus-lime transition-colors">
-                  📚 CSE / ECE / ME Notes & Books
+                <button onClick={() => onNavigate('browse', { category: 'BOOKS_NOTES' })} className="hover:text-campus-lime transition-colors">
+                  📚 Books & Notes
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('browse')} className="hover:text-campus-lime transition-colors">
-                  🛏️ Desert Coolers & Hostel Gear
+                <button onClick={() => onNavigate('browse', { category: 'FASHION' })} className="hover:text-campus-lime transition-colors">
+                  👕 Fashion & Lab Coats
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('browse')} className="hover:text-campus-lime transition-colors">
-                  📐 Mini Drafters & Lab Kits
+                <button onClick={() => onNavigate('browse', { category: 'HOSTEL_REQ' })} className="hover:text-campus-lime transition-colors">
+                  🛏️ Hostel & Req
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('browse', { category: 'HOBBY_SPORT' })} className="hover:text-campus-lime transition-colors">
+                  🏸 Hobby / Sport & Cycles
+                </button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('browse', { category: 'OTHERS' })} className="hover:text-campus-lime transition-colors">
+                  📦 Others & Misc Gear
                 </button>
               </li>
             </ul>

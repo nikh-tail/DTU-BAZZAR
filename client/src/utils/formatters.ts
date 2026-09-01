@@ -22,13 +22,20 @@ export const formatTimeAgo = (dateString: string): string => {
 
 export const getCategoryBadge = (category: string): string => {
   const map: Record<string, string> = {
-    CYCLES: '🚲 Cycles',
-    ELECTRONICS: '💻 Tech Gear',
+    DRAWING_TOOLS: '📐 Drawing Tools',
+    ELECTRONICS: '💻 Electronics',
+    BOOKS_NOTES: '📚 Books & Notes',
+    FASHION: '👕 Fashion',
+    HOSTEL_REQ: '🛏️ Hostel & Req',
+    HOBBY_SPORT: '🏸 Hobby / Sport',
+    OTHERS: '📦 Others',
+    // Legacy mappings
+    LAB_STATIONERY: '📐 Drawing Tools',
     BOOKS_ACADEMICS: '📚 Books & Notes',
-    HOSTEL_ESSENTIALS: '🛏️ Hostel Essentials',
-    LAB_STATIONERY: '📐 Lab Kits',
-    SPORTS_FITNESS: '🏸 Sports',
-    OTHER: '📦 General',
+    HOSTEL_ESSENTIALS: '🛏️ Hostel & Req',
+    CYCLES: '🚲 Cycles',
+    SPORTS_FITNESS: '🏸 Hobby / Sport',
+    OTHER: '📦 Others',
   };
   return map[category] || category;
 };

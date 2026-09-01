@@ -17,8 +17,15 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export type ListingCategory =
-  | 'CYCLES'
+  | 'DRAWING_TOOLS'
   | 'ELECTRONICS'
+  | 'BOOKS_NOTES'
+  | 'FASHION'
+  | 'HOSTEL_REQ'
+  | 'HOBBY_SPORT'
+  | 'OTHERS'
+  // Legacy aliases
+  | 'CYCLES'
   | 'BOOKS_ACADEMICS'
   | 'HOSTEL_ESSENTIALS'
   | 'LAB_STATIONERY'

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, PlusCircle } from 'lucide-react';
+import { Search, PlusCircle, ShoppingBag } from 'lucide-react';
 import { Button } from '../common/Button.js';
 import { useAuth } from '../../context/AuthContext.js';
 
@@ -60,7 +60,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       id: 'bicycle',
       shortName: 'Cycle',
       price: '₹3.4k',
-      category: 'CYCLES',
+      category: 'HOBBY_SPORT',
       search: 'Cycle',
       image: 'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=350&auto=format&fit=crop&q=80',
       position: 'top-[65px] left-[4px] sm:top-[85px] sm:left-[-25px] lg:top-[110px] lg:left-[-90px] xl:left-[-135px]',
@@ -73,7 +73,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       id: 'books',
       shortName: 'CSE Books',
       price: '₹850',
-      category: 'BOOKS_ACADEMICS',
+      category: 'BOOKS_NOTES',
       search: 'Books',
       image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=350&auto=format&fit=crop&q=80',
       position: 'top-[65px] right-[4px] sm:top-[85px] sm:right-[-25px] lg:top-[110px] lg:right-[-90px] xl:right-[-135px]',
@@ -86,7 +86,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       id: 'cloths',
       shortName: 'Lab Coat',
       price: '₹260',
-      category: 'LAB_STATIONERY',
+      category: 'FASHION',
       search: 'Lab Coat',
       image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=350&auto=format&fit=crop&q=80',
       position: 'bottom-[35px] left-[18px] sm:bottom-[30px] sm:left-[-15px] lg:bottom-[15px] lg:left-[-45px] xl:left-[-85px]',
@@ -196,16 +196,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
             </div>
           </form>
 
-          {/* Primary CTA */}
-          <div className="flex items-center justify-center relative z-40">
+          {/* Dual Buy & Sell Action Buttons */}
+          <div className="flex flex-row items-center justify-center gap-3 sm:gap-4 relative z-40">
+            {/* Buy / Browse Button */}
+            <button
+              type="button"
+              onClick={() => onNavigate('browse')}
+              className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 rounded-full bg-slate-900/95 border-2 border-slate-700 hover:border-campus-lime/80 hover:bg-slate-800 text-white font-black text-xs sm:text-sm transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer min-h-[46px]"
+            >
+              <ShoppingBag size={18} className="text-campus-lime stroke-[2.5]" />
+              <span>Buy Items</span>
+            </button>
+
+            {/* Sell Button */}
             <Button
               variant="lime"
               size="lg"
               onClick={handlePostItem}
               leftIcon={<PlusCircle size={18} className="stroke-[2.5]" />}
-              className="shadow-glow font-black text-sm sm:text-base px-7 sm:px-9 py-3.5 cursor-pointer"
+              className="shadow-glow font-black text-xs sm:text-sm px-6 sm:px-8 py-3.5 cursor-pointer hover:scale-105 active:scale-95 transition-transform min-h-[46px]"
             >
-              Sell Your Unused Gear
+              Sell Gear
             </Button>
           </div>
         </div>

@@ -7,8 +7,6 @@ interface CategoryGridProps {
 }
 
 export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) => {
-  const topCategories = CATEGORIES.slice(0, 4);
-
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-14 sm:mb-16">
       <div className="flex items-center justify-between mb-5">
@@ -20,14 +18,14 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) 
             </span>
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            Everything you need for hostels, labs, semesters & sports
+            Everything you need for hostels, labs, semesters, sports & fashion
           </p>
         </div>
       </div>
 
-      {/* Mobile: Horizontal Swipeable Carousel (Thumb-Friendly) | Tablet/Desktop: 4-Col Grid */}
-      <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-        {topCategories.map((cat) => (
+      {/* Mobile: Horizontal Swipeable Carousel | Tablet/Desktop: Responsive Grid */}
+      <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+        {CATEGORIES.map((cat) => (
           <div
             key={cat.id}
             onClick={() => onSelectCategory(cat.id)}
