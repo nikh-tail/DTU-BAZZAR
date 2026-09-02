@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -14,9 +15,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nikhilrathor.portfolio.data.local.DtuBazaarDataStore
+import com.nikhilrathor.portfolio.data.models.ListingCategory
 import com.nikhilrathor.portfolio.data.models.User
 import com.nikhilrathor.portfolio.data.repository.DtuBazaarRepository
-import com.nikhilrathor.portfolio.theme.CyberBackground
 import com.nikhilrathor.portfolio.ui.auth.AuthScreen
 import com.nikhilrathor.portfolio.ui.auth.AuthViewModel
 import com.nikhilrathor.portfolio.ui.chats.ChatConversationScreen
@@ -150,6 +151,15 @@ fun RootNavGraph(
                 onOpenChat = { convId ->
                     navController.navigate(Screen.ChatConversation.createRoute(convId))
                 },
+                onNavigateToListing = { newId ->
+                    navController.navigate(Screen.ListingDetail.createRoute(newId))
+                },
+                onNavigateToCategory = { catId ->
+                    exploreViewModel.onSelectCategory(
+                        ListingCategory.values().find { it.id == catId } ?: ListingCategory.DRAWING_TOOLS
+                    )
+                    navController.popBackStack(Screen.Main.route, false)
+                },
                 viewModel = listingDetailViewModel
             )
         }
@@ -201,15 +211,15 @@ fun MainCampusShell(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(CyberBackground)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
         ) {
             when (currentTab) {
                 CampusNavTab.HOME -> HomeScreen(
                     onNavigateToListing = onNavigateToListing,
-                    onNavigateToCategory = {
+                    onNavigateToCategory = { catId ->
                         exploreViewModel.onSelectCategory(
-                            com.nikhilrathor.portfolio.data.models.ListingCategory.values().find { cat -> cat.id == it }
+                            ListingCategory.values().find { cat -> cat.id == catId } ?: ListingCategory.DRAWING_TOOLS
                         )
                         currentTab = CampusNavTab.EXPLORE
                     },

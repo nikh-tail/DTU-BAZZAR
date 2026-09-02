@@ -26,7 +26,19 @@ class DtuBazaarDataStore(private val context: Context) {
         val USER_HOSTEL = stringPreferencesKey("user_hostel")
         val USER_AVATAR = stringPreferencesKey("user_avatar")
         val SAVED_LISTINGS = stringSetPreferencesKey("saved_listings")
+        val THEME_MODE = stringPreferencesKey("theme_mode")
     }
+
+    val themeModeFlow: Flow<com.nikhilrathor.portfolio.theme.AppThemeMode> = context.dtuBazaarDataStore.data
+        .catch { emit(emptyPreferences()) }
+        .map { prefs ->
+            val modeStr = prefs[Keys.THEME_MODE] ?: com.nikhilrathor.portfolio.theme.AppThemeMode.DARK.name
+            try {
+                com.nikhilrathor.portfolio.theme.AppThemeMode.valueOf(modeStr)
+            } catch (e: Exception) {
+                com.nikhilrathor.portfolio.theme.AppThemeMode.DARK
+            }
+        }
 
     val userFlow: Flow<User?> = context.dtuBazaarDataStore.data
         .catch { exception ->
@@ -53,6 +65,12 @@ class DtuBazaarDataStore(private val context: Context) {
     val savedListingsFlow: Flow<Set<String>> = context.dtuBazaarDataStore.data
         .catch { emit(emptyPreferences()) }
         .map { prefs -> prefs[Keys.SAVED_LISTINGS] ?: emptySet() }
+
+    suspend fun setThemeMode(mode: com.nikhilrathor.portfolio.theme.AppThemeMode) {
+        context.dtuBazaarDataStore.edit { prefs ->
+            prefs[Keys.THEME_MODE] = mode.name
+        }
+    }
 
     suspend fun saveAuthSession(email: String) {
         context.dtuBazaarDataStore.edit { prefs ->
@@ -95,7 +113,9 @@ class DtuBazaarDataStore(private val context: Context) {
 
     suspend fun logout() {
         context.dtuBazaarDataStore.edit { prefs ->
+            val theme = prefs[Keys.THEME_MODE] ?: com.nikhilrathor.portfolio.theme.AppThemeMode.DARK.name
             prefs.clear()
+            prefs[Keys.THEME_MODE] = theme
         }
     }
 }

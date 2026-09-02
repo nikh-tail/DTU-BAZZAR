@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
@@ -37,7 +36,7 @@ class SplashViewModel(private val dataStore: DtuBazaarDataStore) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            delay(1600) // 1.6s animated reveal
+            delay(1400) // 1.4s animated reveal
             val user = dataStore.userFlow.first()
             if (user != null && user.isOnboarded) {
                 _destination.value = "main"
@@ -75,7 +74,7 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(CyberBackground),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         // Radial ambient glow
@@ -84,7 +83,7 @@ fun SplashScreen(
                 .size(340.dp)
                 .background(
                     Brush.radialGradient(
-                        colors = listOf(CyberLime.copy(alpha = 0.18f), Color.Transparent)
+                        colors = listOf(CampusLime.copy(alpha = 0.18f), Color.Transparent)
                     )
                 )
         )
@@ -100,39 +99,37 @@ fun SplashScreen(
                     .size(80.dp)
                     .scale(scale)
                     .clip(CircleShape)
-                    .background(CyberLime)
+                    .background(CampusLime)
             ) {
                 Icon(
                     imageVector = Icons.Default.Bolt,
-                    contentDescription = "DTU Bazaar Logo",
-                    tint = CyberBackground,
+                    contentDescription = "DTU Bazaar Mark",
+                    tint = DarkBackground,
                     modifier = Modifier.size(48.dp)
                 )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Main Brand Title
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "DTU BAZAAR",
-                    style = MaterialTheme.typography.displayMedium.copy(
-                        fontWeight = FontWeight.Black,
-                        color = TextPrimary,
-                        letterSpacing = (-0.5).sp
-                    )
+            Text(
+                text = "DTU BAZAAR",
+                style = MaterialTheme.typography.displayMedium.copy(
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    letterSpacing = (-0.5).sp
                 )
-            }
+            )
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            // Tagline: OLX for DTU
+            // Official Tagline
             Text(
                 text = "OLX FOR DTU",
-                style = MaterialTheme.typography.titleMedium.copy(
+                style = MaterialTheme.typography.labelLarge.copy(
                     fontFamily = FontFamily.Monospace,
-                    color = CyberLime,
                     fontWeight = FontWeight.Black,
+                    color = CampusLimeDark,
                     letterSpacing = 2.sp
                 )
             )
@@ -142,22 +139,9 @@ fun SplashScreen(
             Text(
                 text = "Verified DTU Students Marketplace",
                 style = MaterialTheme.typography.bodySmall.copy(
-                    color = TextSecondary
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
         }
-
-        // Bottom campus tag
-        Text(
-            text = "DELHI TECHNOLOGICAL UNIVERSITY",
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontFamily = FontFamily.Monospace,
-                color = TextMuted,
-                fontSize = 9.sp
-            ),
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 32.dp)
-        )
     }
 }

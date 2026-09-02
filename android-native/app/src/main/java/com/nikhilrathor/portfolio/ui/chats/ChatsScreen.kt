@@ -1,5 +1,8 @@
 package com.nikhilrathor.portfolio.ui.chats
 
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,26 +16,32 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.AddPhotoAlternate
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import coil.compose.AsyncImage
+import com.nikhilrathor.portfolio.data.models.ChatMessage
 import com.nikhilrathor.portfolio.data.models.Conversation
 import com.nikhilrathor.portfolio.data.repository.DtuBazaarRepository
 import com.nikhilrathor.portfolio.theme.*
 import com.nikhilrathor.portfolio.ui.components.CyberCard
 import kotlinx.coroutines.flow.StateFlow
+import java.net.URLEncoder
 
 class ChatsViewModel(private val repository: DtuBazaarRepository) : ViewModel() {
     val conversations: StateFlow<List<Conversation>> = repository.conversations
@@ -42,8 +51,9 @@ class ChatsViewModel(private val repository: DtuBazaarRepository) : ViewModel() 
     }
 
     fun sendMessage(convId: String, text: String) {
-        if (text.trim().isEmpty()) return
-        repository.sendMessage(convId, text.trim())
+        val trimmed = text.trim()
+        if (trimmed.isEmpty()) return
+        repository.sendMessage(convId, trimmed)
     }
 }
 
@@ -57,24 +67,32 @@ fun ChatsListScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CyberBackground)
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 12.dp)
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = "Campus Messages 💬",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Black,
-                    color = TextPrimary
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 14.dp)
+            ) {
+                Text(
+                    text = "Campus Messages 💬",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Black,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 )
-            )
-            Text(
-                text = "Direct chats with verified DTU buyers & sellers",
-                style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary)
-            )
+                Text(
+                    text = "Direct chats with verified DTU buyers & sellers",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                )
+            }
         }
 
         if (conversations.isEmpty()) {
@@ -84,32 +102,39 @@ fun ChatsListScreen(
                     .fillMaxSize()
                     .padding(32.dp)
             ) {
-                Text(text = "No active conversations yet.", color = TextMuted)
+                Text(
+                    text = "No active conversations yet.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         } else {
             LazyColumn(
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+                contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(conversations) { conv ->
-                    CyberCard(
-                        backgroundColor = CyberSurface,
-                        borderColor = BorderSubtle,
-                        onClick = { onNavigateToChat(conv.id) },
-                        modifier = Modifier.fillMaxWidth()
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onNavigateToChat(conv.id) }
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(14.dp)
                         ) {
                             Box(
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier
                                     .size(48.dp)
                                     .clip(CircleShape)
-                                    .background(CyberSurfaceVariant)
-                                    .border(1.5.dp, CyberLime, CircleShape)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .border(1.5.dp, CampusLime, CircleShape)
                             ) {
                                 Text(text = conv.partner.avatarEmoji, fontSize = 22.sp)
                             }
@@ -126,13 +151,15 @@ fun ChatsListScreen(
                                         text = conv.partner.name,
                                         style = MaterialTheme.typography.titleMedium.copy(
                                             fontWeight = FontWeight.Bold,
-                                            color = TextPrimary
-                                        )
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        ),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
                                         text = conv.lastMessageTime,
                                         style = MaterialTheme.typography.labelSmall.copy(
-                                            color = TextMuted,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                                             fontSize = 10.sp
                                         )
                                     )
@@ -141,16 +168,20 @@ fun ChatsListScreen(
                                 Text(
                                     text = "Re: ${conv.listingTitle} (₹${conv.listingPrice})",
                                     style = MaterialTheme.typography.bodySmall.copy(
-                                        color = CyberCyan,
+                                        color = CampusCyanDark,
                                         fontWeight = FontWeight.SemiBold
                                     ),
-                                    maxLines = 1
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
 
                                 Text(
                                     text = conv.lastMessage,
-                                    style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary),
+                                    style = MaterialTheme.typography.bodySmall.copy(
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    ),
                                     maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
                                     modifier = Modifier.padding(top = 2.dp)
                                 )
                             }
@@ -168,9 +199,13 @@ fun ChatConversationScreen(
     onNavigateBack: () -> Unit,
     viewModel: ChatsViewModel
 ) {
-    val conversation = viewModel.getConversation(conversationId)
+    val conversations by viewModel.conversations.collectAsState()
+    val conversation = remember(conversations, conversationId) {
+        conversations.find { it.id == conversationId }
+    }
     var inputMessage by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
+    val context = LocalContext.current
 
     val quickReplies = listOf(
         "Is this still available?",
@@ -184,9 +219,9 @@ fun ChatConversationScreen(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .background(CyberBackground)
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            Text("Conversation not found", color = TextSecondary)
+            Text("Conversation not found", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         return
     }
@@ -200,8 +235,8 @@ fun ChatConversationScreen(
     Scaffold(
         topBar = {
             Surface(
-                color = CyberSurface,
-                border = androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle),
+                color = MaterialTheme.colorScheme.surface,
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
@@ -209,36 +244,63 @@ fun ChatConversationScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp, vertical = 8.dp)
                         .statusBarsPadding(),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = TextPrimary)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
+                        }
+
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                        ) {
+                            Text(text = conversation.partner.avatarEmoji, fontSize = 18.sp)
+                        }
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Column {
+                            Text(
+                                text = conversation.partner.name,
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                ),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                text = "${conversation.partner.branch} • Verified",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    color = CampusLimeDark,
+                                    fontSize = 10.sp
+                                ),
+                                maxLines = 1
+                            )
+                        }
                     }
 
-                    Box(
-                        contentAlignment = Alignment.Center,
+                    // Direct WhatsApp Button in Header
+                    IconButton(
+                        onClick = {
+                            val msg = "Hi ${conversation.partner.name}, chatting regarding '${conversation.listingTitle}' from DTU Bazaar!"
+                            val url = "https://wa.me/919315096256?text=${URLEncoder.encode(msg, "UTF-8")}"
+                            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                        },
                         modifier = Modifier
                             .size(36.dp)
                             .clip(CircleShape)
-                            .background(CyberSurfaceVariant)
+                            .background(Color(0xFF25D366))
                     ) {
-                        Text(text = conversation.partner.avatarEmoji, fontSize = 18.sp)
-                    }
-
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = conversation.partner.name,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = TextPrimary
-                            )
-                        )
-                        Text(
-                            text = "${conversation.partner.branch} • Verified",
-                            style = MaterialTheme.typography.labelSmall.copy(color = CyberLime, fontSize = 10.sp)
-                        )
+                        Text(text = "💬", fontSize = 16.sp)
                     }
                 }
             }
@@ -247,12 +309,12 @@ fun ChatConversationScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(CyberBackground)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(innerPadding)
         ) {
             // Item Header Strip
             Surface(
-                color = CyberSurfaceVariant,
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
@@ -262,7 +324,7 @@ fun ChatConversationScreen(
                     Box(
                         modifier = Modifier
                             .size(40.dp)
-                            .clip(RoundedCornerShape(6.dp))
+                            .clip(RoundedCornerShape(8.dp))
                     ) {
                         AsyncImage(
                             model = conversation.listingImageUrl,
@@ -274,12 +336,19 @@ fun ChatConversationScreen(
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = conversation.listingTitle,
-                            style = MaterialTheme.typography.labelLarge.copy(color = TextPrimary, fontWeight = FontWeight.Bold),
-                            maxLines = 1
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.Bold
+                            ),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             text = "₹${conversation.listingPrice} • Campus Deal",
-                            style = MaterialTheme.typography.labelSmall.copy(color = CyberLime, fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = CampusLimeDark,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
                     }
                 }
@@ -306,25 +375,27 @@ fun ChatConversationScreen(
                                 bottomStart = if (isMe) 16.dp else 4.dp,
                                 bottomEnd = if (isMe) 4.dp else 16.dp
                             ),
-                            color = if (isMe) CyberLime else CyberSurface,
-                            border = if (!isMe) androidx.compose.foundation.BorderStroke(1.dp, BorderSubtle) else null,
+                            color = if (isMe) CampusLime else MaterialTheme.colorScheme.surface,
+                            border = if (!isMe) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null,
                             modifier = Modifier.widthIn(max = 280.dp)
                         ) {
                             Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
                                 Text(
                                     text = msg.text,
                                     style = MaterialTheme.typography.bodyMedium.copy(
-                                        color = if (isMe) CyberBackground else TextPrimary,
+                                        color = if (isMe) DarkBackground else MaterialTheme.colorScheme.onSurface,
                                         fontWeight = if (isMe) FontWeight.SemiBold else FontWeight.Normal
                                     )
                                 )
                                 Text(
                                     text = msg.timestamp,
                                     style = MaterialTheme.typography.labelSmall.copy(
-                                        color = if (isMe) CyberBackground.copy(alpha = 0.6f) else TextMuted,
+                                        color = if (isMe) DarkBackground.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant,
                                         fontSize = 8.sp
                                     ),
-                                    modifier = Modifier.align(Alignment.End).padding(top = 4.dp)
+                                    modifier = Modifier
+                                        .align(Alignment.End)
+                                        .padding(top = 4.dp)
                                 )
                             }
                         }
@@ -332,27 +403,37 @@ fun ChatConversationScreen(
                 }
             }
 
-            // Quick Reply Chips
+            // Quick Reply Chips (with proper start/end padding, never cut off!)
             LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.fillMaxWidth()
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 6.dp)
             ) {
                 items(quickReplies) { reply ->
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(CyberSurface)
-                            .border(1.dp, BorderSubtle, RoundedCornerShape(12.dp))
-                            .clickable { viewModel.sendMessage(conversationId, reply) }
-                            .padding(horizontal = 10.dp, vertical = 6.dp)
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                        modifier = Modifier.clickable {
+                            viewModel.sendMessage(conversationId, reply)
+                        }
                     ) {
-                        Text(text = reply, style = MaterialTheme.typography.bodySmall.copy(color = CyberCyan, fontSize = 11.sp))
+                        Text(
+                            text = reply,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                color = CampusCyanDark,
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Medium
+                            ),
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        )
                     }
                 }
             }
 
-            // Message Input
+            // Message Input Row with Photo Attachment & Send
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -360,21 +441,44 @@ fun ChatConversationScreen(
                     .navigationBarsPadding(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Photo Attachment Icon
+                IconButton(
+                    onClick = {
+                        Toast.makeText(context, "Photo attachment ready", Toast.LENGTH_SHORT).show()
+                    },
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surface)
+                        .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AddPhotoAlternate,
+                        contentDescription = "Attach Photo",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
                 OutlinedTextField(
                     value = inputMessage,
                     onValueChange = { inputMessage = it },
-                    placeholder = { Text("Type campus message...", color = TextMuted) },
+                    placeholder = { Text("Type campus message...", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
                     keyboardActions = KeyboardActions(onSend = {
-                        viewModel.sendMessage(conversationId, inputMessage)
-                        inputMessage = ""
+                        if (inputMessage.trim().isNotEmpty()) {
+                            viewModel.sendMessage(conversationId, inputMessage)
+                            inputMessage = ""
+                        }
                     }),
                     shape = RoundedCornerShape(16.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = CyberLime,
-                        unfocusedBorderColor = BorderSubtle,
-                        focusedContainerColor = CyberSurface,
-                        unfocusedContainerColor = CyberSurface
+                        focusedBorderColor = CampusLime,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface
                     ),
                     modifier = Modifier.weight(1f)
                 )
@@ -383,15 +487,22 @@ fun ChatConversationScreen(
 
                 IconButton(
                     onClick = {
-                        viewModel.sendMessage(conversationId, inputMessage)
-                        inputMessage = ""
+                        if (inputMessage.trim().isNotEmpty()) {
+                            viewModel.sendMessage(conversationId, inputMessage)
+                            inputMessage = ""
+                        }
                     },
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(46.dp)
                         .clip(CircleShape)
-                        .background(CyberLime)
+                        .background(CampusLime)
                 ) {
-                    Icon(Icons.Default.Send, contentDescription = "Send", tint = CyberBackground)
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Send,
+                        contentDescription = "Send",
+                        tint = DarkBackground,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
             }
         }

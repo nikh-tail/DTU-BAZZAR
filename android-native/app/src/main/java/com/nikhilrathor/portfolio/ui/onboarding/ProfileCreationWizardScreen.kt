@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
@@ -100,7 +103,7 @@ class ProfileCreationViewModel(
         }
     }
 
-    fun finishProfile(onSuccess: () -> Unit) {
+    fun completeProfile(onSuccess: () -> Unit) {
         val s = _state.value
         viewModelScope.launch {
             dataStore.saveUserProfile(
@@ -124,289 +127,234 @@ fun ProfileCreationWizardScreen(
     val state by viewModel.state.collectAsState()
     val scrollState = rememberScrollState()
 
-    Box(
+    val avatars = listOf("⚡", "🎓", "💻", "🎨", "📚", "🚀", "🔬", "🏸")
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CyberBackground)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .navigationBarsPadding()
+            .verticalScroll(scrollState)
+            .padding(horizontal = 20.dp, vertical = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+        // Step Indicator Dots
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 16.dp)
         ) {
-            // Top Navigation & Step Indicator
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    if (state.currentStep in 2..3) {
-                        IconButton(
-                            onClick = { viewModel.previousStep() },
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(CyberSurfaceVariant)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back",
-                                tint = TextPrimary,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                    } else {
-                        Spacer(modifier = Modifier.size(40.dp))
-                    }
-
-                    // Progress Indicator (3 Steps)
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        (1..3).forEach { step ->
-                            val isActive = step == state.currentStep
-                            val isCompleted = step < state.currentStep
-
-                            Box(
-                                modifier = Modifier
-                                    .height(6.dp)
-                                    .width(if (isActive) 28.dp else 14.dp)
-                                    .clip(RoundedCornerShape(3.dp))
-                                    .background(
-                                        when {
-                                            isActive -> CyberLime
-                                            isCompleted -> CyberCyan
-                                            else -> BorderSubtle
-                                        }
-                                    )
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.size(40.dp))
-                }
-
-                Spacer(modifier = Modifier.height(14.dp))
-
-                if (state.currentStep <= 3) {
-                    Text(
-                        text = "STEP 0${state.currentStep} OF 03 • CAMPUS PROFILE",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontFamily = FontFamily.Monospace,
-                            color = CyberLime,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 1.sp
-                        )
-                    )
-                }
+            (1..3).forEach { stepIndex ->
+                val isActive = stepIndex <= state.currentStep
+                Box(
+                    modifier = Modifier
+                        .height(6.dp)
+                        .width(if (stepIndex == state.currentStep) 28.dp else 14.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(if (isActive) CampusLime else MaterialTheme.colorScheme.outline)
+                )
             }
+        }
 
-            // Step Body
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(scrollState)
-                    .padding(vertical = 12.dp)
-            ) {
-                when (state.currentStep) {
-                    1 -> Step1NameAvatar(state, viewModel)
-                    2 -> Step2BranchYear(state, viewModel)
-                    3 -> Step3HostelResidence(state, viewModel)
-                    4 -> Step4AllSetConfirmation(state)
-                }
+        Text(
+            text = "STEP ${state.currentStep} OF 3",
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontFamily = FontFamily.Monospace,
+                color = CampusLimeDark,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            )
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = when (state.currentStep) {
+                1 -> "Setup Campus Identity"
+                2 -> "Academic Department"
+                3 -> "Hostel / Residence"
+                else -> "You're All Set! 🎉"
+            },
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Black,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Step Content Cards
+        AnimatedContent(
+            targetState = state.currentStep,
+            label = "wizard_step"
+        ) { step ->
+            when (step) {
+                1 -> Step1Identity(state, avatars, viewModel)
+                2 -> Step2Academics(state, viewModel)
+                3 -> Step3Residence(state, viewModel)
+                4 -> Step4Summary(state, viewModel, onNavigateToMain)
             }
+        }
 
-            // Bottom CTA
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Navigation CTA Row
+        if (state.currentStep < 4) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                if (state.currentStep < 4) {
+                if (state.currentStep > 1) {
                     NeonButton(
-                        text = if (state.currentStep == 3) "Review Profile" else "Next Step",
-                        onClick = { viewModel.nextStep() },
-                        variant = NeonButtonVariant.LIME,
-                        icon = { Icon(Icons.Default.ArrowForward, contentDescription = null, tint = CyberBackground) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                } else {
-                    NeonButton(
-                        text = "🚀 Enter DTU Bazaar",
-                        onClick = { viewModel.finishProfile(onNavigateToMain) },
-                        variant = NeonButtonVariant.LIME,
-                        modifier = Modifier.fillMaxWidth()
+                        text = "Back",
+                        onClick = { viewModel.previousStep() },
+                        variant = NeonButtonVariant.OUTLINE,
+                        icon = { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface) },
+                        modifier = Modifier.weight(1f)
                     )
                 }
+
+                NeonButton(
+                    text = if (state.currentStep == 3) "Finish Setup" else "Continue",
+                    onClick = { viewModel.nextStep() },
+                    variant = NeonButtonVariant.LIME,
+                    icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = DarkBackground) },
+                    modifier = Modifier.weight(1.5f)
+                )
             }
         }
     }
 }
 
 @Composable
-private fun Step1NameAvatar(state: ProfileCreationState, viewModel: ProfileCreationViewModel) {
-    val avatars = listOf("⚡", "🎓", "💻", "🎨", "📚", "🚀", "🔬", "🏸")
-
-    Column(modifier = Modifier.fillMaxWidth()) {
+private fun Step1Identity(
+    state: ProfileCreationState,
+    avatars: List<String>,
+    viewModel: ProfileCreationViewModel
+) {
+    CyberCard(
+        backgroundColor = MaterialTheme.colorScheme.surface,
+        borderColor = MaterialTheme.colorScheme.outline,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Text(
-            text = "What's your name?",
-            style = MaterialTheme.typography.displaySmall.copy(
-                fontWeight = FontWeight.Black,
-                color = TextPrimary
-            )
-        )
-        Text(
-            text = "Fellow DTU students will see this name on your listings and campus chats.",
-            style = MaterialTheme.typography.bodyMedium.copy(color = TextSecondary),
-            modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
-        )
-
-        Text(
-            text = "SELECT YOUR AVATAR",
+            text = "YOUR FULL NAME",
             style = MaterialTheme.typography.labelSmall.copy(
                 fontFamily = FontFamily.Monospace,
-                color = TextMuted,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(bottom = 6.dp)
+        )
+
+        OutlinedTextField(
+            value = state.name,
+            onValueChange = { viewModel.onNameChange(it) },
+            placeholder = { Text("e.g. Nikhil Rathor", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
+            isError = state.nameError != null,
+            supportingText = state.nameError?.let { { Text(it, color = CampusRed) } },
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = CampusLime,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "CHOOSE AVATAR BADGE",
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontFamily = FontFamily.Monospace,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.Bold
             ),
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            avatars.take(4).forEach { emoji ->
+            avatars.forEach { emoji ->
                 val isSelected = state.avatarEmoji == emoji
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(54.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(if (isSelected) CyberLime.copy(alpha = 0.2f) else CyberSurface)
-                        .border(
-                            width = if (isSelected) 2.dp else 1.dp,
-                            color = if (isSelected) CyberLime else BorderSubtle,
-                            shape = RoundedCornerShape(14.dp)
-                        )
+                        .size(38.dp)
+                        .clip(CircleShape)
+                        .background(if (isSelected) CampusLime.copy(alpha = 0.25f) else MaterialTheme.colorScheme.surfaceVariant)
+                        .border(1.5.dp, if (isSelected) CampusLime else Color.Transparent, CircleShape)
                         .clickable { viewModel.onAvatarChange(emoji) }
                 ) {
-                    Text(text = emoji, fontSize = 24.sp)
+                    Text(text = emoji, fontSize = 18.sp)
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            avatars.drop(4).forEach { emoji ->
-                val isSelected = state.avatarEmoji == emoji
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(54.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(if (isSelected) CyberLime.copy(alpha = 0.2f) else CyberSurface)
-                        .border(
-                            width = if (isSelected) 2.dp else 1.dp,
-                            color = if (isSelected) CyberLime else BorderSubtle,
-                            shape = RoundedCornerShape(14.dp)
-                        )
-                        .clickable { viewModel.onAvatarChange(emoji) }
-                ) {
-                    Text(text = emoji, fontSize = 24.sp)
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        OutlinedTextField(
-            value = state.name,
-            onValueChange = { viewModel.onNameChange(it) },
-            label = { Text("Full Name") },
-            placeholder = { Text("e.g. Nikhil Rathor") },
-            isError = state.nameError != null,
-            supportingText = state.nameError?.let { { Text(it, color = ErrorColor) } },
-            singleLine = true,
-            shape = RoundedCornerShape(14.dp),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = CyberLime,
-                unfocusedBorderColor = BorderSubtle,
-                focusedTextColor = TextPrimary,
-                unfocusedTextColor = TextPrimary,
-                focusedContainerColor = CyberSurface,
-                unfocusedContainerColor = CyberSurface
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Step2BranchYear(state: ProfileCreationState, viewModel: ProfileCreationViewModel) {
+private fun Step2Academics(
+    state: ProfileCreationState,
+    viewModel: ProfileCreationViewModel
+) {
     var branchExpanded by remember { mutableStateOf(false) }
     var yearExpanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    CyberCard(
+        backgroundColor = MaterialTheme.colorScheme.surface,
+        borderColor = MaterialTheme.colorScheme.outline,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Text(
-            text = "Your Branch & Year",
-            style = MaterialTheme.typography.displaySmall.copy(
-                fontWeight = FontWeight.Black,
-                color = TextPrimary
-            )
-        )
-        Text(
-            text = "Helps recommend textbooks, drafters, and equipment relevant to your course.",
-            style = MaterialTheme.typography.bodyMedium.copy(color = TextSecondary),
-            modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
-        )
-
-        // Branch Dropdown
-        Text(
-            text = "ACADEMIC BRANCH / DEPARTMENT",
-            style = MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace, color = TextMuted),
+            text = "BRANCH / COURSE",
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontFamily = FontFamily.Monospace,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            ),
             modifier = Modifier.padding(bottom = 6.dp)
         )
 
         ExposedDropdownMenuBox(
             expanded = branchExpanded,
-            onExpandedChange = { branchExpanded = !branchExpanded }
+            onExpandedChange = { branchExpanded = it },
+            modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedTextField(
                 value = state.branch,
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = branchExpanded) },
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = CyberLime,
-                    unfocusedBorderColor = BorderSubtle,
-                    focusedContainerColor = CyberSurface,
-                    unfocusedContainerColor = CyberSurface
+                    focusedBorderColor = CampusLime,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
                 modifier = Modifier
-                    .menuAnchor()
+                    .menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
                     .fillMaxWidth()
             )
 
             ExposedDropdownMenu(
                 expanded = branchExpanded,
-                onDismissRequest = { branchExpanded = false }
+                onDismissRequest = { branchExpanded = false },
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
             ) {
-                viewModel.branches.forEach { b ->
+                viewModel.branches.forEach { branch ->
                     DropdownMenuItem(
-                        text = { Text(b, color = TextPrimary) },
+                        text = { Text(branch, color = MaterialTheme.colorScheme.onSurface) },
                         onClick = {
-                            viewModel.onBranchChange(b)
+                            viewModel.onBranchChange(branch)
                             branchExpanded = false
                         }
                     )
@@ -414,45 +362,50 @@ private fun Step2BranchYear(state: ProfileCreationState, viewModel: ProfileCreat
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Year Dropdown
         Text(
             text = "ACADEMIC YEAR",
-            style = MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace, color = TextMuted),
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontFamily = FontFamily.Monospace,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            ),
             modifier = Modifier.padding(bottom = 6.dp)
         )
 
         ExposedDropdownMenuBox(
             expanded = yearExpanded,
-            onExpandedChange = { yearExpanded = !yearExpanded }
+            onExpandedChange = { yearExpanded = it },
+            modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedTextField(
                 value = state.year,
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = yearExpanded) },
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = CyberLime,
-                    unfocusedBorderColor = BorderSubtle,
-                    focusedContainerColor = CyberSurface,
-                    unfocusedContainerColor = CyberSurface
+                    focusedBorderColor = CampusLime,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
                 modifier = Modifier
-                    .menuAnchor()
+                    .menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
                     .fillMaxWidth()
             )
 
             ExposedDropdownMenu(
                 expanded = yearExpanded,
-                onDismissRequest = { yearExpanded = false }
+                onDismissRequest = { yearExpanded = false },
+                modifier = Modifier.background(MaterialTheme.colorScheme.surface)
             ) {
-                viewModel.years.forEach { y ->
+                viewModel.years.forEach { yr ->
                     DropdownMenuItem(
-                        text = { Text(y, color = TextPrimary) },
+                        text = { Text(yr, color = MaterialTheme.colorScheme.onSurface) },
                         onClick = {
-                            viewModel.onYearChange(y)
+                            viewModel.onYearChange(yr)
                             yearExpanded = false
                         }
                     )
@@ -464,106 +417,115 @@ private fun Step2BranchYear(state: ProfileCreationState, viewModel: ProfileCreat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Step3HostelResidence(state: ProfileCreationState, viewModel: ProfileCreationViewModel) {
+private fun Step3Residence(
+    state: ProfileCreationState,
+    viewModel: ProfileCreationViewModel
+) {
     var hostelExpanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    CyberCard(
+        backgroundColor = MaterialTheme.colorScheme.surface,
+        borderColor = MaterialTheme.colorScheme.outline,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Text(
-            text = "Campus Residence",
-            style = MaterialTheme.typography.displaySmall.copy(
-                fontWeight = FontWeight.Black,
-                color = TextPrimary
-            )
-        )
-        Text(
-            text = "Enable 0km room-to-room delivery and hostel-gate handoffs.",
-            style = MaterialTheme.typography.bodyMedium.copy(color = TextSecondary),
-            modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
+            text = "CAMPUS RESIDENCE TYPE",
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontFamily = FontFamily.Monospace,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Bold
+            ),
+            modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        // Hosteler vs Day Scholar Toggle Cards
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            CyberCard(
-                backgroundColor = if (state.isHosteler) CyberLime.copy(alpha = 0.15f) else CyberSurface,
-                borderColor = if (state.isHosteler) CyberLime else BorderSubtle,
-                borderWidth = if (state.isHosteler) 2.dp else 1.dp,
-                onClick = { viewModel.onHostelerToggle(true) },
-                modifier = Modifier.weight(1f)
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(if (state.isHosteler) CampusLime.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceVariant)
+                    .border(1.5.dp, if (state.isHosteler) CampusLime else MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
+                    .clickable { viewModel.onHostelerToggle(true) }
+                    .padding(vertical = 12.dp)
             ) {
-                Text(text = "🏢", fontSize = 24.sp)
-                Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Hosteler",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = if (state.isHosteler) CyberLime else TextPrimary
+                    text = "🏢 Hosteler",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = if (state.isHosteler) FontWeight.Bold else FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 )
-                Text(text = "Lives on campus", style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary))
             }
 
-            CyberCard(
-                backgroundColor = if (!state.isHosteler) CyberCyan.copy(alpha = 0.15f) else CyberSurface,
-                borderColor = if (!state.isHosteler) CyberCyan else BorderSubtle,
-                borderWidth = if (!state.isHosteler) 2.dp else 1.dp,
-                onClick = { viewModel.onHostelerToggle(false) },
-                modifier = Modifier.weight(1f)
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .weight(1f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(if (!state.isHosteler) CampusLime.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceVariant)
+                    .border(1.5.dp, if (!state.isHosteler) CampusLime else MaterialTheme.colorScheme.outline, RoundedCornerShape(12.dp))
+                    .clickable { viewModel.onHostelerToggle(false) }
+                    .padding(vertical = 12.dp)
             ) {
-                Text(text = "🚗", fontSize = 24.sp)
-                Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Day Scholar",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = if (!state.isHosteler) CyberCyan else TextPrimary
+                    text = "🚗 Day Scholar",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = if (!state.isHosteler) FontWeight.Bold else FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 )
-                Text(text = "Commutes daily", style = MaterialTheme.typography.bodySmall.copy(color = TextSecondary))
             }
         }
 
         if (state.isHosteler) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "SELECT YOUR HOSTEL",
-                style = MaterialTheme.typography.labelSmall.copy(fontFamily = FontFamily.Monospace, color = TextMuted),
+                text = "SELECT HOSTEL",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontFamily = FontFamily.Monospace,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Bold
+                ),
                 modifier = Modifier.padding(bottom = 6.dp)
             )
 
             ExposedDropdownMenuBox(
                 expanded = hostelExpanded,
-                onExpandedChange = { hostelExpanded = !hostelExpanded }
+                onExpandedChange = { hostelExpanded = it },
+                modifier = Modifier.fillMaxWidth()
             ) {
                 OutlinedTextField(
                     value = state.hostelName,
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = hostelExpanded) },
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(12.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = CyberLime,
-                        unfocusedBorderColor = BorderSubtle,
-                        focusedContainerColor = CyberSurface,
-                        unfocusedContainerColor = CyberSurface
+                        focusedBorderColor = CampusLime,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
                     ),
                     modifier = Modifier
-                        .menuAnchor()
+                        .menuAnchor(MenuAnchorType.PrimaryNotEditable, true)
                         .fillMaxWidth()
                 )
 
                 ExposedDropdownMenu(
                     expanded = hostelExpanded,
-                    onDismissRequest = { hostelExpanded = false }
+                    onDismissRequest = { hostelExpanded = false },
+                    modifier = Modifier.background(MaterialTheme.colorScheme.surface)
                 ) {
-                    viewModel.hostels.forEach { h ->
+                    viewModel.hostels.forEach { hst ->
                         DropdownMenuItem(
-                            text = { Text(h, color = TextPrimary) },
+                            text = { Text(hst, color = MaterialTheme.colorScheme.onSurface) },
                             onClick = {
-                                viewModel.onHostelChange(h)
+                                viewModel.onHostelChange(hst)
                                 hostelExpanded = false
                             }
                         )
@@ -575,65 +537,75 @@ private fun Step3HostelResidence(state: ProfileCreationState, viewModel: Profile
 }
 
 @Composable
-private fun Step4AllSetConfirmation(state: ProfileCreationState) {
+private fun Step4Summary(
+    state: ProfileCreationState,
+    viewModel: ProfileCreationViewModel,
+    onNavigateToMain: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(72.dp)
-                .clip(CircleShape)
-                .background(CyberLime.copy(alpha = 0.2f))
-                .border(2.dp, CyberLime, CircleShape)
-        ) {
-            Text(text = state.avatarEmoji, fontSize = 36.sp)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "You're All Set!",
-            style = MaterialTheme.typography.displaySmall.copy(
-                fontWeight = FontWeight.Black,
-                color = TextPrimary
-            )
-        )
-        Text(
-            text = "Welcome to DTU Bazaar, ${state.name}!",
-            style = MaterialTheme.typography.bodyLarge.copy(color = CyberLime),
-            modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
-        )
-
         CyberCard(
-            backgroundColor = CyberSurface,
-            borderColor = CyberLime.copy(alpha = 0.5f),
+            backgroundColor = MaterialTheme.colorScheme.surface,
+            borderColor = CampusLime.copy(alpha = 0.5f),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "STUDENT", style = MaterialTheme.typography.labelSmall.copy(color = TextMuted))
-                Text(text = state.name, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = TextPrimary))
-            }
-            Divider(modifier = Modifier.padding(vertical = 8.dp), color = BorderSubtle)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "BRANCH & YEAR", style = MaterialTheme.typography.labelSmall.copy(color = TextMuted))
-                Text(text = "${state.branch.split("(").first().trim()} • ${state.year.split(" ").first()}", style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = CyberCyan))
-            }
-            Divider(modifier = Modifier.padding(vertical = 8.dp), color = BorderSubtle)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = "CAMPUS LOCATION", style = MaterialTheme.typography.labelSmall.copy(color = TextMuted))
-                Text(text = state.hostelName, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold, color = CyberLime))
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .border(2.dp, CampusLime, CircleShape)
+                ) {
+                    Text(text = state.avatarEmoji, fontSize = 32.sp)
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = state.name.ifEmpty { "DTU Student" },
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Black,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                )
+
+                Text(
+                    text = "${state.branch} • ${state.year}",
+                    style = MaterialTheme.typography.bodySmall.copy(color = CampusCyanDark)
+                )
+                Text(
+                    text = state.hostelName,
+                    style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = MaterialTheme.colorScheme.outline)
+
+                Text(
+                    text = "⚡ Your verified student account is ready. Start exploring campus listings or post your own in 60 seconds.",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 16.sp
+                    )
+                )
             }
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        NeonButton(
+            text = "Enter DTU Bazaar",
+            onClick = { viewModel.completeProfile(onNavigateToMain) },
+            variant = NeonButtonVariant.LIME,
+            icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = DarkBackground) },
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }

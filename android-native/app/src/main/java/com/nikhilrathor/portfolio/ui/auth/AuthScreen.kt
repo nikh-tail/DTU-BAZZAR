@@ -2,7 +2,6 @@ package com.nikhilrathor.portfolio.ui.auth
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -74,14 +74,14 @@ class AuthViewModel(private val dataStore: DtuBazaarDataStore) : ViewModel() {
         // Validate @dtu.ac.in domain requirement
         if (!email.endsWith("@dtu.ac.in", ignoreCase = true) && !email.contains("@dtu.ac.in", ignoreCase = true)) {
             _state.value = _state.value.copy(
-                emailError = "Access Restricted: Please use your official @dtu.ac.in email address"
+                emailError = "Access Restricted: Please enter your official @dtu.ac.in email address"
             )
             return
         }
 
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
-            delay(700) // Simulate network call to Brevo API
+            delay(700)
             _state.value = _state.value.copy(
                 isLoading = false,
                 isOtpSent = true,
@@ -95,13 +95,13 @@ class AuthViewModel(private val dataStore: DtuBazaarDataStore) : ViewModel() {
     fun verifyOtp(onSuccess: () -> Unit) {
         val otp = _state.value.otp.trim()
         if (otp.length != 6) {
-            _state.value = _state.value.copy(otpError = "Please enter the 6-digit OTP sent to your email")
+            _state.value = _state.value.copy(otpError = "Please enter the 6-digit OTP")
             return
         }
 
         viewModelScope.launch {
             _state.value = _state.value.copy(isLoading = true)
-            delay(600) // Verification
+            delay(600)
             dataStore.saveAuthSession(_state.value.email)
             _state.value = _state.value.copy(isLoading = false)
             onSuccess()
@@ -134,7 +134,7 @@ fun AuthScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(CyberBackground)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
@@ -144,228 +144,225 @@ fun AuthScreen(
                 .verticalScroll(scrollState)
                 .padding(horizontal = 24.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
+            // Brand Mark & Trust Badge
+            VerifiedDtuBadge(text = "🛡️ Verified DTU Students Only")
 
-                // Brand Mark & Trust Badge
-                VerifiedDtuBadge(text = "🛡️ Verified DTU Students Only")
+            Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(20.dp))
-
-                Text(
-                    text = "DTU BAZAAR",
-                    style = MaterialTheme.typography.displaySmall.copy(
-                        fontWeight = FontWeight.Black,
-                        color = TextPrimary
-                    )
+            Text(
+                text = "DTU BAZAAR",
+                style = MaterialTheme.typography.displaySmall.copy(
+                    fontWeight = FontWeight.Black,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
+            )
 
-                Text(
-                    text = if (!state.isOtpSent) "Login with your DTU Roll / Email" else "Verify 6-Digit Campus Code",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = TextSecondary
-                    ),
-                    modifier = Modifier.padding(top = 4.dp, bottom = 24.dp)
-                )
+            Text(
+                text = if (!state.isOtpSent) "Login with your DTU Roll / College Email" else "Enter 6-Digit Campus Verification Code",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 4.dp, bottom = 24.dp)
+            )
 
-                AnimatedContent(
-                    targetState = state.isOtpSent,
-                    label = "auth_stage"
-                ) { isOtpSent ->
-                    if (!isOtpSent) {
-                        // Email Input Stage
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            CyberCard(
-                                backgroundColor = CyberSurface,
-                                borderColor = BorderSubtle,
+            AnimatedContent(
+                targetState = state.isOtpSent,
+                label = "auth_stage"
+            ) { isOtpSent ->
+                if (!isOtpSent) {
+                    // Email Input Stage
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        CyberCard(
+                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            borderColor = MaterialTheme.colorScheme.outline,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "COLLEGE EMAIL ADDRESS",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontFamily = FontFamily.Monospace,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+
+                            OutlinedTextField(
+                                value = state.email,
+                                onValueChange = { viewModel.onEmailChange(it) },
+                                placeholder = { Text("e.g. 2k22_co_123@dtu.ac.in", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) },
+                                leadingIcon = { Icon(Icons.Default.School, contentDescription = null, tint = CampusLime) },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Email,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(onDone = { viewModel.requestOtp() }),
+                                isError = state.emailError != null,
+                                supportingText = state.emailError?.let { { Text(it, color = CampusRed, fontSize = 11.sp) } },
+                                singleLine = true,
+                                shape = RoundedCornerShape(14.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = CampusLime,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                                ),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
+                                Icon(
+                                    imageVector = Icons.Default.Lock,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
                                 Text(
-                                    text = "COLLEGE EMAIL ADDRESS",
-                                    style = MaterialTheme.typography.labelSmall.copy(
-                                        fontFamily = FontFamily.Monospace,
-                                        color = TextMuted,
-                                        fontWeight = FontWeight.Bold
-                                    ),
-                                    modifier = Modifier.padding(bottom = 8.dp)
-                                )
-
-                                OutlinedTextField(
-                                    value = state.email,
-                                    onValueChange = { viewModel.onEmailChange(it) },
-                                    placeholder = { Text("e.g. 2k22_co_123@dtu.ac.in", color = TextMuted) },
-                                    leadingIcon = { Icon(Icons.Default.School, contentDescription = null, tint = CyberLime) },
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Email,
-                                        imeAction = ImeAction.Done
-                                    ),
-                                    keyboardActions = KeyboardActions(onDone = { viewModel.requestOtp() }),
-                                    isError = state.emailError != null,
-                                    supportingText = state.emailError?.let { { Text(it, color = ErrorColor, fontSize = 11.sp) } },
-                                    singleLine = true,
-                                    shape = RoundedCornerShape(14.dp),
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor = CyberLime,
-                                        unfocusedBorderColor = BorderSubtle,
-                                        focusedTextColor = TextPrimary,
-                                        unfocusedTextColor = TextPrimary,
-                                        focusedContainerColor = CyberSurfaceVariant,
-                                        unfocusedContainerColor = CyberSurfaceVariant
-                                    ),
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-
-                                Spacer(modifier = Modifier.height(16.dp))
-
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Lock,
-                                        contentDescription = null,
-                                        tint = TextMuted,
-                                        modifier = Modifier.size(14.dp)
+                                    text = "Secure passwordless login. We send a 6-digit OTP.",
+                                    style = MaterialTheme.typography.bodySmall.copy(
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontSize = 11.sp
                                     )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = "We send a secure 6-digit OTP. Zero password hassle.",
-                                        style = MaterialTheme.typography.bodySmall.copy(
-                                            color = TextMuted,
-                                            fontSize = 11.sp
-                                        )
-                                    )
-                                }
+                                )
                             }
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            NeonButton(
-                                text = "Send College OTP",
-                                onClick = { viewModel.requestOtp() },
-                                isLoading = state.isLoading,
-                                variant = NeonButtonVariant.LIME,
-                                icon = { Icon(Icons.Default.ArrowForward, contentDescription = null, tint = CyberBackground) },
-                                modifier = Modifier.fillMaxWidth()
-                            )
                         }
-                    } else {
-                        // OTP Verification Stage
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            CyberCard(
-                                backgroundColor = CyberSurface,
-                                borderColor = CyberLime.copy(alpha = 0.4f),
-                                modifier = Modifier.fillMaxWidth()
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        NeonButton(
+                            text = "Send College OTP",
+                            onClick = { viewModel.requestOtp() },
+                            isLoading = state.isLoading,
+                            variant = NeonButtonVariant.LIME,
+                            icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null, tint = DarkBackground) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                } else {
+                    // OTP Verification Stage
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        CyberCard(
+                            backgroundColor = MaterialTheme.colorScheme.surface,
+                            borderColor = CampusLime.copy(alpha = 0.5f),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Column {
-                                        Text(
-                                            text = "OTP SENT TO",
-                                            style = MaterialTheme.typography.labelSmall.copy(
-                                                fontFamily = FontFamily.Monospace,
-                                                color = TextMuted
-                                            )
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = "OTP SENT TO",
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            fontFamily = FontFamily.Monospace,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
-                                        Text(
-                                            text = state.email,
-                                            style = MaterialTheme.typography.bodyMedium.copy(
-                                                color = CyberLime,
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                        )
-                                    }
-
-                                    TextButton(onClick = { viewModel.backToEmail() }) {
-                                        Text("Edit", color = CyberCyan, fontSize = 12.sp)
-                                    }
+                                    )
+                                    Text(
+                                        text = state.email,
+                                        style = MaterialTheme.typography.bodyMedium.copy(
+                                            color = CampusLimeDark,
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        maxLines = 1
+                                    )
                                 }
 
-                                Spacer(modifier = Modifier.height(16.dp))
-
-                                OutlinedTextField(
-                                    value = state.otp,
-                                    onValueChange = { viewModel.onOtpChange(it) },
-                                    placeholder = { Text("• • • • • •", letterSpacing = 8.sp, textAlign = TextAlign.Center) },
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.NumberPassword,
-                                        imeAction = ImeAction.Done
-                                    ),
-                                    keyboardActions = KeyboardActions(onDone = { viewModel.verifyOtp(onNavigateToProfileCreation) }),
-                                    isError = state.otpError != null,
-                                    supportingText = state.otpError?.let { { Text(it, color = ErrorColor) } },
-                                    textStyle = MaterialTheme.typography.headlineMedium.copy(
-                                        textAlign = TextAlign.Center,
-                                        letterSpacing = 8.sp,
-                                        fontFamily = FontFamily.Monospace,
-                                        color = TextPrimary
-                                    ),
-                                    singleLine = true,
-                                    shape = RoundedCornerShape(14.dp),
-                                    colors = OutlinedTextFieldDefaults.colors(
-                                        focusedBorderColor = CyberLime,
-                                        unfocusedBorderColor = BorderSubtle,
-                                        focusedContainerColor = CyberSurfaceVariant,
-                                        unfocusedContainerColor = CyberSurfaceVariant
-                                    ),
-                                    modifier = Modifier.fillMaxWidth()
-                                )
-
-                                Spacer(modifier = Modifier.height(16.dp))
-
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    if (!state.canResend) {
-                                        Text(
-                                            text = "Resend OTP in ${state.resendCountdown}s",
-                                            style = MaterialTheme.typography.bodySmall.copy(color = TextMuted)
-                                        )
-                                    } else {
-                                        Text(
-                                            text = "Resend OTP",
-                                            style = MaterialTheme.typography.bodySmall.copy(
-                                                color = CyberCyan,
-                                                fontWeight = FontWeight.Bold
-                                            ),
-                                            modifier = Modifier.clickable { viewModel.requestOtp() }
-                                        )
-                                    }
+                                TextButton(onClick = { viewModel.backToEmail() }) {
+                                    Text("Change", color = CampusCyan, fontSize = 12.sp)
                                 }
                             }
 
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                            NeonButton(
-                                text = "Verify & Continue",
-                                onClick = { viewModel.verifyOtp(onNavigateToProfileCreation) },
-                                isLoading = state.isLoading,
-                                variant = NeonButtonVariant.LIME,
+                            OutlinedTextField(
+                                value = state.otp,
+                                onValueChange = { viewModel.onOtpChange(it) },
+                                placeholder = { Text("• • • • • •", letterSpacing = 8.sp, textAlign = TextAlign.Center) },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.NumberPassword,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(onDone = { viewModel.verifyOtp(onNavigateToProfileCreation) }),
+                                isError = state.otpError != null,
+                                supportingText = state.otpError?.let { { Text(it, color = CampusRed) } },
+                                textStyle = MaterialTheme.typography.headlineMedium.copy(
+                                    textAlign = TextAlign.Center,
+                                    letterSpacing = 8.sp,
+                                    fontFamily = FontFamily.Monospace,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                ),
+                                singleLine = true,
+                                shape = RoundedCornerShape(14.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = CampusLime,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
+                                ),
                                 modifier = Modifier.fillMaxWidth()
                             )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                if (!state.canResend) {
+                                    Text(
+                                        text = "Resend code in ${state.resendCountdown}s",
+                                        style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                    )
+                                } else {
+                                    Text(
+                                        text = "Resend Code",
+                                        style = MaterialTheme.typography.bodySmall.copy(
+                                            color = CampusCyan,
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        modifier = Modifier.clickable { viewModel.requestOtp() }
+                                    )
+                                }
+                            }
                         }
+
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        NeonButton(
+                            text = "Verify & Enter App",
+                            onClick = { viewModel.verifyOtp(onNavigateToProfileCreation) },
+                            isLoading = state.isLoading,
+                            variant = NeonButtonVariant.LIME,
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
                 }
             }
 
-            // Zero commission note
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Zero Commission Subtext
             Text(
                 text = "⚡ 100% Peer-to-Peer • 0% Commission • 0km Campus Delivery",
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontFamily = FontFamily.Monospace,
-                    color = TextMuted,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontSize = 10.sp
                 ),
-                modifier = Modifier.padding(top = 16.dp)
+                textAlign = TextAlign.Center
             )
         }
     }

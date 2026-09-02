@@ -1,6 +1,7 @@
 package com.nikhilrathor.portfolio.ui.explore
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,17 +22,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.compose.AsyncImage
 import com.nikhilrathor.portfolio.data.local.DtuBazaarDataStore
 import com.nikhilrathor.portfolio.data.models.ItemCondition
 import com.nikhilrathor.portfolio.data.models.Listing
 import com.nikhilrathor.portfolio.data.models.ListingCategory
 import com.nikhilrathor.portfolio.data.repository.DtuBazaarRepository
 import com.nikhilrathor.portfolio.theme.*
+import com.nikhilrathor.portfolio.ui.components.CampusListingCard
 import com.nikhilrathor.portfolio.ui.components.ConditionBadge
 import com.nikhilrathor.portfolio.ui.components.CyberCard
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,49 +51,56 @@ class ExploreViewModel(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
 
-    private val _selectedCategory = MutableStateFlow<ListingCategory?>(null)
-    val selectedCategory: StateFlow<ListingCategory?> = _selectedCategory
+    private val _selectedCategory = MutableStateFlow(ListingCategory.DRAWING_TOOLS)
+    val selectedCategory: StateFlow<ListingCategory> = _selectedCategory
 
-    private val _selectedCondition = MutableStateFlow<ItemCondition?>(null)
-    val selectedCondition: StateFlow<ItemCondition?> = _selectedCondition
-
-    private val _isGridView = MutableStateFlow(true)
-    val isGridView: StateFlow<Boolean> = _isGridView
+    private val _isTwoPaneMode = MutableStateFlow(true)
+    val isTwoPaneMode: StateFlow<Boolean> = _isTwoPaneMode
 
     val savedIds: StateFlow<Set<String>> = dataStore.savedListingsFlow
         .stateIn(viewModelScope, SharingStarted.Lazily, emptySet())
 
-    val filteredListings: StateFlow<List<Listing>> = combine(
+    val popularSearches = listOf(
+        "Casio fx-991CW",
+        "Mini Drafter & Kit",
+        "Hostel Desert Cooler",
+        "CLRS Algorithms Book",
+        "Keychron Keyboard",
+        "Badminton Racket"
+    )
+
+    val categoryListings: StateFlow<List<Listing>> = combine(
         repository.listings,
-        _searchQuery,
         _selectedCategory,
-        _selectedCondition
-    ) { all, query, cat, cond ->
+        _searchQuery
+    ) { all, cat, query ->
         all.filter { item ->
-            val matchesCategory = cat == null || item.category == cat
-            val matchesCondition = cond == null || item.condition == cond
+            val matchesCategory = item.category == cat
             val matchesQuery = query.isEmpty() ||
                     item.title.contains(query, ignoreCase = true) ||
-                    item.description.contains(query, ignoreCase = true) ||
-                    item.tags.any { it.contains(query, ignoreCase = true) }
-            matchesCategory && matchesCondition && matchesQuery
+                    item.description.contains(query, ignoreCase = true)
+            matchesCategory && matchesQuery
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, repository.listings.value)
+
+    val allSearchListings: StateFlow<List<Listing>> = combine(
+        repository.listings,
+        _searchQuery
+    ) { all, query ->
+        if (query.isEmpty()) emptyList()
+        else all.filter {
+            it.title.contains(query, ignoreCase = true) ||
+                    it.description.contains(query, ignoreCase = true) ||
+                    it.tags.any { tag -> tag.contains(query, ignoreCase = true) }
+        }
+    }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun onSearchQueryChange(query: String) {
         _searchQuery.value = query
     }
 
-    fun onSelectCategory(cat: ListingCategory?) {
+    fun onSelectCategory(cat: ListingCategory) {
         _selectedCategory.value = cat
-    }
-
-    fun onSelectCondition(cond: ItemCondition?) {
-        _selectedCondition.value = cond
-    }
-
-    fun toggleViewMode() {
-        _isGridView.value = !_isGridView.value
     }
 
     fun toggleSave(listingId: String) {
@@ -108,234 +117,209 @@ fun ExploreScreen(
 ) {
     val searchQuery by viewModel.searchQuery.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
-    val selectedCondition by viewModel.selectedCondition.collectAsState()
-    val isGridView by viewModel.isGridView.collectAsState()
-    val filteredListings by viewModel.filteredListings.collectAsState()
+    val categoryListings by viewModel.categoryListings.collectAsState()
+    val allSearchListings by viewModel.allSearchListings.collectAsState()
     val savedIds by viewModel.savedIds.collectAsState()
+
+    val isSearching = searchQuery.trim().isNotEmpty()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(CyberBackground)
+            .background(MaterialTheme.colorScheme.background)
     ) {
-        // Search & Filter Header
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 12.dp)
+        // Search Header
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { viewModel.onSearchQueryChange(it) },
-                    placeholder = { Text("Search campus marketplace...", color = TextMuted) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = CyberLime) },
+                    placeholder = { Text("Search campus marketplace...", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)) },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = CampusLimeDark) },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { viewModel.onSearchQueryChange("") }) {
+                                Icon(Icons.Default.Clear, contentDescription = "Clear", tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
+                    },
                     singleLine = true,
                     shape = RoundedCornerShape(14.dp),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = CyberLime,
-                        unfocusedBorderColor = BorderSubtle,
-                        focusedContainerColor = CyberSurface,
-                        unfocusedContainerColor = CyberSurface
+                        focusedBorderColor = CampusLime,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant
                     ),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.fillMaxWidth()
                 )
-
-                IconButton(
-                    onClick = { viewModel.toggleViewMode() },
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(CyberSurface)
-                ) {
-                    Icon(
-                        imageVector = if (isGridView) Icons.Default.ViewList else Icons.Default.GridView,
-                        contentDescription = "Toggle View",
-                        tint = CyberLime
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            // Categories Filter Bar
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                item {
-                    FilterChip(
-                        selected = selectedCategory == null,
-                        onClick = { viewModel.onSelectCategory(null) },
-                        label = { Text("All Categories") },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = CyberLime,
-                            selectedLabelColor = CyberBackground,
-                            containerColor = CyberSurface,
-                            labelColor = TextSecondary
-                        )
-                    )
-                }
-
-                items(ListingCategory.values()) { cat ->
-                    val isSelected = selectedCategory == cat
-                    FilterChip(
-                        selected = isSelected,
-                        onClick = { viewModel.onSelectCategory(if (isSelected) null else cat) },
-                        label = { Text("${cat.icon} ${cat.title}") },
-                        colors = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = CyberLime,
-                            selectedLabelColor = CyberBackground,
-                            containerColor = CyberSurface,
-                            labelColor = TextSecondary
-                        )
-                    )
-                }
             }
         }
 
-        // Listings Grid / List View
-        if (filteredListings.isEmpty()) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp)
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "🔍", fontSize = 48.sp)
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "No Items Found",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = TextPrimary
-                        )
-                    )
-                    Text(
-                        text = "Try clearing search keywords or post a request on DTU Bazaar.",
-                        style = MaterialTheme.typography.bodyMedium.copy(color = TextSecondary),
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-            }
-        } else if (isGridView) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(filteredListings) { item ->
-                    val isSaved = savedIds.contains(item.id)
-
-                    CyberCard(
-                        backgroundColor = CyberSurface,
-                        borderColor = BorderSubtle,
-                        onClick = { onNavigateToListing(item.id) },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(110.dp)
-                                .clip(RoundedCornerShape(10.dp))
-                        ) {
-                            AsyncImage(
-                                model = item.imageUrls.firstOrNull(),
-                                contentDescription = item.title,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                            ConditionBadge(
-                                condition = item.condition,
-                                modifier = Modifier.padding(6.dp).align(Alignment.TopStart)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
+        if (isSearching) {
+            // ==========================================
+            // SEARCH RESULTS VIEW
+            // ==========================================
+            if (allSearchListings.isEmpty()) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize().padding(32.dp)
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "🔍", fontSize = 40.sp)
+                        Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "₹${item.price}",
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontFamily = FontFamily.Monospace,
-                                fontWeight = FontWeight.Black,
-                                color = CyberLime
-                            )
+                            text = "No listings found for '$searchQuery'",
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                         )
-
                         Text(
-                            text = item.title,
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = TextPrimary
-                            ),
-                            maxLines = 2,
-                            modifier = Modifier.padding(top = 2.dp)
-                        )
-
-                        Text(
-                            text = item.pickupLocation,
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                color = TextMuted,
-                                fontSize = 9.sp
-                            ),
-                            maxLines = 1,
+                            text = "Try searching for drafter, cooler, casio, or clrs",
+                            style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
                             modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(allSearchListings) { item ->
+                        val isSaved = savedIds.contains(item.id)
+                        CampusListingCard(
+                            listing = item,
+                            isSaved = isSaved,
+                            onCardClick = { onNavigateToListing(item.id) },
+                            onSaveClick = { viewModel.toggleSave(item.id) },
+                            cardWidth = null
                         )
                     }
                 }
             }
         } else {
-            LazyColumn(
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(filteredListings) { item ->
-                    CyberCard(
-                        backgroundColor = CyberSurface,
-                        borderColor = BorderSubtle,
-                        onClick = { onNavigateToListing(item.id) },
-                        modifier = Modifier.fillMaxWidth()
+            // ==========================================
+            // TWO-PANE CATEGORY VIEW (SharePal Style)
+            // ==========================================
+            Row(modifier = Modifier.fillMaxSize()) {
+                // Left Vertical Category Rail (Fixed 90dp)
+                Surface(
+                    color = MaterialTheme.colorScheme.surface,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    modifier = Modifier
+                        .width(92.dp)
+                        .fillMaxHeight()
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
+                        items(ListingCategory.values()) { cat ->
+                            val isSelected = selectedCategory == cat
                             Box(
                                 modifier = Modifier
-                                    .size(80.dp)
-                                    .clip(RoundedCornerShape(10.dp))
+                                    .fillMaxWidth()
+                                    .clickable { viewModel.onSelectCategory(cat) }
+                                    .background(
+                                        if (isSelected) CampusLime.copy(alpha = 0.15f) else Color.Transparent
+                                    )
+                                    .padding(vertical = 12.dp, horizontal = 6.dp)
                             ) {
-                                AsyncImage(
-                                    model = item.imageUrls.firstOrNull(),
-                                    contentDescription = item.title,
-                                    modifier = Modifier.fillMaxSize()
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    // Left Active Pill Bar
+                                    Box(
+                                        modifier = Modifier
+                                            .width(3.dp)
+                                            .height(36.dp)
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .background(if (isSelected) CampusLimeDark else Color.Transparent)
+                                    )
+
+                                    Spacer(modifier = Modifier.width(6.dp))
+
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier.weight(1f)
+                                    ) {
+                                        Text(text = cat.icon, fontSize = 22.sp)
+                                        Spacer(modifier = Modifier.height(4.dp))
+                                        Text(
+                                            text = cat.title,
+                                            style = MaterialTheme.typography.labelSmall.copy(
+                                                fontWeight = if (isSelected) FontWeight.Black else FontWeight.Medium,
+                                                color = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                                                fontSize = 10.sp
+                                            ),
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                }
                             }
+                        }
+                    }
+                }
 
-                            Spacer(modifier = Modifier.width(12.dp))
+                // Right Pane: Category Items & Grid
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(horizontal = 12.dp, vertical = 12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${selectedCategory.icon} ${selectedCategory.title}",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Black,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                        )
+                        Text(
+                            text = "${categoryListings.size} items",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        )
+                    }
 
-                            Column(modifier = Modifier.weight(1f)) {
-                                ConditionBadge(condition = item.condition)
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = item.title,
-                                    style = MaterialTheme.typography.titleMedium.copy(
-                                        fontWeight = FontWeight.Bold,
-                                        color = TextPrimary
-                                    ),
-                                    maxLines = 1
-                                )
-                                Text(
-                                    text = "₹${item.price} • ${item.pickupLocation}",
-                                    style = MaterialTheme.typography.bodySmall.copy(color = CyberLime),
-                                    maxLines = 1
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    if (categoryListings.isEmpty()) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxSize().padding(16.dp)
+                        ) {
+                            Text(
+                                text = "No items in this category yet. Be the first to post!",
+                                style = MaterialTheme.typography.bodySmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            items(categoryListings) { item ->
+                                val isSaved = savedIds.contains(item.id)
+                                CampusListingCard(
+                                    listing = item,
+                                    isSaved = isSaved,
+                                    onCardClick = { onNavigateToListing(item.id) },
+                                    onSaveClick = { viewModel.toggleSave(item.id) },
+                                    cardWidth = null
                                 )
                             }
                         }
