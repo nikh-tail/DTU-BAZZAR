@@ -257,7 +257,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onSearch, onNavigate, activePage
               )}
             </div>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-2">
               <Button
                 variant="ghost"
                 size="sm"
