@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, PlusCircle, ShoppingBag } from 'lucide-react';
+import { Search, PlusCircle, ShoppingBag, ShieldCheck } from 'lucide-react';
 import { Button } from '../common/Button.js';
 import { useAuth } from '../../context/AuthContext.js';
 
@@ -167,9 +167,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
         {/* 4. Text & Actions Layer with Higher Z-Index (z-30) - 100% Unobstructed */}
         <div className="relative z-30 pointer-events-auto">
           {/* Main Statement: OLX for DTU */}
-          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white tracking-tight leading-[1.08] mb-6 sm:mb-8 px-2 sm:px-0 max-w-[320px] sm:max-w-none mx-auto drop-shadow-md">
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white tracking-tight leading-[1.08] mb-3 sm:mb-4 px-2 sm:px-0 max-w-[320px] sm:max-w-none mx-auto drop-shadow-md">
             <span className="text-gradient-lime drop-shadow-sm">OLX</span> For DTU
           </h1>
+
+          {/* Subtext below OLX for DTU */}
+          <p className="text-xs sm:text-sm md:text-base text-slate-300 font-medium max-w-xl mx-auto mb-6 sm:mb-8 px-2 flex items-center justify-center gap-2 flex-wrap">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-700/80 text-slate-200 text-[11px] sm:text-xs font-semibold shadow-md backdrop-blur-md">
+              <ShieldCheck size={14} className="text-campus-lime flex-shrink-0" />
+              <span>Verified DTU Students Only</span>
+            </span>
+            <span className="text-slate-500 hidden sm:inline">•</span>
+            <span className="text-slate-400 text-xs sm:text-sm">Buy & Sell Directly Within Campus</span>
+          </p>
 
           {/* Prominent Search Bar (z-40 for crystal clear clickability) */}
           <form
