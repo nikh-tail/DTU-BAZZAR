@@ -72,14 +72,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-[560px] max-h-[80vh] bg-campus-card">
+    <div className="flex flex-col h-[560px] max-h-[80vh] bg-white">
       {/* Thread Header */}
-      <div className="p-3.5 sm:p-4 border-b border-slate-800 flex items-center justify-between gap-3 bg-slate-900/90 flex-shrink-0">
+      <div className="p-3.5 sm:p-4 border-b border-slate-200 flex items-center justify-between gap-3 bg-slate-50 flex-shrink-0">
         <div className="flex items-center gap-3 min-w-0">
           {onBack && (
             <button
               onClick={onBack}
-              className="p-1.5 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors md:hidden"
+              className="p-1.5 rounded-full hover:bg-slate-200 text-slate-600 hover:text-slate-900 transition-colors md:hidden"
             >
               <ArrowLeft size={18} />
             </button>
@@ -93,19 +93,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 e.currentTarget.onerror = null;
                 e.currentTarget.style.display = 'none';
               }}
-              className="w-10 h-10 rounded-full object-cover ring-1 ring-campus-lime/40 flex-shrink-0"
+              className="w-10 h-10 rounded-full object-cover border border-slate-200 flex-shrink-0"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-slate-800 text-campus-lime font-bold text-sm flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-lime-100 border border-lime-300 text-slate-950 font-bold text-sm flex items-center justify-center flex-shrink-0">
               {conversation.partner?.name?.charAt(0).toUpperCase()}
             </div>
           )}
 
           <div className="min-w-0">
-            <h4 className="text-sm font-bold text-white truncate">
+            <h4 className="text-sm font-bold text-slate-900 truncate">
               {conversation.partner?.name || 'DTU Peer'}
             </h4>
-            <p className="text-[11px] text-slate-400 truncate">
+            <p className="text-[11px] text-slate-500 truncate font-medium">
               {conversation.partner?.branch || 'DTU Student'} • {conversation.partner?.hostel || 'Campus'}
             </p>
           </div>
@@ -116,7 +116,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           {/* Quick WhatsApp button */}
           <button
             onClick={handleWhatsApp}
-            className="p-2.5 rounded-xl bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] transition-all flex items-center justify-center"
+            className="p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-700 transition-all flex items-center justify-center shadow-sm"
             title="Chat on WhatsApp"
           >
             <WhatsAppIcon size={16} className="text-[#25D366]" />
@@ -126,7 +126,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           {conversation.listing && (
             <div
               onClick={() => onNavigateListing && onNavigateListing(conversation.listingId)}
-              className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl bg-slate-800 hover:bg-slate-700/80 border border-slate-700 transition-colors cursor-pointer max-w-[140px] sm:max-w-[200px]"
+              className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl bg-white hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer max-w-[140px] sm:max-w-[200px] shadow-sm"
             >
               {conversation.listing.images?.[0]?.url && (
                 <img
@@ -138,14 +138,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                   onError={(e) =>
                     handleImageError(e, (conversation.listing as any)?.category)
                   }
-                  className="w-7 h-7 rounded-lg object-cover flex-shrink-0"
+                  className="w-7 h-7 rounded-lg object-cover flex-shrink-0 border border-slate-200"
                 />
               )}
               <div className="min-w-0">
-                <p className="text-[11px] font-bold text-white truncate">
+                <p className="text-[11px] font-bold text-slate-900 truncate">
                   {conversation.listing.title}
                 </p>
-                <p className="text-[10px] text-campus-lime font-semibold">
+                <p className="text-[10px] text-emerald-700 font-black">
                   {formatPrice(conversation.listing.price)}
                 </p>
               </div>
@@ -156,20 +156,20 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       </div>
 
       {/* Safety Notice Strip */}
-      <div className="px-4 py-1.5 bg-blue-500/10 border-b border-blue-500/20 text-blue-300 text-[11px] flex items-center justify-center gap-1.5 font-medium flex-shrink-0">
-        <ShieldCheck size={13} className="text-blue-400" />
+      <div className="px-4 py-1.5 bg-sky-50 border-b border-sky-200 text-sky-900 text-[11px] flex items-center justify-center gap-1.5 font-medium flex-shrink-0">
+        <ShieldCheck size={13} className="text-sky-700" />
         <span>Meet inside DTU campus (Mic-Mac, OAT, Hostels) & test items before paying.</span>
       </div>
 
       {/* Message History Feed */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar bg-[#090E1B]">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 no-scrollbar bg-[#F8FAFC]">
         {isLoading ? (
           <div className="space-y-3 pt-6">
-            <div className="h-10 w-2/3 rounded-2xl bg-slate-800/40 animate-pulse" />
-            <div className="h-10 w-1/2 ml-auto rounded-2xl bg-campus-lime/10 animate-pulse" />
+            <div className="h-10 w-2/3 rounded-2xl bg-slate-200 animate-pulse" />
+            <div className="h-10 w-1/2 ml-auto rounded-2xl bg-lime-200 animate-pulse" />
           </div>
         ) : messages.length === 0 ? (
-          <div className="text-center py-12 text-slate-500 text-xs">
+          <div className="text-center py-12 text-slate-500 text-xs font-medium">
             Start the conversation with {conversation.partner?.name || 'the student'}!
           </div>
         ) : (
@@ -191,26 +191,26 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                   <div
                     className={`max-w-[85%] rounded-2xl p-3.5 text-xs sm:text-sm border ${
                       isMe
-                        ? 'bg-campus-lime/15 border-campus-lime text-white rounded-tr-none shadow-glow'
-                        : 'bg-slate-900 border-campus-lime/40 text-slate-100 rounded-tl-none'
+                        ? 'bg-lime-50 border-lime-300 text-slate-950 rounded-tr-none shadow-sm'
+                        : 'bg-white border-slate-300 text-slate-900 rounded-tl-none shadow-sm'
                     }`}
                   >
-                    <div className="flex items-center gap-1.5 text-campus-lime font-black text-xs uppercase tracking-wider mb-1.5">
-                      <Sparkles size={14} />
+                    <div className="flex items-center gap-1.5 text-emerald-800 font-black text-xs uppercase tracking-wider mb-1.5">
+                      <Sparkles size={14} className="text-amber-600" />
                       <span>Formal Price Offer</span>
                     </div>
                     <p className="font-semibold text-sm whitespace-pre-wrap break-words">{msg.text}</p>
                     {!isMe && (
-                      <div className="mt-2.5 pt-2 border-t border-slate-800 flex gap-2">
+                      <div className="mt-2.5 pt-2 border-t border-slate-200 flex gap-2">
                         <button
                           onClick={() => onSendMessage(`🤝 I accept your offer! Let's meet at Mic-Mac Canteen.`)}
-                          className="px-2.5 py-1 rounded-lg bg-campus-lime text-black font-bold text-xs hover:bg-campus-lime-hover active:scale-95"
+                          className="px-2.5 py-1 rounded-lg bg-campus-lime text-slate-950 font-bold text-xs hover:bg-lime-400 active:scale-95 border border-lime-300 shadow-sm"
                         >
                           Accept Offer
                         </button>
                         <button
                           onClick={() => onSendMessage(`Sorry, that is too low. What about ₹${Math.round(Number(conversation.listing?.price || 500) * 0.95)}?`)}
-                          className="px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 font-semibold text-xs hover:bg-slate-700 active:scale-95"
+                          className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-semibold text-xs hover:bg-slate-200 active:scale-95 border border-slate-200"
                         >
                           Counter
                         </button>
@@ -218,18 +218,18 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                     )}
                   </div>
                 ) : (
-                  // Regular Chat Bubble
+                  // Regular Chat Bubble with hairline border & contrast step
                   <div
                     className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-xs sm:text-sm ${
                       isMe
-                        ? 'bg-campus-lime text-black font-medium rounded-tr-none shadow-glow'
-                        : 'bg-slate-800 text-slate-100 rounded-tl-none border border-slate-700'
+                        ? 'bg-campus-lime text-slate-950 font-medium rounded-tr-none border border-lime-300 shadow-sm'
+                        : 'bg-white text-slate-900 rounded-tl-none border border-[#EAEAEA] shadow-sm'
                     }`}
                   >
                     <p className="whitespace-pre-wrap break-words">{msg.text}</p>
                   </div>
                 )}
-                <span className="text-[10px] text-slate-500 mt-1 px-1">{timeStr}</span>
+                <span className="text-[10px] text-slate-400 mt-1 px-1 font-medium">{timeStr}</span>
               </div>
             );
           })
@@ -238,12 +238,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       </div>
 
       {/* Quick Reply Chips */}
-      <div className="px-3 py-1.5 bg-slate-900 border-t border-slate-800 flex items-center gap-1.5 overflow-x-auto no-scrollbar flex-shrink-0">
+      <div className="px-3 py-2 bg-slate-50 border-t border-slate-200 flex items-center gap-1.5 overflow-x-auto no-scrollbar flex-shrink-0">
         {quickReplies.map((reply, i) => (
           <button
             key={i}
             onClick={() => handleQuickReply(reply)}
-            className="flex-shrink-0 text-[11px] px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-campus-lime border border-slate-700 transition-colors active:scale-95"
+            className="flex-shrink-0 text-[11px] px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-950 border border-slate-200 transition-colors active:scale-95 font-medium shadow-sm"
           >
             {reply}
           </button>
@@ -253,19 +253,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
       {/* Input bar */}
       <form
         onSubmit={handleSubmit}
-        className="p-3 bg-slate-900 border-t border-slate-800 flex items-center gap-2 flex-shrink-0"
+        className="p-3 bg-white border-t border-slate-200 flex items-center gap-2 flex-shrink-0"
       >
         <input
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder={`Message ${conversation.partner?.name?.split(' ')[0] || 'student'}...`}
-          className="flex-1 bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-500 rounded-xl px-4 py-2.5 text-xs sm:text-sm outline-none focus:border-campus-lime transition-all"
+          className="flex-1 bg-slate-50 border border-[#DADADA] focus:border-campus-lime text-slate-900 placeholder-slate-400 rounded-xl px-4 py-2.5 text-xs sm:text-sm outline-none transition-all font-medium"
         />
         <button
           type="submit"
           disabled={!inputText.trim() || isSending}
-          className="p-2.5 rounded-xl bg-campus-lime text-black hover:bg-campus-lime-hover font-bold disabled:opacity-40 disabled:pointer-events-none transition-all shadow-glow flex-shrink-0 active:scale-95"
+          className="p-2.5 rounded-xl bg-campus-lime text-slate-950 hover:bg-lime-400 font-bold disabled:opacity-40 disabled:pointer-events-none transition-all border border-lime-300 shadow-sm flex-shrink-0 active:scale-95"
         >
           <Send size={16} className="stroke-[2.5]" />
         </button>
