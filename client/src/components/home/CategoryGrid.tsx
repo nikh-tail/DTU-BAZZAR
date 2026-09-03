@@ -57,24 +57,23 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
               className={`relative bg-white border ${
                 isSelected
                   ? 'border-slate-900 ring-2 ring-campus-lime shadow-md'
-                  : 'border-[#EAEAEA] hover:border-slate-300 hover:shadow-md'
-              } rounded-3xl overflow-hidden transition-all duration-300 flex flex-col justify-between cursor-pointer group aspect-[4/5] sm:aspect-[4/4.8]`}
-              style={{
-                backgroundColor: '#FFFFFF',
-              }}
+                  : 'border-[#EAEAEA] hover:border-slate-300 hover:shadow-xl hover:-translate-y-1'
+              } rounded-3xl overflow-hidden transition-all duration-300 flex flex-col justify-between cursor-pointer group aspect-[4/5] sm:aspect-[4/4.8] shadow-sm`}
             >
-              {/* 1 & 2. Card Header: Title & Subtitle */}
-              <div className="p-3.5 sm:p-4 z-10">
-                <h4 className="font-black text-[#1A1A1A] text-sm sm:text-base leading-snug group-hover:text-emerald-700 transition-colors">
+              {/* 1 & 2. Card Header Area with Smooth CSS Background Fill / Color Reveal */}
+              <div
+                className={`p-3.5 sm:p-4 z-10 transition-all duration-300 ease-out bg-white ${cat.headerHoverBg}`}
+              >
+                <h4 className="font-black text-[#1A1A1A] group-hover:text-white transition-colors duration-300 text-sm sm:text-base leading-snug">
                   {cat.name}
                 </h4>
-                <p className="text-[10.5px] sm:text-xs text-[#6B6B6B] line-clamp-1 mt-0.5 font-medium leading-tight">
+                <p className="text-[10.5px] sm:text-xs text-[#6B6B6B] group-hover:text-white/90 transition-colors duration-300 line-clamp-1 mt-0.5 font-medium leading-tight">
                   {cat.subtitle}
                 </p>
               </div>
 
               {/* 3. Representative Product Image (Fills lower two-thirds) */}
-              <div className="relative flex-1 w-full overflow-hidden flex items-end justify-center px-2 pb-2">
+              <div className="relative flex-1 w-full overflow-hidden flex items-end justify-center px-2 pb-2 bg-white">
                 <img
                   src={cat.image}
                   alt={cat.name}
