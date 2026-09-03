@@ -14,6 +14,7 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
   onViewAll,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   // Exactly 4 primary categories shown by default (like SharePal reference), or all 7 when expanded
   const displayCategories = isExpanded ? CATEGORIES : CATEGORIES.slice(0, 4);
@@ -50,24 +51,48 @@ export const CategoryGrid: React.FC<CategoryGridProps> = ({
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
         {displayCategories.map((cat) => {
           const isSelected = selectedCategory === cat.id;
+          const isHovered = hoveredId === cat.id;
+
           return (
             <div
               key={cat.id}
               onClick={() => onSelectCategory(cat.id)}
+              onMouseEnter={() => setHoveredId(cat.id)}
+              onMouseLeave={() => setHoveredId(null)}
               className={`relative bg-white border ${
                 isSelected
                   ? 'border-slate-900 ring-2 ring-campus-lime shadow-md'
-                  : 'border-[#EAEAEA] hover:border-slate-300 hover:shadow-xl hover:-translate-y-1'
-              } rounded-3xl overflow-hidden transition-all duration-300 flex flex-col justify-between cursor-pointer group aspect-[4/5] sm:aspect-[4/4.8] shadow-sm`}
+                  : 'border-[#EAEAEA]'
+              } rounded-3xl overflow-hidden transition-all duration-300 flex flex-col justify-between cursor-pointer group aspect-[4/5] sm:aspect-[4/4.8] shadow-sm hover:-translate-y-1 hover:shadow-xl`}
+              style={{
+                borderColor: isHovered ? cat.stripHex : undefined,
+                transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
             >
               {/* 1 & 2. Card Header Area with Smooth CSS Background Fill / Color Reveal */}
               <div
-                className={`p-3.5 sm:p-4 z-10 transition-all duration-300 ease-out bg-white ${cat.headerHoverBg}`}
+                className="p-3.5 sm:p-4 z-10 transition-colors duration-300 ease-out"
+                style={{
+                  backgroundColor: isHovered ? cat.stripHex : '#FFFFFF',
+                  transition: 'background-color 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
               >
-                <h4 className="font-black text-[#1A1A1A] group-hover:text-white transition-colors duration-300 text-sm sm:text-base leading-snug">
+                <h4
+                  className="font-black text-sm sm:text-base leading-snug transition-colors duration-300"
+                  style={{
+                    color: isHovered ? '#FFFFFF' : '#1A1A1A',
+                    transition: 'color 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  }}
+                >
                   {cat.name}
                 </h4>
-                <p className="text-[10.5px] sm:text-xs text-[#6B6B6B] group-hover:text-white/90 transition-colors duration-300 line-clamp-1 mt-0.5 font-medium leading-tight">
+                <p
+                  className="text-[10.5px] sm:text-xs line-clamp-1 mt-0.5 font-medium leading-tight transition-colors duration-300"
+                  style={{
+                    color: isHovered ? 'rgba(255, 255, 255, 0.95)' : '#6B6B6B',
+                    transition: 'color 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+                  }}
+                >
                   {cat.subtitle}
                 </p>
               </div>
