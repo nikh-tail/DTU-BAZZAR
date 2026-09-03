@@ -28,7 +28,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
     }
   };
 
-  // 6 Visual Floating Gear Elements arranged in a balanced circular orbit ring (Hugging Central Text)
+  // 6 Visual Floating Gear Elements arranged in a circular orbit ring
   const floatingItems = [
     {
       id: 'keyboard',
@@ -40,8 +40,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       position: 'top-[4px] left-[18px] sm:top-[-20px] sm:left-[10px] lg:top-[-15px] lg:left-[-35px] xl:left-[-75px]',
       rotation: '-rotate-6',
       animation: 'animate-orbit-11',
-      borderGlow: 'hover:border-cyan-400 hover:shadow-[0_0_35px_rgba(34,211,238,0.5)]',
-      accentColor: 'text-cyan-400',
+      borderGlow: 'hover:border-sky-500 hover:shadow-lg',
+      accentColor: 'text-sky-600',
     },
     {
       id: 'calculator',
@@ -53,8 +53,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       position: 'top-[4px] right-[18px] sm:top-[-20px] sm:right-[10px] lg:top-[-15px] lg:right-[-35px] xl:right-[-75px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-1',
-      borderGlow: 'hover:border-campus-lime hover:shadow-[0_0_35px_rgba(198,255,61,0.5)]',
-      accentColor: 'text-campus-lime',
+      borderGlow: 'hover:border-emerald-500 hover:shadow-lg',
+      accentColor: 'text-emerald-700',
     },
     {
       id: 'bicycle',
@@ -66,8 +66,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       position: 'top-[65px] left-[4px] sm:top-[85px] sm:left-[-25px] lg:top-[110px] lg:left-[-90px] xl:left-[-135px]',
       rotation: '-rotate-8',
       animation: 'animate-orbit-9',
-      borderGlow: 'hover:border-amber-400 hover:shadow-[0_0_35px_rgba(251,191,36,0.5)]',
-      accentColor: 'text-amber-400',
+      borderGlow: 'hover:border-amber-500 hover:shadow-lg',
+      accentColor: 'text-amber-700',
     },
     {
       id: 'books',
@@ -79,8 +79,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       position: 'top-[65px] right-[4px] sm:top-[85px] sm:right-[-25px] lg:top-[110px] lg:right-[-90px] xl:right-[-135px]',
       rotation: 'rotate-6',
       animation: 'animate-orbit-3',
-      borderGlow: 'hover:border-rose-400 hover:shadow-[0_0_35px_rgba(244,63,94,0.5)]',
-      accentColor: 'text-rose-400',
+      borderGlow: 'hover:border-rose-500 hover:shadow-lg',
+      accentColor: 'text-rose-600',
     },
     {
       id: 'cloths',
@@ -92,8 +92,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       position: 'bottom-[35px] left-[18px] sm:bottom-[30px] sm:left-[-15px] lg:bottom-[15px] lg:left-[-45px] xl:left-[-85px]',
       rotation: '-rotate-4',
       animation: 'animate-orbit-7',
-      borderGlow: 'hover:border-emerald-400 hover:shadow-[0_0_35px_rgba(52,211,153,0.5)]',
-      accentColor: 'text-emerald-400',
+      borderGlow: 'hover:border-emerald-500 hover:shadow-lg',
+      accentColor: 'text-emerald-700',
     },
     {
       id: 'headphones',
@@ -105,39 +105,39 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
       position: 'bottom-[35px] right-[18px] sm:bottom-[30px] sm:right-[-15px] lg:bottom-[15px] lg:right-[-45px] xl:right-[-85px]',
       rotation: 'rotate-8',
       animation: 'animate-orbit-5',
-      borderGlow: 'hover:border-purple-400 hover:shadow-[0_0_35px_rgba(168,85,247,0.5)]',
-      accentColor: 'text-purple-400',
+      borderGlow: 'hover:border-purple-500 hover:shadow-lg',
+      accentColor: 'text-purple-700',
     },
   ];
 
   return (
     <section className="relative pt-10 pb-16 sm:pt-20 sm:pb-28 overflow-x-clip text-center select-none">
-      {/* 1. Concentric Radial Perspective Rings (SharePal style background) */}
+      {/* 1. Concentric Radial Perspective Rings (Light Theme) */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] sm:w-[1300px] h-[850px] sm:h-[1300px] pointer-events-none -z-10 flex items-center justify-center">
-        <div className="w-[280px] sm:w-[320px] h-[280px] sm:h-[320px] rounded-full border border-slate-800/40" />
-        <div className="absolute w-[460px] sm:w-[560px] h-[460px] sm:h-[560px] rounded-full border border-slate-800/30" />
-        <div className="absolute w-[680px] sm:w-[820px] h-[680px] sm:h-[820px] rounded-full border border-slate-800/20" />
-        <div className="absolute w-[900px] sm:w-[1080px] h-[900px] sm:h-[1080px] rounded-full border border-slate-800/15" />
-        <div className="absolute w-[1140px] sm:w-[1340px] h-[1140px] sm:h-[1340px] rounded-full border border-slate-800/10" />
+        <div className="w-[280px] sm:w-[320px] h-[280px] sm:h-[320px] rounded-full border border-slate-200/80" />
+        <div className="absolute w-[460px] sm:w-[560px] h-[460px] sm:h-[560px] rounded-full border border-slate-200/60" />
+        <div className="absolute w-[680px] sm:w-[820px] h-[680px] sm:h-[820px] rounded-full border border-slate-200/50" />
+        <div className="absolute w-[900px] sm:w-[1080px] h-[900px] sm:h-[1080px] rounded-full border border-slate-200/40" />
+        <div className="absolute w-[1140px] sm:w-[1340px] h-[1140px] sm:h-[1340px] rounded-full border border-slate-200/30" />
       </div>
 
       {/* 2. Ambient Lighting Center Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[700px] h-[220px] sm:h-[420px] bg-campus-lime/10 blur-[130px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[340px] sm:w-[700px] h-[220px] sm:h-[420px] bg-lime-200/40 blur-[130px] rounded-full pointer-events-none -z-10" />
 
       {/* 3. Main Hero Central Content Container */}
       <div className="max-w-3xl mx-auto px-4 sm:px-6 relative z-10">
-        {/* Floating Items Placed in Background Layer (z-0 on mobile, z-10 on desktop) */}
+        {/* Floating Items Placed in Background Layer */}
         <div className="absolute inset-0 pointer-events-none z-0 lg:z-10">
           {floatingItems.map((item) => (
             <div
               key={item.id}
               onClick={() => onNavigate('browse', { category: item.category, search: item.search })}
-              className={`absolute ${item.position} ${item.rotation} ${item.animation} pointer-events-auto cursor-pointer group opacity-80 sm:opacity-90 lg:opacity-100 transition-opacity`}
+              className={`absolute ${item.position} ${item.rotation} ${item.animation} pointer-events-auto cursor-pointer group opacity-90 lg:opacity-100 transition-opacity`}
               title={`Buy / Sell ${item.shortName} (${item.price}) on DTU Bazaar`}
             >
               {/* Responsive Rounded Visual Tile */}
               <div
-                className={`relative w-14 h-14 sm:w-20 sm:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 aspect-square rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900/90 border sm:border-2 border-slate-700/80 shadow-[0_12px_28px_rgba(0,0,0,0.6)] sm:shadow-[0_20px_40px_rgba(0,0,0,0.7)] transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
+                className={`relative w-14 h-14 sm:w-20 sm:h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28 aspect-square rounded-2xl sm:rounded-3xl overflow-hidden bg-white border-2 border-slate-200 shadow-md transition-all duration-300 group-hover:scale-115 group-hover:-translate-y-2 ${item.borderGlow}`}
               >
                 <img
                   src={item.image}
@@ -147,15 +147,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
                   decoding="async"
                 />
 
-                {/* Gradient dark scrim on bottom for high contrast text */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent pointer-events-none" />
-
                 {/* Minimal Bottom Pill: Short Name + Price */}
-                <div className="absolute bottom-0.5 left-0.5 right-0.5 sm:bottom-1.5 sm:left-1.5 sm:right-1.5 flex items-center justify-between px-1 py-0.2 sm:px-2 sm:py-0.5 rounded-md sm:rounded-xl bg-black/85 backdrop-blur-md border border-white/10 text-[7.5px] sm:text-[10px] font-black">
-                  <span className="hidden sm:inline text-white truncate max-w-[55px] font-bold">
+                <div className="absolute bottom-0.5 left-0.5 right-0.5 sm:bottom-1.5 sm:left-1.5 sm:right-1.5 flex items-center justify-between px-1 py-0.5 sm:px-2 sm:py-0.5 rounded-md sm:rounded-xl bg-white/95 backdrop-blur-md border border-slate-200 text-[8px] sm:text-[10px] font-bold shadow-sm">
+                  <span className="hidden sm:inline text-slate-800 truncate max-w-[55px]">
                     {item.shortName}
                   </span>
-                  <span className={`${item.accentColor} mx-auto sm:mx-0`}>
+                  <span className={`${item.accentColor} mx-auto sm:mx-0 font-extrabold`}>
                     {item.price}
                   </span>
                 </div>
@@ -164,42 +161,42 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
           ))}
         </div>
 
-        {/* 4. Text & Actions Layer with Higher Z-Index (z-30) - 100% Unobstructed */}
+        {/* 4. Text & Actions Layer */}
         <div className="relative z-30 pointer-events-auto">
           {/* Main Statement: OLX for DTU */}
-          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white tracking-tight leading-[1.08] mb-3 sm:mb-4 px-2 sm:px-0 max-w-[320px] sm:max-w-none mx-auto drop-shadow-md">
-            <span className="text-gradient-lime drop-shadow-sm">OLX</span> For DTU
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-slate-950 tracking-tight leading-[1.08] mb-3 sm:mb-4 px-2 sm:px-0 max-w-[320px] sm:max-w-none mx-auto drop-shadow-sm">
+            <span className="text-emerald-600">OLX</span> For DTU
           </h1>
 
           {/* Subtext below OLX for DTU */}
-          <p className="text-xs sm:text-sm md:text-base text-slate-300 font-medium max-w-xl mx-auto mb-6 sm:mb-8 px-2 flex items-center justify-center gap-2 flex-wrap">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-700/80 text-slate-200 text-[11px] sm:text-xs font-semibold shadow-md backdrop-blur-md">
-              <ShieldCheck size={14} className="text-campus-lime flex-shrink-0" />
+          <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium max-w-xl mx-auto mb-6 sm:mb-8 px-2 flex items-center justify-center gap-2 flex-wrap">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-800 text-[11px] sm:text-xs font-bold shadow-sm">
+              <ShieldCheck size={14} className="text-emerald-600 flex-shrink-0" />
               <span>Verified DTU Students Only</span>
             </span>
-            <span className="text-slate-500 hidden sm:inline">•</span>
-            <span className="text-slate-400 text-xs sm:text-sm">Buy & Sell Directly Within Campus</span>
+            <span className="text-slate-400 hidden sm:inline">•</span>
+            <span className="text-slate-600 text-xs sm:text-sm font-semibold">Buy & Sell Directly Within Campus</span>
           </p>
 
-          {/* Prominent Search Bar (z-40 for crystal clear clickability) */}
+          {/* Prominent Search Bar */}
           <form
             onSubmit={handleSearchSubmit}
             className="max-w-2xl mx-auto mb-6 sm:mb-8 relative group z-40"
           >
-            <div className="relative flex items-center bg-[#0C1220] border-2 border-slate-700/90 group-hover:border-campus-lime/70 focus-within:border-campus-lime rounded-2xl sm:rounded-full p-1.5 shadow-2xl transition-all">
+            <div className="relative flex items-center bg-white border-2 border-slate-200 group-hover:border-campus-lime focus-within:border-campus-lime rounded-2xl sm:rounded-full p-1.5 shadow-md transition-all">
               <Search size={20} className="ml-3 sm:ml-4 text-slate-400 pointer-events-none flex-shrink-0" />
               <input
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search scientific calculators, cycles, coolers, lab kits, books..."
-                className="w-full bg-transparent text-white placeholder-slate-400 px-3 py-2.5 text-xs sm:text-base outline-none min-w-0"
+                className="w-full bg-transparent text-slate-900 placeholder-slate-400 px-3 py-2.5 text-xs sm:text-base outline-none min-w-0"
               />
               <Button
                 type="submit"
                 variant="lime"
                 size="md"
-                className="flex-shrink-0 font-black px-4 sm:px-7 text-xs sm:text-sm shadow-glow cursor-pointer"
+                className="flex-shrink-0 font-black px-4 sm:px-7 text-xs sm:text-sm shadow-glow cursor-pointer text-slate-950"
               >
                 Search
               </Button>
@@ -212,9 +209,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
             <button
               type="button"
               onClick={() => onNavigate('browse')}
-              className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 rounded-full bg-slate-900/95 border-2 border-slate-700 hover:border-campus-lime/80 hover:bg-slate-800 text-white font-black text-xs sm:text-sm transition-all shadow-xl hover:scale-105 active:scale-95 cursor-pointer min-h-[46px]"
+              className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 rounded-full bg-white border-2 border-slate-200 hover:border-slate-400 hover:bg-slate-50 text-slate-900 font-extrabold text-xs sm:text-sm transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer min-h-[46px]"
             >
-              <ShoppingBag size={18} className="text-campus-lime stroke-[2.5]" />
+              <ShoppingBag size={18} className="text-emerald-600 stroke-[2.5]" />
               <span>Buy Items</span>
             </button>
 
@@ -224,7 +221,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
               size="lg"
               onClick={handlePostItem}
               leftIcon={<PlusCircle size={18} className="stroke-[2.5]" />}
-              className="shadow-glow font-black text-xs sm:text-sm px-6 sm:px-8 py-3.5 cursor-pointer hover:scale-105 active:scale-95 transition-transform min-h-[46px]"
+              className="shadow-glow font-black text-xs sm:text-sm px-6 sm:px-8 py-3.5 cursor-pointer hover:scale-105 active:scale-95 transition-transform min-h-[46px] text-slate-950"
             >
               Sell Gear
             </Button>

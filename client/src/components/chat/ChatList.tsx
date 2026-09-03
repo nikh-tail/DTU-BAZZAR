@@ -1,7 +1,8 @@
 import React from 'react';
-import { MessageSquare, Clock } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import { Conversation } from '../../types/index.js';
 import { formatPrice, formatTimeAgo } from '../../utils/formatters.js';
+import { getImageUrl, handleImageError } from '../../utils/imageUrl.js';
 
 interface ChatListProps {
   conversations: Conversation[];
@@ -42,9 +43,8 @@ export const ChatList: React.FC<ChatListProps> = ({
     <div className="divide-y divide-slate-800/80 overflow-y-auto max-h-[500px] no-scrollbar">
       {conversations.map((conv) => {
         const isSelected = activeId === conv.id;
-        const coverImg =
-          conv.listing?.images?.[0]?.url ||
-          'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=400&auto=format&fit=crop&q=80';
+        const listingCategory = (conv.listing as any)?.category;
+        const coverImg = getImageUrl(conv.listing?.images?.[0]?.url, listingCategory);
 
         return (
           <div
@@ -61,12 +61,17 @@ export const ChatList: React.FC<ChatListProps> = ({
               <img
                 src={coverImg}
                 alt={conv.listing?.title}
+                onError={(e) => handleImageError(e, listingCategory)}
                 className="w-12 h-12 rounded-2xl object-cover border border-slate-700"
               />
               {conv.partner?.avatar && (
                 <img
-                  src={conv.partner.avatar}
+                  src={getImageUrl(conv.partner.avatar)}
                   alt={conv.partner.name}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.style.display = 'none';
+                  }}
                   className="w-5 h-5 rounded-full object-cover ring-1 ring-slate-900 absolute -bottom-1 -right-1"
                 />
               )}

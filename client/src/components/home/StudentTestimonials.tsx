@@ -30,10 +30,10 @@ export const StudentTestimonials: React.FC = () => {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
             Loved by DTU Students
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-500 font-medium">
             Real peer feedback from students across hostels and day-scholar batches
           </p>
         </div>
@@ -43,30 +43,30 @@ export const StudentTestimonials: React.FC = () => {
         {reviews.map((r, idx) => (
           <div
             key={idx}
-            className="bg-campus-card border border-slate-800 rounded-3xl p-6 flex flex-col justify-between relative group hover:border-slate-700 transition-colors"
+            className="bg-white border border-slate-200 rounded-3xl p-6 flex flex-col justify-between relative group hover:border-slate-300 transition-all shadow-sm"
           >
-            <Quote className="absolute top-5 right-5 text-slate-800 group-hover:text-campus-lime/20 transition-colors" size={32} />
+            <Quote className="absolute top-5 right-5 text-slate-200 group-hover:text-emerald-200 transition-colors" size={32} />
 
             <div>
-              <div className="flex items-center gap-1 mb-3 text-campus-gold">
+              <div className="flex items-center gap-1 mb-3 text-amber-500">
                 {[...Array(r.stars)].map((_, i) => (
-                  <Star key={i} size={14} className="fill-campus-gold" />
+                  <Star key={i} size={14} className="fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6 italic">
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed mb-6 italic font-medium">
                 "{r.text}"
               </p>
             </div>
 
-            <div className="flex items-center gap-3 pt-4 border-t border-slate-800/80">
+            <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
               <img
                 src={r.avatar}
                 alt={r.name}
-                className="w-10 h-10 rounded-full object-cover ring-2 ring-campus-lime/40"
+                className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-400/50"
               />
               <div>
-                <h4 className="text-xs font-bold text-white">{r.name}</h4>
-                <p className="text-[11px] text-slate-400 font-medium">{r.tag}</p>
+                <h4 className="text-xs font-bold text-slate-900">{r.name}</h4>
+                <p className="text-[11px] text-slate-500 font-medium">{r.tag}</p>
               </div>
             </div>
           </div>

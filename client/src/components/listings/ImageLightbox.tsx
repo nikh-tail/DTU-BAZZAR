@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react';
+import { getImageUrl, handleImageError } from '../../utils/imageUrl.js';
 
 interface ImageLightboxProps {
   isOpen: boolean;
   images: { id: string; url: string; order?: number }[];
   initialIndex?: number;
+  category?: string;
   onClose: () => void;
 }
 
@@ -12,6 +14,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   isOpen,
   images,
   initialIndex = 0,
+  category,
   onClose,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
@@ -37,6 +40,7 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
   if (!isOpen || images.length === 0) return null;
 
   const currentImage = images[currentIndex] || images[0];
+  const resolvedUrl = getImageUrl(currentImage?.url, category);
 
   const handleNext = () => {
     setIsZoomed(false);
@@ -77,8 +81,9 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
       {/* Main Image Container */}
       <div className="relative w-full h-full flex items-center justify-center p-4 sm:p-12 overflow-hidden">
         <img
-          src={currentImage.url}
+          src={resolvedUrl}
           alt={`Listing preview ${currentIndex + 1}`}
+          onError={(e) => handleImageError(e, category)}
           className={`max-w-full max-h-[85vh] object-contain transition-transform duration-300 ${
             isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'
           }`}
@@ -108,25 +113,31 @@ export const ImageLightbox: React.FC<ImageLightboxProps> = ({
         )}
       </div>
 
-      {/* Bottom Thumbnail Strip */}
+      {/* Bottom Thumbnails */}
       {images.length > 1 && (
-        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 px-4 z-10 overflow-x-auto py-2">
-          {images.map((img, idx) => (
-            <button
-              key={img.id || idx}
-              onClick={() => {
-                setIsZoomed(false);
-                setCurrentIndex(idx);
-              }}
-              className={`w-14 h-14 rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${
-                idx === currentIndex
-                  ? 'border-campus-lime shadow-glow scale-105'
-                  : 'border-slate-800 opacity-60 hover:opacity-100'
-              }`}
-            >
-              <img src={img.url} alt="" className="w-full h-full object-cover" />
-            </button>
-          ))}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 p-2 rounded-2xl bg-black/80 backdrop-blur-md border border-slate-800 max-w-[90vw] overflow-x-auto no-scrollbar">
+          {images.map((img, idx) => {
+            const thumbUrl = getImageUrl(img.url, category);
+            return (
+              <button
+                key={img.id || idx}
+                onClick={() => {
+                  setCurrentIndex(idx);
+                  setIsZoomed(false);
+                }}
+                className={`relative w-14 h-11 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
+                  currentIndex === idx ? 'border-campus-lime shadow-glow scale-105' : 'border-slate-800 opacity-60'
+                }`}
+              >
+                <img
+                  src={thumbUrl}
+                  alt={`Thumb ${idx + 1}`}
+                  onError={(e) => handleImageError(e, category)}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

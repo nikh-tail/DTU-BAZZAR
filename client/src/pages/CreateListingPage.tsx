@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { PlusCircle, Sparkles, ArrowLeft, ShieldCheck, CheckCircle2, AlertCircle, Zap, Star } from 'lucide-react';
+import { Sparkles, ArrowLeft, AlertCircle, Zap } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { CATEGORIES, DTU_HOSTELS, CONDITION_LABELS } from '../utils/constants.js';
 import { ListingCategory, ListingCondition } from '../types/index.js';
@@ -124,7 +124,7 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
     }
   };
 
-  const handleUpgradeSuccess = (updatedUser: any) => {
+  const handleUpgradeSuccess = () => {
     setMaxLimit(10);
     setIsProSeller(true);
     setError(null);
@@ -138,7 +138,7 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
       <div className="mb-6">
         <button
           onClick={() => onNavigate('home')}
-          className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white mb-3 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 mb-3 transition-colors font-semibold"
         >
           <ArrowLeft size={14} />
           <span>Back to marketplace</span>
@@ -146,14 +146,14 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
 
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-2xl bg-campus-lime/20 border border-campus-lime/30 text-campus-lime flex items-center justify-center font-black">
+            <div className="w-9 h-9 rounded-2xl bg-lime-100 border border-lime-300 text-slate-950 flex items-center justify-center font-black">
               ⚡
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
                 List an Item for DTU Students
               </h1>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500 font-medium">
                 Post your unused books, electronics, coolers, or cycle in under 60 seconds
               </p>
             </div>
@@ -161,12 +161,12 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
 
           {/* Quota Indicator Bar */}
           <div className="flex items-center gap-2">
-            <div className="px-3.5 py-1.5 rounded-2xl bg-slate-900 border border-slate-800 text-xs">
-              <span className="text-slate-400">Quota: </span>
-              <strong className={isLimitReached ? 'text-rose-400' : 'text-campus-lime'}>
+            <div className="px-3.5 py-1.5 rounded-2xl bg-white border border-slate-200 text-xs shadow-sm font-semibold">
+              <span className="text-slate-500">Quota: </span>
+              <strong className={isLimitReached ? 'text-rose-600' : 'text-emerald-700'}>
                 {activeCount}/{maxLimit}
               </strong>
-              <span className="text-[11px] text-slate-400 ml-1">
+              <span className="text-[11px] text-slate-500 ml-1">
                 {isProSeller ? '(Campus Pro 🌟)' : '(Free Tier)'}
               </span>
             </div>
@@ -175,9 +175,9 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
               <button
                 type="button"
                 onClick={() => setIsPaywallOpen(true)}
-                className="px-3 py-1.5 rounded-2xl bg-campus-lime text-black font-extrabold text-xs shadow-glow active:scale-95 transition-all flex items-center gap-1"
+                className="px-3 py-1.5 rounded-2xl bg-campus-lime text-slate-950 font-black text-xs shadow-glow active:scale-95 transition-all flex items-center gap-1"
               >
-                <Zap size={13} className="fill-black" />
+                <Zap size={13} className="fill-slate-950" />
                 <span>Upgrade ₹10</span>
               </button>
             )}
@@ -187,20 +187,20 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
 
       {/* Quota Limit Reached Banner */}
       {isLimitReached && (
-        <div className="mb-6 p-4 rounded-3xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-xs flex items-center justify-between shadow-lg">
+        <div className="mb-6 p-4 rounded-3xl bg-amber-50 border border-amber-300 text-amber-900 text-xs flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-2.5">
             <span className="text-lg">🔒</span>
             <div>
-              <strong className="block text-sm font-black text-amber-100">
+              <strong className="block text-sm font-black text-amber-950">
                 Free Limit Reached ({activeCount}/{maxLimit} Items Active)
               </strong>
-              <span>Upgrade for ₹10 to unlock up to 10 active listings and Pro Seller badge.</span>
+              <span className="font-medium">Upgrade for ₹10 to unlock up to 10 active listings and Pro Seller badge.</span>
             </div>
           </div>
           <button
             type="button"
             onClick={() => setIsPaywallOpen(true)}
-            className="px-4 py-2 rounded-2xl bg-amber-400 text-black font-black text-xs hover:bg-amber-300 active:scale-95 transition-all shadow-md flex-shrink-0"
+            className="px-4 py-2 rounded-2xl bg-amber-400 text-slate-950 font-black text-xs hover:bg-amber-300 active:scale-95 transition-all shadow-sm flex-shrink-0"
           >
             Unlock 10 Slots (₹10)
           </button>
@@ -208,20 +208,20 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
       )}
 
       {error && (
-        <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start gap-2.5">
-          <AlertCircle size={16} className="text-rose-400 flex-shrink-0 mt-0.5" />
+        <div className="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 shadow-sm font-medium">
+          <AlertCircle size={16} className="text-rose-600 flex-shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Main Listing Form */}
-      <form onSubmit={handleSubmit} className="bg-campus-card border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl">
+      <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm">
         {/* Photo Uploader */}
         <ImageUploader files={files} onChange={setFiles} maxFiles={5} />
 
         {/* Title */}
         <div>
-          <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
             Listing Title *
           </label>
           <input
@@ -229,7 +229,7 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. Casio 991EX Calculator / Hero Sprint Cycle / Symphony Desert Cooler"
-            className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-2xl px-4 py-3 text-sm outline-none transition-all"
+            className="w-full bg-slate-50 border border-slate-200 focus:border-campus-lime text-slate-900 placeholder-slate-400 rounded-2xl px-4 py-3 text-sm outline-none transition-all font-medium"
             required
           />
         </div>
@@ -237,13 +237,13 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
         {/* Category & Condition Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
               Category *
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as ListingCategory)}
-              className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white rounded-2xl px-4 py-3 text-sm outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 focus:border-campus-lime text-slate-900 rounded-2xl px-4 py-3 text-sm outline-none transition-all font-medium"
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat.id} value={cat.id}>
@@ -254,13 +254,13 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
               Item Condition *
             </label>
             <select
               value={condition}
               onChange={(e) => setCondition(e.target.value as ListingCondition)}
-              className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white rounded-2xl px-4 py-3 text-sm outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 focus:border-campus-lime text-slate-900 rounded-2xl px-4 py-3 text-sm outline-none transition-all font-medium"
             >
               {(Object.keys(CONDITION_LABELS) as ListingCondition[]).map((cond) => (
                 <option key={cond} value={cond}>
@@ -274,7 +274,7 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
         {/* Price & Campus Handover Location */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
               Price (₹ INR) *
             </label>
             <input
@@ -282,19 +282,19 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="e.g. 750"
-              className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-2xl px-4 py-3 text-sm outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 focus:border-campus-lime text-slate-900 placeholder-slate-400 rounded-2xl px-4 py-3 text-sm outline-none transition-all font-medium"
               required
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
               Handover Location on Campus
             </label>
             <select
               value={campusLocation}
               onChange={(e) => setCampusLocation(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white rounded-2xl px-4 py-3 text-sm outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 focus:border-campus-lime text-slate-900 rounded-2xl px-4 py-3 text-sm outline-none transition-all font-medium"
             >
               {DTU_HOSTELS.map((h, i) => (
                 <option key={i} value={h}>
@@ -312,7 +312,7 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
 
         {campusLocation === 'Custom' && (
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
               Specify Custom Campus Location
             </label>
             <input
@@ -320,14 +320,14 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
               value={customLocation}
               onChange={(e) => setCustomLocation(e.target.value)}
               placeholder="e.g. Outside Amul Counter near Mech Block"
-              className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white rounded-2xl px-4 py-3 text-sm outline-none"
+              className="w-full bg-slate-50 border border-slate-200 focus:border-campus-lime text-slate-900 rounded-2xl px-4 py-3 text-sm outline-none font-medium"
             />
           </div>
         )}
 
         {/* Description */}
         <div>
-          <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
             Detailed Description *
           </label>
           <textarea
@@ -335,17 +335,17 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
             onChange={(e) => setDescription(e.target.value)}
             rows={4}
             placeholder="Describe condition, age, reasons for selling, warranty, or relevant academic semester..."
-            className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-2xl p-4 text-sm outline-none transition-all"
+            className="w-full bg-slate-50 border border-slate-200 focus:border-campus-lime text-slate-900 placeholder-slate-400 rounded-2xl p-4 text-sm outline-none transition-all font-medium"
             required
           />
         </div>
 
         {/* Submit button */}
-        <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
           <button
             type="button"
             onClick={() => onNavigate('home')}
-            className="text-xs text-slate-400 hover:text-white font-medium"
+            className="text-xs text-slate-500 hover:text-slate-900 font-bold"
           >
             Cancel
           </button>
@@ -355,7 +355,7 @@ export const CreateListingPage: React.FC<CreateListingPageProps> = ({ onNavigate
             variant="lime"
             size="lg"
             isLoading={isLoading}
-            className="shadow-glow font-bold text-base px-8"
+            className="shadow-glow font-black text-base px-8 text-slate-950"
             leftIcon={<Sparkles size={18} />}
           >
             Publish to DTU Bazaar

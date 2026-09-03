@@ -17,7 +17,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   initialTab = 'active',
   onNavigate,
 }) => {
-  const { user: currentUser, isAuthenticated, updateUser } = useAuth();
+  const { user: currentUser, updateUser } = useAuth();
   const [profileUser, setProfileUser] = useState<User | null>(null);
   const [activeListings, setActiveListings] = useState<Listing[]>([]);
   const [soldListings, setSoldListings] = useState<Listing[]>([]);
@@ -82,8 +82,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   if (isLoading) {
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-6">
-        <div className="h-48 rounded-3xl bg-slate-900 animate-pulse" />
-        <div className="h-64 rounded-3xl bg-slate-900 animate-pulse" />
+        <div className="h-48 rounded-3xl bg-slate-200 animate-pulse" />
+        <div className="h-64 rounded-3xl bg-slate-200 animate-pulse" />
       </div>
     );
   }
@@ -91,11 +91,11 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   if (!profileUser) {
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-20 text-center">
-        <h2 className="text-xl font-bold text-white mb-2">Student profile not found</h2>
-        <p className="text-sm text-slate-400 mb-6">Please log in with your DTU student email to view your profile dashboard.</p>
+        <h2 className="text-xl font-black text-slate-900 mb-2">Student profile not found</h2>
+        <p className="text-sm text-slate-500 mb-6 font-medium">Please log in with your DTU student email to view your profile dashboard.</p>
         <button
           onClick={() => onNavigate('home')}
-          className="px-6 py-2.5 rounded-full bg-campus-lime text-black font-bold text-xs"
+          className="px-6 py-2.5 rounded-full bg-campus-lime text-slate-950 font-black text-xs shadow-glow"
         >
           Return Home
         </button>
@@ -117,7 +117,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       />
 
       {/* Tabs & Listings Management */}
-      <div className="bg-campus-card/50 border border-slate-800 rounded-3xl p-6 sm:p-8">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
         <UserListingsTabs
           activeListings={activeListings}
           soldListings={soldListings}

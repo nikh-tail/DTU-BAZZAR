@@ -4,27 +4,27 @@
 
 @layer base {
   body {
-    background-color: #070B14;
-    color: #F1F5F9;
+    background-color: #F8FAFC;
+    color: #0F172A;
     font-family: 'Inter', sans-serif;
     -webkit-tap-highlight-color: transparent;
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar - Light Theme */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #070B14;
+  background: #F1F5F9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: #CBD5E1;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94A3B8;
 }
 
 /* iOS Safe Area Padding */
@@ -32,31 +32,33 @@
   padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
 }
 
-/* Custom glow and backdrop effects */
+/* Custom glass & elevation effects - Light Mode */
 .glass-panel {
-  background: rgba(14, 21, 38, 0.85);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
 }
 
 .glass-nav {
-  background: rgba(7, 11, 20, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.04);
 }
 
 .glow-lime {
-  box-shadow: 0 0 30px -5px rgba(198, 255, 61, 0.3);
+  box-shadow: 0 4px 25px -4px rgba(198, 255, 61, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.08);
 }
 
 .glow-pink {
-  box-shadow: 0 0 30px -5px rgba(232, 57, 122, 0.3);
+  box-shadow: 0 4px 25px -4px rgba(232, 57, 122, 0.35);
 }
 
 .text-gradient-lime {
-  background: linear-gradient(135deg, #C6FF3D 0%, #A3E635 100%);
+  background: linear-gradient(135deg, #4D7C0F 0%, #15803D 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -68,7 +70,7 @@
 }
 
 .text-gradient-purple {
-  background: linear-gradient(135deg, #A855F7 0%, #7C4DFF 100%);
+  background: linear-gradient(135deg, #7C4DFF 0%, #6366F1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

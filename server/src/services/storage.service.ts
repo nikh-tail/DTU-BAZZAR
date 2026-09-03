@@ -31,6 +31,7 @@ export class StorageService {
   static isCloudinaryActive(): boolean {
     return Boolean(
       config.cloudinary.cloudName &&
+      config.cloudinary.cloudName !== 'tier' &&
       config.cloudinary.apiKey &&
       config.cloudinary.apiSecret
     );
@@ -55,12 +56,11 @@ export class StorageService {
 
         return uploadResult.secure_url;
       } catch (err) {
-        console.error('Cloudinary upload error, falling back to local URL:', err);
-        return `/uploads/${file.filename}`;
+        console.error('Cloudinary upload error, falling back to accessible URL:', err);
       }
     }
 
-    // Default: Local disk storage
+    // Accessible relative path served by Express static middleware
     return `/uploads/${file.filename}`;
   }
 
@@ -68,10 +68,16 @@ export class StorageService {
    * Converts local filename into a full URL for client consumption
    */
   static getImageUrl(reqHost: string, filename: string): string {
-    if (filename.startsWith('http://') || filename.startsWith('https://')) {
+    if (!filename) return '';
+    if (filename.startsWith('http://') || filename.startsWith('https://') || filename.startsWith('data:')) {
       return filename;
     }
-    return `/uploads/${filename}`;
+    const cleanPath = filename.startsWith('/') ? filename : `/${filename}`;
+    if (reqHost && !reqHost.includes('localhost')) {
+      const protocol = reqHost.includes('localhost') ? 'http' : 'https';
+      return `${protocol}://${reqHost}${cleanPath}`;
+    }
+    return cleanPath;
   }
 
   /**
@@ -80,7 +86,6 @@ export class StorageService {
   static async deleteImage(imageUrl: string): Promise<boolean> {
     try {
       if (imageUrl.includes('cloudinary.com')) {
-        // Extract public_id from Cloudinary URL
         const parts = imageUrl.split('/');
         const fileNameWithExt = parts.slice(-2).join('/');
         const publicId = fileNameWithExt.substring(0, fileNameWithExt.lastIndexOf('.'));

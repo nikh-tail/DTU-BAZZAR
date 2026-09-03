@@ -8,10 +8,10 @@ export const TrustZeroSection: React.FC = () => {
       subtitle: 'Verified DTU Credentials Only',
       description:
         'Strict signup restriction to official @dtu.ac.in emails with OTP validation. No random outsiders or fake accounts.',
-      icon: <ShieldCheck size={28} className="text-campus-lime" />,
-      accentColor: 'text-campus-lime',
-      borderColor: 'border-campus-lime/30',
-      glowColor: 'hover:shadow-glow',
+      icon: <ShieldCheck size={28} className="text-emerald-600" />,
+      accentColor: 'text-emerald-700',
+      borderColor: 'border-emerald-200',
+      glowColor: 'hover:shadow-lg',
       badge: 'DTU Domain Verified',
     },
     {
@@ -19,10 +19,10 @@ export const TrustZeroSection: React.FC = () => {
       subtitle: 'Inspect & Meet on Campus',
       description:
         'Handover in safe, populated DTU spots: Mic-Mac Canteen, Open Air Theatre (OAT), Central Library, or Hostel Gates.',
-      icon: <MapPin size={28} className="text-campus-pink" />,
-      accentColor: 'text-campus-pink',
-      borderColor: 'border-campus-pink/30',
-      glowColor: 'hover:shadow-glow-pink',
+      icon: <MapPin size={28} className="text-rose-500" />,
+      accentColor: 'text-rose-600',
+      borderColor: 'border-rose-200',
+      glowColor: 'hover:shadow-lg',
       badge: '0 Km Delivery Distance',
     },
     {
@@ -30,10 +30,10 @@ export const TrustZeroSection: React.FC = () => {
       subtitle: '100% Direct Student Pricing',
       description:
         'Zero commission, zero platform cut. You negotiate price and pay directly via UPI / Cash upon physical inspection.',
-      icon: <BadgePercent size={28} className="text-campus-purple" />,
-      accentColor: 'text-campus-purple',
-      borderColor: 'border-campus-purple/30',
-      glowColor: 'hover:shadow-glow-purple',
+      icon: <BadgePercent size={28} className="text-purple-600" />,
+      accentColor: 'text-purple-700',
+      borderColor: 'border-purple-200',
+      glowColor: 'hover:shadow-lg',
       badge: '₹0 Platform Brokerage',
     },
   ];
@@ -41,13 +41,13 @@ export const TrustZeroSection: React.FC = () => {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
       <div className="text-center mb-10">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-bold text-slate-300 uppercase tracking-widest mb-3">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 uppercase tracking-widest mb-3 shadow-sm">
           <span>🛡️</span> Campus Trust Promise
         </div>
-        <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-          Transparent Campus Trading: <span className="text-gradient-lime">Zero Surprises</span>
+        <h2 className="text-2xl sm:text-4xl font-black text-slate-950 tracking-tight">
+          Transparent Campus Trading: <span className="text-emerald-700">Zero Surprises</span>
         </h2>
-        <p className="text-xs sm:text-sm text-slate-400 mt-2 max-w-xl mx-auto">
+        <p className="text-xs sm:text-sm text-slate-600 mt-2 max-w-xl mx-auto font-medium">
           Built specifically for the Delhi Technological University student ecosystem to eliminate OLX scams and courier friction.
         </p>
       </div>
@@ -56,22 +56,22 @@ export const TrustZeroSection: React.FC = () => {
         {blocks.map((b, idx) => (
           <div
             key={idx}
-            className={`relative bg-campus-card/90 border border-slate-800 rounded-3xl p-7 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] ${b.borderColor} ${b.glowColor} overflow-hidden`}
+            className={`relative bg-white border ${b.borderColor} rounded-3xl p-7 flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] ${b.glowColor} overflow-hidden shadow-sm`}
           >
             {/* Top Badge & Icon */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <div className="p-3 rounded-2xl bg-slate-900 border border-slate-800">
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200">
                   {b.icon}
                 </div>
-                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-900/80 border border-slate-700 text-slate-300">
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">
                   {b.badge}
                 </span>
               </div>
 
               {/* Bold ZERO Typography Header */}
               <div className="mb-3">
-                <span className="text-3xl sm:text-4xl font-black tracking-tight text-white block">
+                <span className="text-3xl sm:text-4xl font-black tracking-tight text-slate-950 block">
                   ZERO
                 </span>
                 <span className={`text-base sm:text-lg font-black tracking-wider uppercase ${b.accentColor}`}>
@@ -79,12 +79,12 @@ export const TrustZeroSection: React.FC = () => {
                 </span>
               </div>
 
-              <h4 className="text-sm font-bold text-slate-200 mb-2">{b.subtitle}</h4>
-              <p className="text-xs text-slate-400 leading-relaxed">{b.description}</p>
+              <h4 className="text-sm font-bold text-slate-800 mb-2">{b.subtitle}</h4>
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">{b.description}</p>
             </div>
 
             {/* Checkmark guarantee */}
-            <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center gap-2 text-xs font-semibold text-slate-300">
+            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs font-bold text-slate-700">
               <CheckCircle2 size={15} className={b.accentColor} />
               <span>Campus Verified Standard</span>
             </div>

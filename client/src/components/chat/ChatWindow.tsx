@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, ArrowLeft, ExternalLink, ShieldCheck, MapPin, Sparkles, CheckCircle2, Phone } from 'lucide-react';
+import { Send, ArrowLeft, ExternalLink, ShieldCheck, Sparkles } from 'lucide-react';
 import { Conversation, Message } from '../../types/index.js';
 import { formatPrice } from '../../utils/formatters.js';
 import { useAuth } from '../../context/AuthContext.js';
+import { WhatsAppIcon } from '../common/WhatsAppIcon.js';
+import { getImageUrl, handleImageError } from '../../utils/imageUrl.js';
 
 interface ChatWindowProps {
   conversation: Conversation;
@@ -62,7 +64,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   };
 
   const handleWhatsApp = () => {
-    const phone = conversation.partner?.phone?.replace(/\D/g, '') || '919876543210';
+    const phone = conversation.partner?.phone?.replace(/\D/g, '') || '919315096256';
     const text = encodeURIComponent(
       `Hi ${conversation.partner?.name}! Chatting with you on DTU Bazaar regarding "${conversation.listing?.title}".`
     );
@@ -85,8 +87,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
           {conversation.partner?.avatar ? (
             <img
-              src={conversation.partner.avatar}
+              src={getImageUrl(conversation.partner.avatar)}
               alt={conversation.partner.name}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.style.display = 'none';
+              }}
               className="w-10 h-10 rounded-full object-cover ring-1 ring-campus-lime/40 flex-shrink-0"
             />
           ) : (
@@ -110,10 +116,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           {/* Quick WhatsApp button */}
           <button
             onClick={handleWhatsApp}
-            className="p-2 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/30 text-[#25D366] transition-colors"
+            className="p-2.5 rounded-xl bg-[#25D366]/20 hover:bg-[#25D366]/30 border border-[#25D366]/40 text-[#25D366] transition-all flex items-center justify-center"
             title="Chat on WhatsApp"
           >
-            <Phone size={15} className="fill-[#25D366]" />
+            <WhatsAppIcon size={16} className="text-[#25D366]" />
           </button>
 
           {/* Listing preview pill */}
@@ -124,8 +130,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             >
               {conversation.listing.images?.[0]?.url && (
                 <img
-                  src={conversation.listing.images[0].url}
+                  src={getImageUrl(
+                    conversation.listing.images[0].url,
+                    (conversation.listing as any)?.category
+                  )}
                   alt={conversation.listing.title}
+                  onError={(e) =>
+                    handleImageError(e, (conversation.listing as any)?.category)
+                  }
                   className="w-7 h-7 rounded-lg object-cover flex-shrink-0"
                 />
               )}

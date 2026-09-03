@@ -29,12 +29,12 @@ export const Button: React.FC<ButtonProps> = ({
   }[size];
 
   const variantClasses = {
-    lime: 'bg-campus-lime text-black hover:bg-campus-lime-hover hover:shadow-glow shadow-sm font-bold',
+    lime: 'bg-campus-lime text-slate-950 hover:bg-campus-lime-hover hover:shadow-glow shadow-sm font-black',
     pink: 'bg-campus-pink text-white hover:bg-pink-600 hover:shadow-glow-pink font-bold',
     purple: 'bg-campus-purple text-white hover:bg-purple-600 hover:shadow-glow-purple font-bold',
-    outline: 'border border-slate-700 bg-campus-card/60 text-slate-200 hover:border-slate-500 hover:bg-campus-card hover:text-white',
-    ghost: 'text-slate-300 hover:text-white hover:bg-slate-800/60',
-    danger: 'bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30',
+    outline: 'border border-slate-300 bg-white text-slate-800 hover:bg-slate-50 hover:border-slate-400 shadow-sm',
+    ghost: 'text-slate-700 hover:text-slate-900 hover:bg-slate-100',
+    danger: 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100',
   }[variant];
 
   return (

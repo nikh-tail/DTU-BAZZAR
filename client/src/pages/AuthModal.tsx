@@ -199,16 +199,16 @@ export const AuthModal: React.FC = () => {
     >
       {/* Error Alert */}
       {error && (
-        <div className="mb-4 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
-          <AlertCircle size={16} className="text-rose-400 flex-shrink-0" />
+        <div className="mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2 font-medium">
+          <AlertCircle size={16} className="text-rose-600 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Resend Success Banner */}
       {resendSuccess && step === 'OTP' && (
-        <div className="mb-4 p-3 rounded-2xl bg-campus-lime/10 border border-campus-lime/30 text-campus-lime text-xs flex items-center gap-2">
-          <CheckCircle2 size={16} className="text-campus-lime flex-shrink-0" />
+        <div className="mb-4 p-3 rounded-2xl bg-lime-50 border border-lime-200 text-lime-900 text-xs flex items-center gap-2 font-semibold">
+          <CheckCircle2 size={16} className="text-emerald-600 flex-shrink-0" />
           <span>Verification email dispatched! Check your inbox & Spam folder.</span>
         </div>
       )}
@@ -217,7 +217,7 @@ export const AuthModal: React.FC = () => {
       {step === 'EMAIL' && (
         <form onSubmit={handleRequestOtp} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Email Address *
             </label>
             <div className="relative flex items-center">
@@ -227,13 +227,13 @@ export const AuthModal: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@gmail.com or @dtu.ac.in"
-                className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-2xl pl-11 pr-4 py-3.5 text-sm outline-none transition-all"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-campus-lime text-slate-900 placeholder-slate-400 rounded-2xl pl-11 pr-4 py-3.5 text-sm outline-none transition-all font-medium"
                 required
                 autoFocus
               />
             </div>
-            <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
-              <ShieldCheck size={12} className="text-campus-lime" />
+            <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1 font-medium">
+              <ShieldCheck size={12} className="text-emerald-600" />
               <span>We'll send a 6-digit verification code to this inbox.</span>
             </p>
           </div>
@@ -244,7 +244,7 @@ export const AuthModal: React.FC = () => {
               variant="lime"
               size="lg"
               isLoading={isLoading}
-              className="w-full shadow-glow font-bold text-base py-3.5"
+              className="w-full shadow-glow font-black text-base py-3.5 text-slate-950"
               rightIcon={<ArrowRight size={18} />}
             >
               Send Verification Code
@@ -252,7 +252,7 @@ export const AuthModal: React.FC = () => {
           </div>
 
           <div className="text-center pt-2">
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 font-medium">
               Verified for all DTU students, hostellers & day scholars. Zero brokerage.
             </p>
           </div>
@@ -270,7 +270,7 @@ export const AuthModal: React.FC = () => {
                   setError(null);
                   setStep('EMAIL');
                 }}
-                className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
+                className="text-xs text-slate-500 hover:text-slate-900 flex items-center gap-1 transition-colors font-bold"
               >
                 <ArrowLeft size={14} />
                 <span>Change Email</span>
@@ -280,7 +280,7 @@ export const AuthModal: React.FC = () => {
                 type="button"
                 onClick={() => handleRequestOtp()}
                 disabled={isLoading}
-                className="text-xs font-semibold text-campus-lime hover:underline flex items-center gap-1"
+                className="text-xs font-bold text-emerald-700 hover:underline flex items-center gap-1"
               >
                 <RefreshCw size={12} className={isLoading ? 'animate-spin' : ''} />
                 <span>Resend Code</span>
@@ -295,12 +295,12 @@ export const AuthModal: React.FC = () => {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                 placeholder="• • • • • •"
-                className="w-full bg-slate-900 border-2 border-slate-700 focus:border-campus-lime text-white placeholder-slate-600 rounded-2xl pl-11 pr-4 py-3.5 text-3xl font-mono font-black tracking-[0.4em] outline-none transition-all text-center shadow-inner"
+                className="w-full bg-slate-50 border-2 border-slate-200 focus:border-campus-lime text-slate-950 placeholder-slate-300 rounded-2xl pl-11 pr-4 py-3.5 text-3xl font-mono font-black tracking-[0.4em] outline-none transition-all text-center shadow-inner"
                 required
                 autoFocus
               />
             </div>
-            <p className="text-[11px] text-slate-500 text-center mt-2">
+            <p className="text-[11px] text-slate-500 text-center mt-2 font-medium">
               Check your inbox and spam folder for the 6-digit code.
             </p>
           </div>
@@ -310,7 +310,7 @@ export const AuthModal: React.FC = () => {
             variant="lime"
             size="lg"
             isLoading={isLoading}
-            className="w-full shadow-glow font-black text-base py-3.5"
+            className="w-full shadow-glow font-black text-base py-3.5 text-slate-950"
             rightIcon={<ArrowRight size={18} />}
           >
             Verify & Continue
@@ -321,14 +321,14 @@ export const AuthModal: React.FC = () => {
       {/* STEP 3: Complete Student Profile Setup (New User) */}
       {step === 'PROFILE' && (
         <form onSubmit={handleCompleteProfile} className="space-y-4">
-          <div className="p-3 rounded-2xl bg-campus-lime/10 border border-campus-lime/20 flex items-center gap-2.5 text-xs text-campus-lime">
-            <Sparkles size={18} className="flex-shrink-0" />
+          <div className="p-3 rounded-2xl bg-lime-50 border border-lime-200 flex items-center gap-2.5 text-xs text-lime-900 font-semibold">
+            <Sparkles size={18} className="flex-shrink-0 text-emerald-600" />
             <span><strong>Email Verified!</strong> Complete your DTU student profile to finish setup.</span>
           </div>
 
           {/* Full Name */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
               Full Name *
             </label>
             <div className="relative flex items-center">
@@ -338,7 +338,7 @@ export const AuthModal: React.FC = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Rohan Sharma"
-                className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-xl pl-10 pr-3.5 py-2.5 text-sm outline-none transition-all"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-campus-lime text-slate-900 placeholder-slate-400 rounded-xl pl-10 pr-3.5 py-2.5 text-sm outline-none transition-all font-medium"
                 required
                 autoFocus
               />
@@ -348,7 +348,7 @@ export const AuthModal: React.FC = () => {
           {/* Branch & Year Grid */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Branch / Major
               </label>
               <div className="relative flex items-center">
@@ -356,7 +356,7 @@ export const AuthModal: React.FC = () => {
                 <select
                   value={branch}
                   onChange={(e) => setBranch(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl pl-9 pr-2.5 py-2.5 text-xs focus:border-campus-lime outline-none"
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-9 pr-2.5 py-2.5 text-xs focus:border-campus-lime outline-none font-medium"
                 >
                   {DTU_BRANCHES.map((b, i) => (
                     <option key={i} value={b}>
@@ -368,7 +368,7 @@ export const AuthModal: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Year of Study
               </label>
               <div className="relative flex items-center">
@@ -376,7 +376,7 @@ export const AuthModal: React.FC = () => {
                 <select
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl pl-9 pr-2.5 py-2.5 text-xs focus:border-campus-lime outline-none"
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-9 pr-2.5 py-2.5 text-xs focus:border-campus-lime outline-none font-medium"
                 >
                   {DTU_YEARS.map((y, i) => (
                     <option key={i} value={y}>
@@ -390,7 +390,7 @@ export const AuthModal: React.FC = () => {
 
           {/* Student Residency Type Toggle */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5">
+            <label className="block text-xs font-bold text-slate-700 mb-1.5">
               Campus Residence Type
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -399,8 +399,8 @@ export const AuthModal: React.FC = () => {
                 onClick={() => setUserType('HOSTELER')}
                 className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                   userType === 'HOSTELER'
-                    ? 'bg-campus-lime/15 border-campus-lime text-campus-lime'
-                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                    ? 'bg-lime-100 border-lime-300 text-slate-950'
+                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
                 }`}
               >
                 <span>🏢 Hosteler</span>
@@ -411,8 +411,8 @@ export const AuthModal: React.FC = () => {
                 onClick={() => setUserType('DAY_SCHOLAR')}
                 className={`py-2.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                   userType === 'DAY_SCHOLAR'
-                    ? 'bg-campus-lime/15 border-campus-lime text-campus-lime'
-                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700'
+                    ? 'bg-lime-100 border-lime-300 text-slate-950'
+                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
                 }`}
               >
                 <span>🏠 Day Scholar</span>
@@ -423,7 +423,7 @@ export const AuthModal: React.FC = () => {
           {/* Hostel Name (Only for Hosteler) */}
           {userType === 'HOSTELER' && (
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1">
+              <label className="block text-xs font-bold text-slate-700 mb-1">
                 Hostel Name
               </label>
               <div className="relative flex items-center">
@@ -431,7 +431,7 @@ export const AuthModal: React.FC = () => {
                 <select
                   value={hostel}
                   onChange={(e) => setHostel(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl pl-9 pr-2.5 py-2.5 text-xs focus:border-campus-lime outline-none"
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl pl-9 pr-2.5 py-2.5 text-xs focus:border-campus-lime outline-none font-medium"
                 >
                   {DTU_HOSTELS.map((h, i) => (
                     <option key={i} value={h}>
@@ -445,8 +445,8 @@ export const AuthModal: React.FC = () => {
 
           {/* Optional Phone / WhatsApp */}
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1">
-              WhatsApp / Phone <span className="text-slate-500 font-normal">(Optional)</span>
+            <label className="block text-xs font-bold text-slate-700 mb-1">
+              WhatsApp / Phone <span className="text-slate-400 font-normal">(Optional)</span>
             </label>
             <div className="relative flex items-center">
               <Phone size={16} className="absolute left-3.5 text-slate-400 pointer-events-none" />
@@ -455,7 +455,7 @@ export const AuthModal: React.FC = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 98765 43210"
-                className="w-full bg-slate-900 border border-slate-800 focus:border-campus-lime text-white placeholder-slate-500 rounded-xl pl-10 pr-3.5 py-2.5 text-xs outline-none transition-all"
+                className="w-full bg-slate-50 border border-slate-200 focus:border-campus-lime text-slate-900 placeholder-slate-400 rounded-xl pl-10 pr-3.5 py-2.5 text-xs outline-none transition-all font-medium"
               />
             </div>
           </div>
@@ -466,7 +466,7 @@ export const AuthModal: React.FC = () => {
               variant="lime"
               size="lg"
               isLoading={isLoading}
-              className="w-full shadow-glow font-black text-sm py-3.5"
+              className="w-full shadow-glow font-black text-sm py-3.5 text-slate-950"
               rightIcon={<ArrowRight size={18} />}
             >
               Complete Setup & Enter DTU Bazaar 🚀

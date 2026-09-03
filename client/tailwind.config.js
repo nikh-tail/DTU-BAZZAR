@@ -5,18 +5,19 @@ export default {
     extend: {
       colors: {
         campus: {
-          bg: '#070B14',
-          card: '#0E1526',
-          'card-hover': '#151F38',
-          border: '#1E293B',
-          'border-light': '#334155',
+          bg: '#F8FAFC',
+          card: '#FFFFFF',
+          'card-hover': '#F1F5F9',
+          border: '#E2E8F0',
+          'border-light': '#CBD5E1',
           lime: '#C6FF3D',
           'lime-hover': '#B2EB2C',
           pink: '#E8397A',
           purple: '#7C4DFF',
-          cyan: '#00E5FF',
-          gold: '#FBBF24',
-          muted: '#8E9EB5',
+          cyan: '#0284C7',
+          gold: '#D97706',
+          muted: '#64748B',
+          dark: '#0F172A',
         },
       },
       fontFamily: {
@@ -24,10 +25,11 @@ export default {
         display: ['Poppins', 'Inter', 'sans-serif'],
       },
       boxShadow: {
-        glow: '0 0 25px -5px rgba(198, 255, 61, 0.25)',
-        'glow-pink': '0 0 25px -5px rgba(232, 57, 122, 0.25)',
-        'glow-purple': '0 0 25px -5px rgba(124, 77, 255, 0.25)',
-        'card-dark': '0 10px 30px -10px rgba(0, 0, 0, 0.5)',
+        glow: '0 4px 20px -2px rgba(198, 255, 61, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.08)',
+        'glow-pink': '0 4px 20px -2px rgba(232, 57, 122, 0.3)',
+        'glow-purple': '0 4px 20px -2px rgba(124, 77, 255, 0.3)',
+        'card-light': '0 4px 20px -4px rgba(0, 0, 0, 0.06), 0 2px 6px -1px rgba(0, 0, 0, 0.04)',
+        'card-hover': '0 12px 30px -6px rgba(0, 0, 0, 0.1), 0 4px 12px -2px rgba(0, 0, 0, 0.06)',
       },
       borderRadius: {
         '2xl': '16px',

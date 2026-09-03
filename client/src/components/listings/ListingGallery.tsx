@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Maximize2 } from 'lucide-react';
 import { ListingImage } from '../../types/index.js';
+import { getImageUrl, handleImageError, DEFAULT_FALLBACK_IMAGE } from '../../utils/imageUrl.js';
 
 interface ListingGalleryProps {
   images: ListingImage[];
   title: string;
+  category?: string;
   onOpenLightbox?: (index: number) => void;
 }
 
 export const ListingGallery: React.FC<ListingGalleryProps> = ({
   images,
   title,
+  category,
   onOpenLightbox,
 }) => {
   const defaultImages =
     images && images.length > 0
       ? images
-      : [{ id: '1', url: 'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=800&auto=format&fit=crop&q=80', order: 0 }];
+      : [{ id: '1', url: DEFAULT_FALLBACK_IMAGE, order: 0 }];
 
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -36,6 +39,9 @@ export const ListingGallery: React.FC<ListingGalleryProps> = ({
     }
   };
 
+  const currentRawUrl = defaultImages[activeIndex]?.url;
+  const currentResolvedUrl = getImageUrl(currentRawUrl, category);
+
   return (
     <div className="space-y-4">
       {/* Main Large Image */}
@@ -44,8 +50,9 @@ export const ListingGallery: React.FC<ListingGalleryProps> = ({
         className="relative aspect-[4/3] sm:aspect-[16/10] w-full rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 group cursor-pointer"
       >
         <img
-          src={defaultImages[activeIndex]?.url}
+          src={currentResolvedUrl}
           alt={`${title} - Photo ${activeIndex + 1}`}
+          onError={(e) => handleImageError(e, category)}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
 
@@ -86,19 +93,27 @@ export const ListingGallery: React.FC<ListingGalleryProps> = ({
       {/* Thumbnails strip */}
       {defaultImages.length > 1 && (
         <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-1">
-          {defaultImages.map((img, idx) => (
-            <button
-              key={img.id || idx}
-              onClick={() => setActiveIndex(idx)}
-              className={`relative flex-shrink-0 w-20 h-16 rounded-2xl overflow-hidden border-2 transition-all ${
-                activeIndex === idx
-                  ? 'border-campus-lime shadow-glow scale-105'
-                  : 'border-slate-800 opacity-60 hover:opacity-100'
-              }`}
-            >
-              <img src={img.url} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
-            </button>
-          ))}
+          {defaultImages.map((img, idx) => {
+            const thumbUrl = getImageUrl(img.url, category);
+            return (
+              <button
+                key={img.id || idx}
+                onClick={() => setActiveIndex(idx)}
+                className={`relative flex-shrink-0 w-20 h-16 rounded-2xl overflow-hidden border-2 transition-all ${
+                  activeIndex === idx
+                    ? 'border-campus-lime shadow-glow scale-105'
+                    : 'border-slate-800 opacity-60 hover:opacity-100'
+                }`}
+              >
+                <img
+                  src={thumbUrl}
+                  alt={`Thumbnail ${idx + 1}`}
+                  onError={(e) => handleImageError(e, category)}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

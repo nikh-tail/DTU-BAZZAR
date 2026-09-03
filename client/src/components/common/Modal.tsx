@@ -43,24 +43,24 @@ export const Modal: React.FC<ModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/80 backdrop-blur-md transition-opacity animate-fadeIn"
+        className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity animate-fadeIn"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
       <div
-        className={`relative w-full ${maxWidthClasses} bg-campus-card border border-slate-800 rounded-3xl p-6 sm:p-7 shadow-2xl z-10 max-h-[90vh] overflow-y-auto no-scrollbar`}
+        className={`relative w-full ${maxWidthClasses} bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 shadow-2xl z-10 max-h-[90vh] overflow-y-auto no-scrollbar text-slate-900`}
       >
         {/* Header */}
         {(title || subtitle) && (
           <div className="flex items-start justify-between mb-5">
             <div>
-              {title && <h3 className="text-xl font-bold text-white tracking-tight">{title}</h3>}
-              {subtitle && <p className="text-xs text-slate-400 mt-1">{subtitle}</p>}
+              {title && <h3 className="text-xl font-black text-slate-950 tracking-tight">{title}</h3>}
+              {subtitle && <p className="text-xs text-slate-500 mt-1 font-medium">{subtitle}</p>}
             </div>
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800 transition-colors"
+              className="text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100 transition-colors"
             >
               <X size={20} />
             </button>
@@ -70,7 +70,7 @@ export const Modal: React.FC<ModalProps> = ({
         {!title && !subtitle && (
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-slate-400 hover:text-white p-1.5 rounded-full hover:bg-slate-800 transition-colors z-20"
+            className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100 transition-colors z-20"
           >
             <X size={20} />
           </button>

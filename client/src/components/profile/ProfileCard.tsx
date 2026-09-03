@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { User as UserIcon, Edit2, ShieldCheck, Star, MapPin, Building, GraduationCap, Phone, Mail, Check, Zap, Sparkles } from 'lucide-react';
+import { Edit2, ShieldCheck, Star, Building, GraduationCap, Mail, Check, Zap } from 'lucide-react';
 import { User } from '../../types/index.js';
 import { DTU_BRANCHES, DTU_HOSTELS, DTU_YEARS } from '../../utils/constants.js';
 import { Button } from '../common/Button.js';
 import { UserService } from '../../services/user.service.js';
+import { getImageUrl } from '../../utils/imageUrl.js';
 
 interface ProfileCardProps {
   user: User;
@@ -50,57 +51,58 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
   const maxLimit = user.maxListings || 3;
 
   return (
-    <div className="bg-campus-card border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-2xl relative overflow-hidden">
-      {/* Glow highlight */}
-      <div className="absolute top-0 right-0 w-48 h-48 bg-campus-lime/5 blur-3xl rounded-full pointer-events-none" />
-
+    <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 shadow-sm relative overflow-hidden">
       {/* Header Info */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           {user.avatar ? (
             <img
-              src={user.avatar}
+              src={getImageUrl(user.avatar)}
               alt={user.name}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-2 ring-campus-lime shadow-glow"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.style.display = 'none';
+              }}
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover ring-2 ring-emerald-500 shadow-sm"
             />
           ) : (
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-900 border-2 border-campus-lime text-campus-lime text-2xl font-bold flex items-center justify-center shadow-glow">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-lime-100 border-2 border-lime-300 text-lime-900 text-2xl font-black flex items-center justify-center shadow-sm">
               {user.name.charAt(0).toUpperCase()}
             </div>
           )}
 
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-xl sm:text-2xl font-black text-white">{user.name}</h2>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-950">{user.name}</h2>
               
               {/* Pro Seller Badge vs Verified Badge */}
               {isPro ? (
-                <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-500/20 to-campus-lime/20 border border-amber-400/60 text-amber-300 text-xs font-black shadow-glow">
-                  <Star size={13} className="fill-amber-300" />
+                <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-gradient-to-r from-amber-100 to-lime-100 border border-amber-300 text-amber-900 text-xs font-black shadow-sm">
+                  <Star size={13} className="fill-amber-500 text-amber-500" />
                   <span>Campus Pro Seller</span>
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold">
                   <ShieldCheck size={13} />
                   <span>Verified DTU</span>
                 </span>
               )}
             </div>
 
-            <p className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
-              <Mail size={13} className="text-slate-500" />
+            <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5 font-medium">
+              <Mail size={13} className="text-slate-400" />
               <span>{user.email}</span>
             </p>
 
             <div className="flex items-center gap-3 mt-2 text-xs flex-wrap">
-              <span className="flex items-center gap-1 text-campus-gold font-bold">
-                <Star size={14} className="fill-campus-gold" />
+              <span className="flex items-center gap-1 text-amber-600 font-bold">
+                <Star size={14} className="fill-amber-500 text-amber-500" />
                 <span>{user.rating || 5.0}</span>
-                <span className="text-slate-500 font-normal">({user.reviewCount || 1} deals)</span>
+                <span className="text-slate-400 font-normal">({user.reviewCount || 1} deals)</span>
               </span>
-              <span className="text-slate-600">•</span>
-              <span className="text-slate-300 font-medium">
-                Capacity: <strong>{maxLimit} Listings</strong> {isPro ? '(Pro Tier)' : '(Free Tier)'}
+              <span className="text-slate-300">•</span>
+              <span className="text-slate-600 font-semibold">
+                Capacity: <strong className="text-slate-900">{maxLimit} Listings</strong> {isPro ? '(Pro Tier)' : '(Free Tier)'}
               </span>
             </div>
           </div>
@@ -112,9 +114,9 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
               <button
                 type="button"
                 onClick={onOpenUpgrade}
-                className="px-3.5 py-2 rounded-2xl bg-campus-lime text-black font-black text-xs shadow-glow active:scale-95 transition-all flex items-center gap-1.5"
+                className="px-3.5 py-2 rounded-2xl bg-campus-lime text-slate-950 font-black text-xs shadow-glow active:scale-95 transition-all flex items-center gap-1.5"
               >
-                <Zap size={14} className="fill-black" />
+                <Zap size={14} className="fill-slate-950" />
                 <span>Upgrade to Pro (₹10)</span>
               </button>
             )}
@@ -133,29 +135,29 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
 
       {/* Edit Profile Form vs View Details */}
       {isEditing ? (
-        <form onSubmit={handleSave} className="space-y-4 pt-4 border-t border-slate-800 animate-fadeIn">
+        <form onSubmit={handleSave} className="space-y-4 pt-4 border-t border-slate-100 animate-fadeIn">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Full Name
               </label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 DTU Branch
               </label>
               <select
                 value={formData.branch}
                 onChange={(e) => setFormData({ ...formData, branch: e.target.value })}
-                className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
               >
                 {DTU_BRANCHES.map((b, i) => (
                   <option key={i} value={b}>
@@ -166,13 +168,13 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Year of Study
               </label>
               <select
                 value={formData.year}
                 onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-                className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
               >
                 {DTU_YEARS.map((y, i) => (
                   <option key={i} value={y}>
@@ -183,13 +185,13 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Campus Residence
               </label>
               <select
                 value={formData.hostel}
                 onChange={(e) => setFormData({ ...formData, hostel: e.target.value })}
-                className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
               >
                 {DTU_HOSTELS.map((h, i) => (
                   <option key={i} value={h}>
@@ -200,7 +202,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Room Number (Optional)
               </label>
               <input
@@ -208,12 +210,12 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                 value={formData.roomNumber}
                 placeholder="e.g. A-214"
                 onChange={(e) => setFormData({ ...formData, roomNumber: e.target.value })}
-                className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                 Contact Phone (Optional)
               </label>
               <input
@@ -221,7 +223,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                 value={formData.phone}
                 placeholder="+91 98765 43210"
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full bg-slate-900 border border-slate-800 text-white rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
+                className="w-full bg-slate-50 border border-slate-200 text-slate-900 font-medium rounded-xl px-3.5 py-2 text-sm focus:border-campus-lime outline-none"
               />
             </div>
           </div>
@@ -247,31 +249,31 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
           </div>
         </form>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800/80 text-xs">
-          <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
-            <span className="text-slate-500 font-semibold uppercase tracking-wider block mb-1 flex items-center gap-1">
-              <GraduationCap size={13} className="text-campus-lime" /> Branch & Year
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100 text-xs">
+          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+            <span className="text-slate-500 font-bold uppercase tracking-wider block mb-1 flex items-center gap-1">
+              <GraduationCap size={13} className="text-emerald-600" /> Branch & Year
             </span>
-            <p className="font-bold text-white truncate">{user.branch || 'DTU Engineering'}</p>
-            <p className="text-slate-400 mt-0.5">{user.year || 'Student'}</p>
+            <p className="font-bold text-slate-900 truncate">{user.branch || 'DTU Engineering'}</p>
+            <p className="text-slate-500 mt-0.5 font-medium">{user.year || 'Student'}</p>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
-            <span className="text-slate-500 font-semibold uppercase tracking-wider block mb-1 flex items-center gap-1">
-              <Building size={13} className="text-campus-pink" /> Residence / Hostel
+          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+            <span className="text-slate-500 font-bold uppercase tracking-wider block mb-1 flex items-center gap-1">
+              <Building size={13} className="text-rose-500" /> Residence / Hostel
             </span>
-            <p className="font-bold text-white truncate">{user.hostel || 'Hosteler'}</p>
-            {user.roomNumber && <p className="text-slate-400 mt-0.5">Room {user.roomNumber}</p>}
+            <p className="font-bold text-slate-900 truncate">{user.hostel || 'Hosteler'}</p>
+            {user.roomNumber && <p className="text-slate-500 mt-0.5 font-medium">Room {user.roomNumber}</p>}
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-slate-900/60 border border-slate-800">
-            <span className="text-slate-500 font-semibold uppercase tracking-wider block mb-1 flex items-center gap-1">
-              <Zap size={13} className="text-campus-cyan" /> Seller Tier & Limit
+          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+            <span className="text-slate-500 font-bold uppercase tracking-wider block mb-1 flex items-center gap-1">
+              <Zap size={13} className="text-amber-500" /> Seller Tier & Limit
             </span>
-            <p className="font-bold text-campus-lime">
+            <p className="font-bold text-emerald-700">
               {isPro ? '🌟 Campus Pro (10 Items)' : 'Free Tier (3 Items)'}
             </p>
-            <p className="text-slate-400 mt-0.5">
+            <p className="text-slate-500 mt-0.5 font-medium">
               {isPro ? '7 extra slots unlocked' : 'Upgrade for ₹10'}
             </p>
           </div>
