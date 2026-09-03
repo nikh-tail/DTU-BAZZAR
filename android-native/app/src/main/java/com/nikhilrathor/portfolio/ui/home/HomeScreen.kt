@@ -430,51 +430,82 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 2-Column Grid (Chunked pairs)
-            val categoryPairs = ListingCategory.values().toList().chunked(2)
+            // 2-Column Grid (Chunked pairs, capped at 6 with View All)
+            val displayCategories = ListingCategory.values().take(6)
+            val categoryPairs = displayCategories.chunked(2)
             categoryPairs.forEach { pair ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        .padding(bottom = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     pair.forEach { cat ->
                         Surface(
-                            shape = RoundedCornerShape(16.dp),
+                            shape = RoundedCornerShape(20.dp),
                             color = MaterialTheme.colorScheme.surface,
-                            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
+                            shadowElevation = 2.dp,
                             modifier = Modifier
                                 .weight(1f)
                                 .clickable { onNavigateToCategory(cat.id) }
                         ) {
-                            Column {
-                                Column(modifier = Modifier.padding(14.dp)) {
-                                    Text(text = cat.icon, fontSize = 28.sp)
-                                    Spacer(modifier = Modifier.height(8.dp))
+                            Column(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(14.dp)
+                                ) {
                                     Text(
                                         text = cat.title,
                                         style = MaterialTheme.typography.titleMedium.copy(
-                                            fontWeight = FontWeight.Bold,
+                                            fontWeight = FontWeight.Black,
                                             color = MaterialTheme.colorScheme.onSurface
                                         ),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
-                                        text = "DTU Campus Gear",
+                                        text = cat.subtitle,
                                         style = MaterialTheme.typography.bodySmall.copy(
                                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                            fontSize = 10.sp
-                                        )
+                                            fontSize = 10.5.sp,
+                                            lineHeight = 14.sp
+                                        ),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                        modifier = Modifier.padding(top = 2.dp)
                                     )
                                 }
-                                // Bottom Accent Strip (SharePal style)
+
+                                // Product Image Representation
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(3.dp)
-                                        .background(CampusLime)
+                                        .height(100.dp)
+                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                        .clip(RoundedCornerShape(14.dp))
+                                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    coil.compose.AsyncImage(
+                                        model = cat.imageUrl,
+                                        contentDescription = cat.title,
+                                        contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(6.dp))
+
+                                // Solid Colored Bottom Accent Strip (8dp height, rounded bottom corners)
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(8.dp)
+                                        .background(androidx.compose.ui.graphics.Color(cat.stripColorHex))
                                 )
                             }
                         }

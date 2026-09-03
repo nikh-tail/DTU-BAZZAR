@@ -1,64 +1,104 @@
 import React from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { CATEGORIES } from '../../utils/constants.js';
 
 interface CategoryGridProps {
+  selectedCategory?: string;
   onSelectCategory: (categoryId: string) => void;
+  onViewAll?: () => void;
 }
 
-export const CategoryGrid: React.FC<CategoryGridProps> = ({ onSelectCategory }) => {
+export const CategoryGrid: React.FC<CategoryGridProps> = ({
+  selectedCategory = 'ALL',
+  onSelectCategory,
+  onViewAll,
+}) => {
+  // Show top 6 categories in 2-column grid (3 rows on mobile), matching SharePal structure
+  const displayCategories = CATEGORIES.slice(0, 6);
+  const remainingCount = CATEGORIES.length - 6;
+
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-14 sm:mb-16">
-      <div className="flex items-center justify-between mb-5">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <span>Explore Campus Categories</span>
-            <span className="text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full bg-lime-100 text-lime-900 font-bold border border-lime-300">
-              Instant DTU Deals
-            </span>
-          </h2>
-          <p className="text-xs text-slate-500 mt-0.5 font-medium">
-            Everything you need for hostels, labs, semesters, sports & fashion
-          </p>
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 sm:mb-14">
+      {/* Section Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Campus Categories
+          </h3>
+          <span className="text-[10px] px-2 py-0.5 rounded-full bg-lime-100 text-lime-900 border border-lime-300 font-bold hidden sm:inline-block">
+            DTU Gear
+          </span>
         </div>
+
+        {/* Quick-access "All Items" filter pill */}
+        <button
+          onClick={() => onSelectCategory('ALL')}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
+            selectedCategory === 'ALL'
+              ? 'bg-campus-lime text-slate-950 border-campus-lime shadow-sm'
+              : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 hover:border-slate-300'
+          }`}
+        >
+          <Sparkles size={12} className={selectedCategory === 'ALL' ? 'text-slate-950' : 'text-amber-500'} />
+          <span>All Items</span>
+        </button>
       </div>
 
-      {/* Mobile: Horizontal Swipeable Carousel | Tablet/Desktop: Responsive Grid */}
-      <div className="flex overflow-x-auto no-scrollbar snap-x snap-mandatory gap-3 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-        {CATEGORIES.map((cat) => (
-          <div
-            key={cat.id}
-            onClick={() => onSelectCategory(cat.id)}
-            className={`min-w-[240px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink relative group cursor-pointer overflow-hidden rounded-3xl border border-slate-200 ${cat.bgGradient} p-5 transition-all duration-300 hover:scale-[1.02] hover:border-slate-300 hover:shadow-xl flex flex-col justify-between min-h-[200px] sm:min-h-[220px] shadow-sm`}
-          >
-            {/* Top Text Info */}
-            <div className="z-10 relative">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">{cat.icon}</span>
-                <div className="w-8 h-8 rounded-full bg-white/90 border border-slate-200 flex items-center justify-center text-slate-700 group-hover:bg-campus-lime group-hover:text-black group-hover:border-campus-lime transition-all shadow-sm">
-                  <ArrowUpRight size={16} />
-                </div>
+      {/* 2-Column Category Card Grid (SharePal Inspired) */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4">
+        {displayCategories.map((cat) => {
+          const isSelected = selectedCategory === cat.id;
+          return (
+            <div
+              key={cat.id}
+              onClick={() => onSelectCategory(cat.id)}
+              className={`relative bg-white border ${
+                isSelected
+                  ? 'border-slate-900 ring-2 ring-campus-lime shadow-md'
+                  : 'border-[#EAEAEA] hover:border-slate-300 hover:shadow-md'
+              } rounded-3xl overflow-hidden transition-all duration-300 flex flex-col justify-between cursor-pointer group aspect-[4/5] sm:aspect-[4/4.5]`}
+              style={{
+                backgroundColor: '#FFFFFF',
+              }}
+            >
+              {/* 1 & 2. Card Header: Title & Subtitle */}
+              <div className="p-3.5 sm:p-4 z-10">
+                <h4 className="font-bold text-[#1A1A1A] text-sm sm:text-base leading-snug group-hover:text-emerald-700 transition-colors">
+                  {cat.name}
+                </h4>
+                <p className="text-[10.5px] sm:text-xs text-[#6B6B6B] line-clamp-1 mt-0.5 font-medium leading-tight">
+                  {cat.subtitle}
+                </p>
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-emerald-700 transition-colors leading-snug">
-                {cat.name}
-              </h3>
-              <p className="text-xs text-slate-600 mt-1 line-clamp-2 max-w-[180px] font-medium">
-                {cat.subtitle}
-              </p>
-            </div>
 
-            {/* Bleeding product image on bottom right */}
-            <div className="relative mt-3 self-end w-28 h-24 sm:w-36 sm:h-32 -mr-3 -mb-3 rounded-2xl overflow-hidden shadow-md transition-transform duration-300 group-hover:scale-105 group-hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10" />
-              <img
-                src={cat.image}
-                alt={cat.name}
-                className="w-full h-full object-cover rounded-2xl"
-                loading="lazy"
+              {/* 3. Representative Product Image (Fills lower two-thirds) */}
+              <div className="relative flex-1 w-full overflow-hidden flex items-end justify-center px-2 pb-2">
+                <img
+                  src={cat.image}
+                  alt={cat.name}
+                  className="w-full h-full max-h-[140px] sm:max-h-[160px] object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                />
+              </div>
+
+              {/* 4. Solid Colored Bottom Accent Strip (8-10px height, rounded bottom corners) */}
+              <div
+                className={`w-full h-2.5 sm:h-3 ${cat.stripColor} rounded-b-3xl flex-shrink-0 transition-opacity`}
               />
             </div>
-          </div>
-        ))}
+          );
+        })}
+      </div>
+
+      {/* View All Categories Footer Link */}
+      <div className="flex items-center justify-center mt-4">
+        <button
+          onClick={() => (onViewAll ? onViewAll() : onSelectCategory('ALL'))}
+          className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-700 hover:text-emerald-700 transition-colors py-1 px-3 rounded-full hover:bg-slate-100"
+        >
+          <span>View All Categories {remainingCount > 0 ? `(+${remainingCount} More)` : ''}</span>
+          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+        </button>
       </div>
     </section>
   );
