@@ -43,7 +43,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   }, [selectedCategory]);
 
   const handleCategorySelect = (cat: string) => {
-    setSelectedCategory(cat);
+    if (cat === 'ALL') {
+      onNavigate('browse', { category: 'ALL' });
+    } else {
+      onNavigate('browse', { category: cat });
+    }
   };
 
   const handleSellerBannerClick = () => {

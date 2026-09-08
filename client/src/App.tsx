@@ -91,7 +91,11 @@ export function AppContent() {
         {currentPage === 'home' && <HomePage onNavigate={navigate} />}
 
         {currentPage === 'browse' && (
-          <BrowsePage initialParams={pageParams} onNavigate={navigate} />
+          <BrowsePage
+            key={`browse-${pageParams.category || 'all'}-${pageParams.search || ''}`}
+            initialParams={pageParams}
+            onNavigate={navigate}
+          />
         )}
 
         {currentPage === 'listing-detail' && pageParams.id && (

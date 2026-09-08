@@ -32,6 +32,17 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
 
+  // Synchronize internal filter state if initialParams change
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      search: initialParams.search !== undefined ? initialParams.search : prev.search,
+      category: initialParams.category !== undefined ? initialParams.category : prev.category,
+      condition: initialParams.condition !== undefined ? initialParams.condition : prev.condition,
+      campusLocation: initialParams.campusLocation !== undefined ? initialParams.campusLocation : prev.campusLocation,
+    }));
+  }, [initialParams.search, initialParams.category, initialParams.condition, initialParams.campusLocation]);
+
   const fetchListings = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -138,14 +149,14 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
               className="fixed inset-0 bg-black/40 backdrop-blur-sm"
               onClick={() => setIsMobileFilterOpen(false)}
             />
-            <div className="relative w-full max-w-xs bg-white h-full p-6 overflow-y-auto border-l border-slate-200 shadow-2xl z-10">
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100">
-                <h3 className="font-black text-slate-900 text-base">Filter Listings</h3>
+            <div className="relative w-full max-w-xs bg-white h-full p-6 overflow-y-auto z-10 animate-fadeIn">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+                <h3 className="text-base font-black text-slate-950">Refine Search</h3>
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="p-2 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-900"
+                  className="p-1 rounded-full text-slate-400 hover:text-slate-700"
                 >
-                  <X size={18} />
+                  <X size={20} />
                 </button>
               </div>
 
@@ -157,30 +168,30 @@ export const BrowsePage: React.FC<BrowsePageProps> = ({ initialParams = {}, onNa
                 onReset={handleResetFilters}
               />
 
-              <div className="pt-6 mt-6 border-t border-slate-100">
+              <div className="pt-6">
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="w-full py-3 rounded-full bg-campus-lime text-slate-950 font-black text-sm shadow-glow"
+                  className="w-full py-3 bg-campus-lime text-slate-950 font-black rounded-2xl shadow-glow text-sm"
                 >
-                  Apply Filters ({listings.length} Results)
+                  Show {listings.length} Listings
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        {/* Listings Feed Grid */}
+        {/* Listings Feed */}
         <div className="lg:col-span-3">
           {isLoading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-72 rounded-3xl bg-slate-200 animate-pulse border border-slate-300" />
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="aspect-[4/5] rounded-3xl bg-slate-200 animate-pulse" />
               ))}
             </div>
           ) : listings.length === 0 ? (
             <EmptyState
               title="No items found"
-              description="Try adjusting your keywords, price filter, or category to find what you need."
+              description="Try adjusting your search terms or clearing your category filters."
               actionText="Clear All Filters"
               onAction={handleResetFilters}
             />
