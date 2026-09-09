@@ -22,12 +22,7 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
 
   const handleDownloadApk = () => {
     setDownloadStarted(true);
-    const link = document.createElement('a');
-    link.href = '/download/dtu-bazaar.apk';
-    link.download = 'dtu-bazaar.apk';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.location.href = 'https://github.com/nikh-tail/DTU-BAZZAR/releases/download/v1.0.0-flutter/DTU-Bazaar.apk';
   };
 
   const appFeatures = [
