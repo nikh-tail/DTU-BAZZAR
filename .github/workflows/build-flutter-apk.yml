@@ -31,15 +31,15 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Prepare Flutter & Android Scaffolding
+      - name: Install Mobile Dependencies
         run: |
           cd mobile
-          flutter create . --org com.nikhilrathor --project-name dtu_bazaar --platforms=android
           flutter pub get
 
       - name: Build Android Release APK
         run: |
           cd mobile
+          chmod +x android/gradlew
           flutter build apk --release --no-tree-shake-icons
 
       - name: Stage APK for Release
