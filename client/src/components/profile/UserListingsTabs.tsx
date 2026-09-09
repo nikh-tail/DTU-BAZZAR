@@ -58,13 +58,13 @@ export const UserListingsTabs: React.FC<UserListingsTabsProps> = ({
   return (
     <div className="space-y-6">
       {/* Tabs Row */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2 overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto no-scrollbar">
         <button
           onClick={() => setTab('active')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
             tab === 'active'
-              ? 'bg-campus-lime text-black shadow-glow'
-              : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              ? 'bg-campus-lime text-slate-950 shadow-sm'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <Package size={15} />
@@ -75,8 +75,8 @@ export const UserListingsTabs: React.FC<UserListingsTabsProps> = ({
           onClick={() => setTab('sold')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
             tab === 'sold'
-              ? 'bg-campus-lime text-black shadow-glow'
-              : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              ? 'bg-campus-lime text-slate-950 shadow-sm'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <CheckCircle size={15} />
@@ -87,8 +87,8 @@ export const UserListingsTabs: React.FC<UserListingsTabsProps> = ({
           onClick={() => setTab('saved')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
             tab === 'saved'
-              ? 'bg-campus-pink text-white shadow-glow-pink'
-              : 'text-slate-400 hover:text-white hover:bg-slate-900'
+              ? 'bg-rose-500 text-white shadow-sm'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
           }`}
         >
           <Heart size={15} />
@@ -114,37 +114,37 @@ export const UserListingsTabs: React.FC<UserListingsTabsProps> = ({
                   <div
                     key={listing.id}
                     onClick={() => onSelectListing(listing.id)}
-                    className="bg-campus-card border border-slate-800 hover:border-slate-700 rounded-3xl p-4 sm:p-5 flex gap-4 cursor-pointer group transition-all"
+                    className="bg-white border border-slate-200 hover:border-slate-300 rounded-3xl p-4 sm:p-5 flex gap-4 cursor-pointer group transition-all shadow-sm hover:shadow-md"
                   >
                     <img
                       src={imgUrl}
                       alt={listing.title}
                       onError={(e) => handleImageError(e, listing.category)}
-                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover flex-shrink-0"
+                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover flex-shrink-0 border border-slate-100"
                     />
 
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
                         <div className="flex items-center justify-between gap-1 mb-1">
                           <ConditionBadge condition={listing.condition} size="sm" />
-                          <span className="text-[10px] text-slate-500">
+                          <span className="text-[10px] text-slate-400 font-medium">
                             {formatTimeAgo(listing.createdAt)}
                           </span>
                         </div>
-                        <h4 className="font-bold text-white text-sm line-clamp-1 group-hover:text-campus-lime transition-colors">
+                        <h4 className="font-bold text-slate-900 text-sm line-clamp-1 group-hover:text-emerald-700 transition-colors">
                           {listing.title}
                         </h4>
-                        <p className="text-base font-black text-campus-lime mt-1">
+                        <p className="text-base font-black text-emerald-700 mt-1">
                           {formatPrice(listing.price)}
                         </p>
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex items-center gap-2 pt-2 border-t border-slate-800/80 mt-2">
+                      <div className="flex items-center gap-2 pt-2 border-t border-slate-100 mt-2">
                         <button
                           onClick={(e) => handleMarkAsSold(e, listing.id)}
                           disabled={actionLoadingId === listing.id}
-                          className="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-campus-lime hover:text-black text-slate-200 text-xs font-semibold flex items-center gap-1 border border-slate-700 transition-colors"
+                          className="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-campus-lime hover:text-slate-950 text-slate-700 text-xs font-bold flex items-center gap-1 border border-slate-200 transition-colors"
                         >
                           <CheckCheck size={13} />
                           <span>Mark Sold</span>
@@ -153,7 +153,7 @@ export const UserListingsTabs: React.FC<UserListingsTabsProps> = ({
                         <button
                           onClick={(e) => handleDelete(e, listing.id)}
                           disabled={actionLoadingId === listing.id}
-                          className="p-1.5 rounded-xl bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 border border-slate-700 transition-colors"
+                          className="p-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 transition-colors"
                           title="Delete listing"
                         >
                           <Trash2 size={14} />
@@ -183,17 +183,17 @@ export const UserListingsTabs: React.FC<UserListingsTabsProps> = ({
                   <div
                     key={listing.id}
                     onClick={() => onSelectListing(listing.id)}
-                    className="bg-campus-card/60 border border-slate-800/80 rounded-3xl p-4 sm:p-5 flex gap-4 cursor-pointer opacity-80 hover:opacity-100 transition-all"
+                    className="bg-white/80 border border-slate-200 rounded-3xl p-4 sm:p-5 flex gap-4 cursor-pointer opacity-85 hover:opacity-100 transition-all shadow-sm"
                   >
-                    <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden flex-shrink-0">
+                    <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden flex-shrink-0 border border-slate-100">
                       <img
                         src={imgUrl}
                         alt={listing.title}
                         onError={(e) => handleImageError(e, listing.category)}
                         className="w-full h-full object-cover grayscale"
                       />
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                        <span className="px-2 py-0.5 rounded bg-rose-500 text-white font-bold text-[10px] uppercase">
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <span className="px-2 py-0.5 rounded bg-rose-500 text-white font-black text-[10px] uppercase">
                           Sold
                         </span>
                       </div>
@@ -201,18 +201,18 @@ export const UserListingsTabs: React.FC<UserListingsTabsProps> = ({
 
                     <div className="flex-1 min-w-0 flex flex-col justify-between">
                       <div>
-                        <h4 className="font-bold text-white text-sm line-clamp-1">
+                        <h4 className="font-bold text-slate-900 text-sm line-clamp-1">
                           {listing.title}
                         </h4>
-                        <p className="text-base font-black text-slate-400 mt-1">
+                        <p className="text-base font-black text-slate-500 mt-1">
                           {formatPrice(listing.price)}
                         </p>
-                        <p className="text-[11px] text-slate-500 mt-1">
+                        <p className="text-[11px] text-slate-500 mt-1 font-medium">
                           Location: {listing.campusLocation || 'DTU Campus'}
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-2 pt-2 border-t border-slate-800/80 text-xs text-emerald-400 font-semibold">
+                      <div className="flex items-center gap-2 pt-2 border-t border-slate-100 text-xs text-emerald-700 font-bold">
                         <CheckCircle size={14} />
                         <span>Deal Completed</span>
                       </div>
@@ -240,19 +240,19 @@ export const UserListingsTabs: React.FC<UserListingsTabsProps> = ({
                   <div
                     key={listing.id}
                     onClick={() => onSelectListing(listing.id)}
-                    className="bg-campus-card border border-slate-800 rounded-3xl p-4 cursor-pointer hover:border-campus-pink/50 transition-all flex flex-col justify-between group"
+                    className="bg-white border border-slate-200 hover:border-slate-300 rounded-3xl p-4 cursor-pointer transition-all flex flex-col justify-between group shadow-sm hover:shadow-md"
                   >
                     <img
                       src={imgUrl}
                       alt={listing.title}
                       onError={(e) => handleImageError(e, listing.category)}
-                      className="w-full aspect-[4/3] rounded-2xl object-cover mb-3"
+                      className="w-full aspect-[4/3] rounded-2xl object-cover mb-3 border border-slate-100"
                     />
                     <div>
-                      <h4 className="font-bold text-white text-sm line-clamp-1 group-hover:text-campus-pink transition-colors">
+                      <h4 className="font-bold text-slate-900 text-sm line-clamp-1 group-hover:text-emerald-700 transition-colors">
                         {listing.title}
                       </h4>
-                      <p className="text-base font-black text-white mt-1">
+                      <p className="text-base font-black text-emerald-700 mt-1">
                         {formatPrice(listing.price)}
                       </p>
                     </div>

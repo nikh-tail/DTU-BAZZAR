@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   MapPin,
   Calendar,
@@ -67,7 +67,7 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
         }
 
         // Fetch global trending/recommended campus items
-        const allRes = await ListingService.getListings({ limit: 16 });
+        const allRes = await ListingService.getListings({ limit: 20 });
         if (allRes.success && allRes.data) {
           const others = allRes.data.filter((i: Listing) => i.id !== listingId);
           setTrendingListings(others);
@@ -140,16 +140,51 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
   };
 
   const scrollRecLeft = () => {
-    recCarouselRef.current?.scrollBy({ left: -320, behavior: 'smooth' });
+    recCarouselRef.current?.scrollBy({ left: -280, behavior: 'smooth' });
   };
 
   const scrollRecRight = () => {
-    recCarouselRef.current?.scrollBy({ left: 320, behavior: 'smooth' });
+    recCarouselRef.current?.scrollBy({ left: 280, behavior: 'smooth' });
   };
+
+  const isOwner = user?.id === listing?.sellerId;
+  const isSold = listing?.status === 'SOLD';
+
+  // Compute recommendation buckets with graceful fallback padding to guarantee full rich carousel
+  const sameLocationListings = useMemo(() => {
+    if (!listing) return [];
+    return trendingListings.filter(
+      (item) => item.campusLocation === listing.campusLocation && item.id !== listing.id
+    );
+  }, [trendingListings, listing]);
+
+  const activeRecommendations = useMemo(() => {
+    if (!listing) return [];
+
+    if (recTab === 'SIMILAR') {
+      const combined = [...relatedListings.filter((i) => i.id !== listing.id)];
+      trendingListings.forEach((item) => {
+        if (item.id !== listing.id && !combined.some((c) => c.id === item.id)) {
+          combined.push(item);
+        }
+      });
+      return combined.slice(0, 12);
+    } else if (recTab === 'LOCATION') {
+      const combined = [...sameLocationListings];
+      trendingListings.forEach((item) => {
+        if (item.id !== listing.id && !combined.some((c) => c.id === item.id)) {
+          combined.push(item);
+        }
+      });
+      return combined.slice(0, 12);
+    } else {
+      return trendingListings.filter((i) => i.id !== listing.id).slice(0, 12);
+    }
+  }, [recTab, relatedListings, sameLocationListings, trendingListings, listing]);
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 h-[450px] rounded-3xl bg-slate-200 animate-pulse" />
           <div className="h-[450px] rounded-3xl bg-slate-200 animate-pulse" />
@@ -160,7 +195,7 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
 
   if (!listing) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
         <h2 className="text-2xl font-black text-slate-900 mb-2">Listing not found</h2>
         <p className="text-slate-500 text-sm mb-6 font-medium">
           This campus listing may have been sold or removed by the seller.
@@ -175,29 +210,10 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
     );
   }
 
-  const isOwner = user?.id === listing.sellerId;
-  const isSold = listing.status === 'SOLD';
-
-  // Compute recommendation buckets
-  const sameLocationListings = trendingListings.filter(
-    (item) => item.campusLocation === listing.campusLocation && item.id !== listing.id
-  );
-
-  const activeRecommendations =
-    recTab === 'SIMILAR'
-      ? relatedListings.length > 0
-        ? relatedListings
-        : trendingListings
-      : recTab === 'LOCATION'
-      ? sameLocationListings.length > 0
-        ? sameLocationListings
-        : trendingListings
-      : trendingListings;
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 min-h-screen pb-24 sm:pb-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 pb-6 sm:pb-8">
       {/* Breadcrumb Navigation */}
-      <div className="flex items-center gap-2 text-xs text-slate-500 mb-6 overflow-x-auto no-scrollbar font-medium">
+      <div className="flex items-center gap-2 text-xs text-slate-500 mb-4 sm:mb-6 overflow-x-auto no-scrollbar font-medium">
         <button
           onClick={() => onNavigate('home')}
           className="hover:text-emerald-700 transition-colors flex-shrink-0 font-semibold"
@@ -218,9 +234,9 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
       </div>
 
       {/* Main 2-Column Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Left Column: Gallery, Specs & Description */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-6 sm:space-y-8">
           {/* Multi-Photo Gallery with Lightbox support */}
           <ListingGallery
             images={listing.images}
@@ -230,7 +246,7 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
           />
 
           {/* Title & Metadata Strip */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 space-y-4 shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 space-y-4 shadow-sm">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700">
@@ -274,11 +290,11 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
           </div>
 
           {/* Detailed Item Description with Click-to-View Toggle */}
-          <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-7 space-y-4 shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-7 space-y-4 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FileText size={18} className="text-emerald-600" />
-                <h3 className="text-base font-black text-slate-900 uppercase tracking-wider">
+                <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wider">
                   Item Details & Description
                 </h3>
               </div>
@@ -295,13 +311,13 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
             {/* Collapsed State: Direct action button to reveal details */}
             {!isDetailsExpanded ? (
               <div className="space-y-3 pt-1">
-                <p className="text-sm text-slate-500 line-clamp-2 leading-relaxed font-medium">
+                <p className="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed font-medium">
                   {listing.description}
                 </p>
 
                 <button
                   onClick={() => setIsDetailsExpanded(true)}
-                  className="w-full py-3 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98"
+                  className="w-full py-2.5 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-900 font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-sm active:scale-98"
                 >
                   <span>Click to See Full Item Details & Specs</span>
                   <ChevronDown size={16} className="text-emerald-700 stroke-[2.5]" />
@@ -329,7 +345,7 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
 
                 <button
                   onClick={() => setIsDetailsExpanded(false)}
-                  className="w-full py-2.5 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center gap-1.5 transition-all mt-2"
+                  className="w-full py-2 px-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center gap-1.5 transition-all mt-2"
                 >
                   <span>Hide Details</span>
                   <ChevronUp size={15} />
@@ -352,12 +368,12 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
       {/* ==================================================== */}
       {/* 🌟 SCROLLABLE RECOMMENDATIONS CAROUSEL (RIGHT/LEFT)  */}
       {/* ==================================================== */}
-      <div className="mt-16 pt-12 border-t border-slate-200">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+      <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-200">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 sm:mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-emerald-600 text-lg">💡</span>
-              <h3 className="text-xl sm:text-2xl font-black text-slate-950 tracking-tight">
+              <h3 className="text-lg sm:text-2xl font-black text-slate-950 tracking-tight">
                 Recommended Campus Deals
               </h3>
             </div>
@@ -370,7 +386,7 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
           <div className="flex items-center p-1 rounded-2xl bg-slate-100 border border-slate-200 self-stretch sm:self-auto overflow-x-auto no-scrollbar shadow-inner">
             <button
               onClick={() => setRecTab('SIMILAR')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 recTab === 'SIMILAR'
                   ? 'bg-campus-lime text-slate-950 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
@@ -382,7 +398,7 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
 
             <button
               onClick={() => setRecTab('TRENDING')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 recTab === 'TRENDING'
                   ? 'bg-campus-lime text-slate-950 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
@@ -395,7 +411,7 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
             {sameLocationListings.length > 0 && (
               <button
                 onClick={() => setRecTab('LOCATION')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                   recTab === 'LOCATION'
                     ? 'bg-campus-lime text-slate-950 shadow-sm'
                     : 'text-slate-600 hover:text-slate-900'
@@ -414,21 +430,21 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
             {/* Left Scroll Button */}
             <button
               onClick={scrollRecLeft}
-              className="hidden sm:flex absolute -left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white border border-slate-300 text-slate-700 hover:text-black hover:bg-slate-50 items-center justify-center shadow-lg transition-all active:scale-95"
+              className="hidden sm:flex absolute -left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-slate-300 text-slate-700 hover:text-black hover:bg-slate-50 items-center justify-center shadow-md transition-all active:scale-95"
               aria-label="Scroll left"
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={18} />
             </button>
 
-            {/* Horizontal Scroll Track */}
+            {/* Horizontal Scroll Track (Balanced Compact Card Size) */}
             <div
               ref={recCarouselRef}
-              className="flex items-stretch gap-4 sm:gap-6 overflow-x-auto no-scrollbar snap-x snap-mandatory py-2 -mx-4 px-4 sm:mx-0 sm:px-0"
+              className="flex items-stretch gap-3 sm:gap-4 lg:gap-5 overflow-x-auto no-scrollbar snap-x snap-mandatory py-2 -mx-4 px-4 sm:mx-0 sm:px-0"
             >
               {activeRecommendations.map((rel) => (
                 <div
                   key={rel.id}
-                  className="min-w-[260px] sm:min-w-[280px] max-w-[280px] snap-start flex-shrink-0 flex flex-col"
+                  className="w-[220px] sm:w-[240px] md:w-[250px] lg:w-[260px] min-w-[220px] max-w-[260px] snap-start flex-shrink-0 flex flex-col"
                 >
                   <ListingCard
                     listing={rel}
@@ -441,10 +457,10 @@ export const ListingDetailPage: React.FC<ListingDetailPageProps> = ({
             {/* Right Scroll Button */}
             <button
               onClick={scrollRecRight}
-              className="hidden sm:flex absolute -right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white border border-slate-300 text-slate-700 hover:text-black hover:bg-slate-50 items-center justify-center shadow-lg transition-all active:scale-95"
+              className="hidden sm:flex absolute -right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-slate-300 text-slate-700 hover:text-black hover:bg-slate-50 items-center justify-center shadow-md transition-all active:scale-95"
               aria-label="Scroll right"
             >
-              <ChevronRight size={20} />
+              <ChevronRight size={18} />
             </button>
           </div>
         ) : (

@@ -3,7 +3,7 @@ import { ShieldCheck, MapPin, Zap, Heart } from 'lucide-react';
 
 export const Footer: React.FC<{ onNavigate: (page: string, params?: any) => void }> = ({ onNavigate }) => {
   return (
-    <footer className="w-full bg-slate-100 border-t border-slate-200 pt-12 pb-8 mt-20 text-slate-600">
+    <footer className="w-full bg-slate-100 border-t border-slate-200 pt-8 sm:pt-12 pb-16 sm:pb-8 mt-8 sm:mt-14 text-slate-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Col 1: Brand */}
