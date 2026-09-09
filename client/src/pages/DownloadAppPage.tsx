@@ -22,7 +22,7 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
 
   const handleDownloadApk = () => {
     setDownloadStarted(true);
-    window.location.href = 'https://github.com/nikh-tail/DTU-BAZZAR/releases/download/v1.0.0-flutter/DTU-Bazaar.apk';
+    window.location.href = 'https://github.com/nikh-tail/DTU-BAZZAR/releases/download/v2.0.0-flutter/DTU-Bazaar.apk';
   };
 
   const appFeatures = [
@@ -44,7 +44,7 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
     {
       icon: <Layers className="text-purple-600" size={20} />,
       title: 'Offline-Fast & Lightweight',
-      desc: 'Ultra-lean 8 MB native app that loads instantly even on spotty DTU campus Wi-Fi.',
+      desc: 'Ultra-lean Flutter cross-platform app that loads instantly even on spotty DTU campus Wi-Fi.',
     },
   ];
 
@@ -55,7 +55,7 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-emerald-700 text-xs font-bold shadow-sm">
             <Sparkles size={14} />
-            <span>DTU Bazaar Official Mobile Application</span>
+            <span>DTU Bazaar Official Flutter Mobile App</span>
           </div>
 
           <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight text-slate-950">
@@ -78,14 +78,14 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
                   <Smartphone size={28} />
                 </div>
                 <span className="px-3 py-1 rounded-full bg-lime-100 border border-lime-300 text-lime-900 text-[11px] font-black uppercase tracking-wider">
-                  Direct Download
+                  Flutter v2.0
                 </span>
               </div>
 
               <div>
                 <h2 className="text-2xl font-black text-slate-950 mb-1">Android App (APK)</h2>
                 <p className="text-xs text-slate-500 font-medium">
-                  Version 1.0.0 · Size: 8.0 MB · Compatible with Android 8.0+
+                  Version 2.0.0 (Flutter) · Size: ~16 MB · Android 6.0+
                 </p>
               </div>
 

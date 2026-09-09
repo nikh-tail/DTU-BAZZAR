@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'mobile/**'
-      - '.github/workflows/build-flutter-apk.yml'
   workflow_dispatch:
 
 permissions:
@@ -47,6 +44,7 @@ jobs:
       - name: Rename APK for Release
         run: |
           mkdir -p release-output
+          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar-Flutter.apk
           cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar.apk
 
       - name: Upload APK Artifact
@@ -59,22 +57,24 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
-          tag_name: v1.0.0-flutter
-          name: "DTU Bazaar Mobile App v1.0.0 (Flutter)"
+          tag_name: v2.0.0-flutter
+          name: "DTU Bazaar Mobile App v2.0.0 (Flutter)"
           body: |
-            ### ⚡ DTU Bazaar — Exclusive Campus Peer Marketplace
-            Official Flutter Cross-Platform Release APK for Android.
+            ### ⚡ DTU Bazaar — Official Flutter Mobile App (v2.0.0)
+            Brand new cross-platform Flutter release for Delhi Technological University students.
 
-            #### 🌟 What's Inside:
-            - **SharePal 2-Column Campus Categories Grid** with touch color-reveal and 8px accent strips
-            - **Live Campus Marketplace Feed** with real-time filters & instant search
-            - **1-Tap WhatsApp Direct Messaging** with pre-filled deal greetings
-            - **Live WebSocket Real-time Chat** with instant offer bargaining
-            - **Campus Seller Wizard** with multi-image camera/gallery picker
-            - **Student Profile** with verified DTU student badge & active/sold/saved tabs
+            #### 🌟 What's New in Flutter v2.0.0:
+            - **SharePal 2-Column Campus Categories Grid** with interactive touch color reveal and 8px solid accent strips
+            - **1-Tap WhatsApp Direct Messaging** with pre-filled campus meetup template
+            - **Live Real-Time Socket.io Chat** with instant price offer negotiation
+            - **Multi-Photo Lightbox** with pinch-to-zoom and swipe controls
+            - **Campus Seller Wizard** with camera & gallery picker
+            - **Verified Student Profiles** with active/sold/wishlist tabs and Pro Seller badge
 
-            Download `DTU-Bazaar.apk` below and install directly on your Android device!
-          files: release-output/DTU-Bazaar.apk
+            Download `DTU-Bazaar.apk` below and install directly on your Android phone!
+          files: |
+            release-output/DTU-Bazaar.apk
+            release-output/DTU-Bazaar-Flutter.apk
           draft: false
           prerelease: false
         env:
