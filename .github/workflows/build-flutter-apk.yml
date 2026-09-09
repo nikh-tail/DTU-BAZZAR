@@ -31,21 +31,22 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Install Mobile Dependencies
+      - name: Prepare Flutter & Android Scaffolding
         run: |
           cd mobile
+          flutter create . --org com.nikhilrathor --project-name dtu_bazaar --platforms=android
           flutter pub get
 
-      - name: Build Release APK
+      - name: Build Android Release APK
         run: |
           cd mobile
-          flutter build apk --release
+          flutter build apk --release --no-tree-shake-icons
 
-      - name: Rename APK for Release
+      - name: Stage APK for Release
         run: |
           mkdir -p release-output
-          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar-Flutter.apk
           cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar.apk
+          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/dtu-bazaar-v2.0.0.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -53,7 +54,7 @@ jobs:
           name: dtu-bazaar-flutter-apk
           path: release-output/DTU-Bazaar.apk
 
-      - name: Create GitHub Release & Upload APK
+      - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         if: github.ref == 'refs/heads/main'
         with:
@@ -63,8 +64,8 @@ jobs:
             ### ⚡ DTU Bazaar — Official Flutter Mobile App (v2.0.0)
             Brand new cross-platform Flutter release for Delhi Technological University students.
 
-            #### 🌟 What's New in Flutter v2.0.0:
-            - **SharePal 2-Column Campus Categories Grid** with interactive touch color reveal and 8px solid accent strips
+            #### 🌟 Highlights in Flutter v2.0.0:
+            - **SharePal 2-Column Campus Categories Grid** with interactive touch color-reveal and 8px solid accent strips
             - **1-Tap WhatsApp Direct Messaging** with pre-filled campus meetup template
             - **Live Real-Time Socket.io Chat** with instant price offer negotiation
             - **Multi-Photo Lightbox** with pinch-to-zoom and swipe controls
@@ -74,8 +75,9 @@ jobs:
             Download `DTU-Bazaar.apk` below and install directly on your Android phone!
           files: |
             release-output/DTU-Bazaar.apk
-            release-output/DTU-Bazaar-Flutter.apk
+            release-output/dtu-bazaar-v2.0.0.apk
           draft: false
           prerelease: false
+          overwrite: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
