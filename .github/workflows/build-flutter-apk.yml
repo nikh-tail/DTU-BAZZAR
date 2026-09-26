@@ -59,14 +59,15 @@ jobs:
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         with:
-          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || 'v2.1.0' }}
-          name: "DTU Bazaar Mobile App v2.1.0 (Flutter Release)"
+          tag_name: ${{ github.ref_name }}
+          name: "DTU Bazaar Mobile App ${{ github.ref_name }} (Flutter Release)"
           body: |
-            ### ⚡ DTU Bazaar — Official Mobile App v2.1.0
+            ### ⚡ DTU Bazaar — Official Mobile App ${{ github.ref_name }}
             Latest production cross-platform release for Delhi Technological University students & campus community.
 
-            #### 🌟 Highlights in v2.1.0:
+            #### 🌟 Highlights:
             - **✨ Redesigned Glassmorphic Onboarding Flow**: 4-digit rapid email verification, unified campus identity setup, and instant confirmation.
             - **🔓 Any Email & Gmail Support**: Instant signup and login with any personal Gmail or university webmail address.
             - **🏷️ SharePal 4-Card Department Grid**: Larger, touch-responsive category cards with representative imagery and bottom accent color bars.
@@ -80,6 +81,6 @@ jobs:
             release-output/DTU-Bazaar-v2.1.0.apk
           draft: false
           prerelease: false
-          overwrite: true
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
