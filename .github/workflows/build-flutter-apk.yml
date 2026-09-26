@@ -48,7 +48,8 @@ jobs:
         run: |
           mkdir -p release-output
           cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar.apk
-          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/dtu-bazaar-v2.0.0.apk
+          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/dtu-bazaar-v2.1.0.apk
+          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar-v2.1.0.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -59,24 +60,24 @@ jobs:
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || 'v2.0.0-flutter' }}
-          name: "DTU Bazaar Mobile App v2.0.0 (Flutter)"
+          tag_name: ${{ github.ref_type == 'tag' && github.ref_name || 'v2.1.0' }}
+          name: "DTU Bazaar Mobile App v2.1.0 (Flutter Release)"
           body: |
-            ### ⚡ DTU Bazaar — Official Flutter Mobile App (v2.0.0)
-            Brand new cross-platform Flutter release for Delhi Technological University students.
+            ### ⚡ DTU Bazaar — Official Mobile App v2.1.0
+            Latest production cross-platform release for Delhi Technological University students & campus community.
 
-            #### 🌟 Highlights in Flutter v2.0.0:
-            - **SharePal 2-Column Campus Categories Grid** with interactive touch color-reveal and 8px solid accent strips
-            - **1-Tap WhatsApp Direct Messaging** with pre-filled campus meetup template
-            - **Live Real-Time Socket.io Chat** with instant price offer negotiation
-            - **Multi-Photo Lightbox** with pinch-to-zoom and swipe controls
-            - **Campus Seller Wizard** with camera & gallery picker
-            - **Verified Student Profiles** with active/sold/wishlist tabs and Pro Seller badge
+            #### 🌟 Highlights in v2.1.0:
+            - **✨ Redesigned Glassmorphic Onboarding Flow**: 4-digit rapid email verification, unified campus identity setup, and instant confirmation.
+            - **🔓 Any Email & Gmail Support**: Instant signup and login with any personal Gmail or university webmail address.
+            - **🏷️ SharePal 4-Card Department Grid**: Larger, touch-responsive category cards with representative imagery and bottom accent color bars.
+            - **💬 1-Tap WhatsApp & Real-Time Campus Chat**: Negotiate prices directly with peers with 0% brokerage.
+            - **📸 Rapid Camera & Gallery Listing**: Post drafters, electronics, books, and cycles within seconds.
 
             Download `DTU-Bazaar.apk` below and install directly on your Android phone!
           files: |
             release-output/DTU-Bazaar.apk
-            release-output/dtu-bazaar-v2.0.0.apk
+            release-output/dtu-bazaar-v2.1.0.apk
+            release-output/DTU-Bazaar-v2.1.0.apk
           draft: false
           prerelease: false
           overwrite: true

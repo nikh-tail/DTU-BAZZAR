@@ -22,7 +22,7 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
 
   const handleDownloadApk = () => {
     setDownloadStarted(true);
-    window.location.href = 'https://github.com/nikh-tail/DTU-BAZZAR/releases/download/v2.0.0-flutter/DTU-Bazaar.apk';
+    window.location.href = 'https://github.com/nikh-tail/DTU-BAZZAR/releases/download/v2.1.0/DTU-Bazaar.apk';
   };
 
   const appFeatures = [
@@ -55,7 +55,7 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-emerald-700 text-xs font-bold shadow-sm">
             <Sparkles size={14} />
-            <span>DTU Bazaar Official Flutter Mobile App</span>
+            <span>DTU Bazaar Official Mobile App (v2.1.0)</span>
           </div>
 
           <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight text-slate-950">
@@ -78,14 +78,14 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
                   <Smartphone size={28} />
                 </div>
                 <span className="px-3 py-1 rounded-full bg-lime-100 border border-lime-300 text-lime-900 text-[11px] font-black uppercase tracking-wider">
-                  Flutter v2.0
+                  Latest v2.1.0
                 </span>
               </div>
 
               <div>
                 <h2 className="text-2xl font-black text-slate-950 mb-1">Android App (APK)</h2>
                 <p className="text-xs text-slate-500 font-medium">
-                  Version 2.0.0 (Flutter) · Size: ~16 MB · Android 6.0+
+                  Version 2.1.0 · Updated Today · Size: ~18 MB · Android 6.0+
                 </p>
               </div>
 
@@ -98,13 +98,13 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
                   leftIcon={<Download size={20} className="stroke-[2.5]" />}
                   className="w-full shadow-glow font-black text-base py-4 text-slate-950"
                 >
-                  Download Android APK
+                  Download Android APK (v2.1.0)
                 </Button>
 
                 {downloadStarted && (
                   <div className="p-3 rounded-2xl bg-lime-50 border border-lime-200 text-lime-900 text-xs flex items-center gap-2 animate-fadeIn font-semibold">
                     <CheckCircle2 size={16} className="flex-shrink-0 text-emerald-600" />
-                    <span>Download started! Open <code>dtu-bazaar.apk</code> from your notifications to install.</span>
+                    <span>Download started! Open <code>DTU-Bazaar.apk</code> from your notifications to install.</span>
                   </div>
                 )}
               </div>

@@ -23,6 +23,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
         display: ['Poppins', 'Inter', 'sans-serif'],
+        sora: ['Sora', 'sans-serif'],
       },
       boxShadow: {
         glow: '0 4px 20px -2px rgba(198, 255, 61, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.08)',

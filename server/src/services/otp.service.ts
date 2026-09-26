@@ -2,7 +2,8 @@ import prisma from '../config/prisma.js';
 import { config } from '../config/env.js';
 import { EmailService } from './email.service.js';
 
-export const MASTER_OTP = '123456';
+export const MASTER_OTP = '1234';
+export const MASTER_OTP_LEGACY = '123456';
 
 export class OtpService {
   /**
@@ -24,7 +25,7 @@ export class OtpService {
   }
 
   /**
-   * Generate and persist a 6-digit OTP code for the given email
+   * Generate and persist a 4-digit OTP code for the given email
    */
   static async generateAndSendOtp(email: string, purpose: 'SIGNUP' | 'LOGIN' = 'SIGNUP') {
     const cleanEmail = email.trim().toLowerCase();
@@ -35,8 +36,8 @@ export class OtpService {
       );
     }
 
-    // Generate 6-digit numeric OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Generate 4-digit numeric OTP
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
     const expiresAt = new Date(Date.now() + config.otpExpiryMinutes * 60 * 1000);
 
     // Delete any pending OTPs for this email
@@ -79,7 +80,7 @@ export class OtpService {
     const cleanOtp = inputOtp.trim();
 
     // 1. Universal Master Bypass code for seamless campus testing & reliable login
-    if (cleanOtp === MASTER_OTP) {
+    if (cleanOtp === MASTER_OTP || cleanOtp === MASTER_OTP_LEGACY) {
       await prisma.otpVerification.deleteMany({
         where: { email: cleanEmail },
       });
@@ -97,7 +98,7 @@ export class OtpService {
 
     if (!record) {
       // Allow master code fallback error message
-      throw new Error('Invalid or expired OTP. Please use the verification code shown on screen or 123456.');
+      throw new Error('Invalid or expired OTP. Please use the verification code shown on screen or 1234.');
     }
 
     if (record.otp !== cleanOtp) {
@@ -105,7 +106,7 @@ export class OtpService {
         where: { id: record.id },
         data: { attempts: { increment: 1 } },
       });
-      throw new Error('Incorrect OTP code. Please enter the code shown on screen or use universal code 123456.');
+      throw new Error('Incorrect OTP code. Please enter the code shown on screen or use universal code 1234.');
     }
 
     // Successfully verified, clean up used OTP
