@@ -38,8 +38,8 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
     },
     {
       icon: <ShieldCheck className="text-amber-600" size={20} />,
-      title: '100% Verified DTU Students',
-      desc: 'Zero scammers and zero third-party brokers. Built exclusively for Delhi Technological University.',
+      title: '100% Verified Campus Marketplace',
+      desc: 'Zero scammers and zero third-party brokers. Built for Delhi Technological University & campus peers.',
     },
     {
       icon: <Layers className="text-purple-600" size={20} />,

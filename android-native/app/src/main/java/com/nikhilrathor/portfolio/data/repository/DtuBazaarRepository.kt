@@ -49,7 +49,7 @@ class DtuBazaarRepository {
 
     fun getStats(): List<CampusStat> = listOf(
         CampusStat("₹ Saved", "₹4.8L+", "Direct student deals", "💰"),
-        CampusStat("Verified Students", "1,420+", "@dtu.ac.in authenticated", "🛡️"),
+        CampusStat("Verified Students", "1,420+", "Campus & email verified", "🛡️"),
         CampusStat("Items Exchanged", "980+", "Zero commission", "📦"),
         CampusStat("Campus Rating", "4.9★", "From 620+ reviews", "⭐")
     )

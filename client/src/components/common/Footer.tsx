@@ -77,7 +77,7 @@ export const Footer: React.FC<{ onNavigate: (page: string, params?: any) => void
             <ul className="space-y-2 text-xs text-slate-500">
               <li className="flex items-center gap-1.5">
                 <ShieldCheck size={14} className="text-emerald-600 flex-shrink-0" />
-                <span>Verified @dtu.ac.in Student Emails</span>
+                <span>Verified Student & Campus Community</span>
               </li>
               <li className="flex items-center gap-1.5">
                 <Zap size={14} className="text-rose-500 flex-shrink-0" />

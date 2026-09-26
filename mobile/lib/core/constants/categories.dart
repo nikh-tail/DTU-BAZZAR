@@ -51,15 +51,6 @@ class CampusConstants {
       imageUrl: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&auto=format&fit=crop&q=80',
     ),
     CategoryItem(
-      id: 'HOSTEL_REQ',
-      name: 'Hostel & Req',
-      shortName: 'Hostel & Req',
-      subtitle: 'Coolers, mattresses, kettles & bedsheets',
-      icon: '🛏️',
-      themeColor: AppColors.catHostelReq,
-      imageUrl: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80',
-    ),
-    CategoryItem(
       id: 'FASHION',
       name: 'Fashion',
       shortName: 'Fashion',
@@ -67,6 +58,15 @@ class CampusConstants {
       icon: '👕',
       themeColor: AppColors.catFashion,
       imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&auto=format&fit=crop&q=80',
+    ),
+    CategoryItem(
+      id: 'HOSTEL_REQ',
+      name: 'Hostel & Req',
+      shortName: 'Hostel & Req',
+      subtitle: 'Coolers, mattresses, kettles & bedsheets',
+      icon: '🛏️',
+      themeColor: AppColors.catHostelReq,
+      imageUrl: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80',
     ),
     CategoryItem(
       id: 'HOBBY_SPORT',

@@ -30,7 +30,7 @@ import com.nikhilrathor.portfolio.theme.CampusLime
 @Composable
 fun VerifiedDtuBadge(
     modifier: Modifier = Modifier,
-    text: String = "Verified DTU Student"
+    text: String = "Verified Student"
 ) {
     val isDark = MaterialTheme.colorScheme.background.value != 0xFFF7F8FA.toULong()
     val badgeBg = if (isDark) CampusLime.copy(alpha = 0.14f) else Color(0xFFDCFCE7)

@@ -29,7 +29,7 @@ class _AuthScreenState extends State<AuthScreen> {
   void _handleSendOtp() async {
     final email = _emailController.text.trim().toLowerCase();
     if (!email.contains('@') || !email.contains('.')) {
-      setState(() => _errorMessage = 'Please enter a valid student email');
+      setState(() => _errorMessage = 'Please enter a valid email address (e.g. Gmail)');
       return;
     }
 
@@ -80,7 +80,7 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('DTU Student Login'),
+        title: const Text('Campus Marketplace Login'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -100,7 +100,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Exclusive to verified Delhi Technological University students.',
+                      'Open to all campus students & community. Sign up with any Gmail or email.',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
@@ -114,7 +114,7 @@ class _AuthScreenState extends State<AuthScreen> {
             const SizedBox(height: 28),
 
             Text(
-              _otpSent ? 'Enter 6-Digit OTP' : 'Student Email',
+              _otpSent ? 'Enter 6-Digit OTP' : 'Your Email Address',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
@@ -125,7 +125,7 @@ class _AuthScreenState extends State<AuthScreen> {
             Text(
               _otpSent
                   ? 'We sent a verification code to ${_emailController.text.trim()}'
-                  : 'Enter your DTU webmail (@dtu.ac.in) or personal email address',
+                  : 'Enter your Gmail, personal email, or student webmail',
               style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -139,7 +139,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
-                  hintText: 'e.g. 21co101@dtu.ac.in',
+                  hintText: 'e.g. nikhil@gmail.com or 21co101@dtu.ac.in',
                   prefixIcon: Icon(Icons.email_outlined, color: AppColors.textMuted),
                 ),
               ),

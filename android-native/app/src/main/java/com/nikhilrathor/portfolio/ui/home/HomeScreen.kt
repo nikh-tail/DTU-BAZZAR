@@ -119,6 +119,7 @@ fun HomeScreen(
     val currentTheme by viewModel.themeMode.collectAsState()
     val scrollState = rememberScrollState()
     val pagerState = rememberPagerState(pageCount = { viewModel.promoBanners.size })
+    var isCategoriesExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -403,7 +404,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         // ====================================================
-        // 5. FULL CATEGORY GRID (2-Column Larger Cards)
+        // 5. CAMPUS CATEGORIES (SharePal Style 4 Core Cards + Expand)
         // ====================================================
         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
             Row(
@@ -411,27 +412,65 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Explore by Department",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Black,
-                        color = MaterialTheme.colorScheme.onSurface
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "Campus Categories",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Black,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     )
-                )
-                Text(
-                    text = "All (7)",
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        color = CampusLimeDark,
-                        fontWeight = FontWeight.Bold
-                    ),
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = CampusLime.copy(alpha = 0.18f),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, CampusLime)
+                    ) {
+                        Text(
+                            text = "4 Hubs",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 10.sp
+                            ),
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                        )
+                    }
+                }
+
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                     modifier = Modifier.clickable { onNavigateToExplore() }
-                )
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(text = "⚡", fontSize = 11.sp)
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "All Items",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 11.sp
+                            )
+                        )
+                    }
+                }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            // 2-Column Grid (Chunked pairs, capped at 6 with View All)
-            val displayCategories = ListingCategory.values().take(6)
+            // Exactly 4 categories shown by default, expands to all 7 when toggled
+            val displayCategories = if (isCategoriesExpanded) {
+                ListingCategory.values().toList()
+            } else {
+                ListingCategory.values().take(4).toList()
+            }
+
             val categoryPairs = displayCategories.chunked(2)
             categoryPairs.forEach { pair ->
                 Row(
@@ -442,9 +481,12 @@ fun HomeScreen(
                 ) {
                     pair.forEach { cat ->
                         Surface(
-                            shape = RoundedCornerShape(20.dp),
+                            shape = RoundedCornerShape(24.dp),
                             color = MaterialTheme.colorScheme.surface,
-                            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
+                            border = androidx.compose.foundation.BorderStroke(
+                                1.dp,
+                                MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)
+                            ),
                             shadowElevation = 2.dp,
                             modifier = Modifier
                                 .weight(1f)
@@ -453,20 +495,23 @@ fun HomeScreen(
                             Column(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
+                                // Header: Title + Subtitle
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(14.dp)
+                                        .padding(horizontal = 14.dp, vertical = 12.dp)
                                 ) {
                                     Text(
                                         text = cat.title,
                                         style = MaterialTheme.typography.titleMedium.copy(
                                             fontWeight = FontWeight.Black,
-                                            color = MaterialTheme.colorScheme.onSurface
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            fontSize = 14.5.sp
                                         ),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
+                                    Spacer(modifier = Modifier.height(2.dp))
                                     Text(
                                         text = cat.subtitle,
                                         style = MaterialTheme.typography.bodySmall.copy(
@@ -475,19 +520,18 @@ fun HomeScreen(
                                             lineHeight = 14.sp
                                         ),
                                         maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        modifier = Modifier.padding(top = 2.dp)
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
 
-                                // Product Image Representation
+                                // Representative Product Image (Large card body)
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .height(100.dp)
+                                        .height(125.dp)
                                         .padding(horizontal = 8.dp, vertical = 4.dp)
-                                        .clip(RoundedCornerShape(14.dp))
-                                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     coil.compose.AsyncImage(
@@ -500,7 +544,7 @@ fun HomeScreen(
 
                                 Spacer(modifier = Modifier.height(6.dp))
 
-                                // Solid Colored Bottom Accent Strip (8dp height, rounded bottom corners)
+                                // Solid Colored Bottom Accent Strip (8dp height)
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -512,6 +556,49 @@ fun HomeScreen(
                     }
                     if (pair.size == 1) {
                         Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+
+            // View All / Expand / Collapse Button
+            Spacer(modifier = Modifier.height(4.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    shadowElevation = 1.dp,
+                    modifier = Modifier.clickable { isCategoriesExpanded = !isCategoriesExpanded }
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 9.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.GridView,
+                            contentDescription = null,
+                            tint = CampusLimeDark,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = if (isCategoriesExpanded) "Show 4 Main Categories" else "See All Categories (+${ListingCategory.values().size - 4} More)",
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontSize = 11.5.sp
+                            )
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(
+                            imageVector = if (isCategoriesExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(16.dp)
+                        )
                     }
                 }
             }

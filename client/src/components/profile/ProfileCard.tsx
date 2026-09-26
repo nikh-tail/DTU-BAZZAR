@@ -84,7 +84,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
               ) : (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold">
                   <ShieldCheck size={13} />
-                  <span>Verified DTU</span>
+                  <span>Verified Member</span>
                 </span>
               )}
             </div>

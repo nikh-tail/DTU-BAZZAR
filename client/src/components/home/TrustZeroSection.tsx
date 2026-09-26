@@ -5,14 +5,14 @@ export const TrustZeroSection: React.FC = () => {
   const blocks = [
     {
       title: 'SCAM RISK',
-      subtitle: 'Verified DTU Credentials Only',
+      subtitle: 'Secure OTP Email Verification',
       description:
-        'Strict signup restriction to official @dtu.ac.in emails with OTP validation. No random outsiders or fake accounts.',
+        'Fast OTP verification with Gmail or college email. Connect safely with verified students and sellers across campus.',
       icon: <ShieldCheck size={28} className="text-emerald-600" />,
       accentColor: 'text-emerald-700',
       borderColor: 'border-emerald-200',
       glowColor: 'hover:shadow-lg',
-      badge: 'DTU Domain Verified',
+      badge: 'Email OTP Verified',
     },
     {
       title: 'DELIVERY HASSLE',

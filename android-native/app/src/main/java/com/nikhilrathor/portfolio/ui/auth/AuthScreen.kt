@@ -67,14 +67,14 @@ class AuthViewModel(private val dataStore: DtuBazaarDataStore) : ViewModel() {
     fun requestOtp() {
         val email = _state.value.email.trim()
         if (email.isEmpty()) {
-            _state.value = _state.value.copy(emailError = "Please enter your college email")
+            _state.value = _state.value.copy(emailError = "Please enter your email address")
             return
         }
 
-        // Validate @dtu.ac.in domain requirement
-        if (!email.endsWith("@dtu.ac.in", ignoreCase = true) && !email.contains("@dtu.ac.in", ignoreCase = true)) {
+        // Validate basic email format (Allows any Gmail, DTU, or custom email)
+        if (!email.contains("@") || !email.contains(".")) {
             _state.value = _state.value.copy(
-                emailError = "Access Restricted: Please enter your official @dtu.ac.in email address"
+                emailError = "Please enter a valid email address (e.g. name@gmail.com)"
             )
             return
         }
@@ -147,7 +147,7 @@ fun AuthScreen(
             verticalArrangement = Arrangement.Center
         ) {
             // Brand Mark & Trust Badge
-            VerifiedDtuBadge(text = "🛡️ Verified DTU Students Only")
+            VerifiedDtuBadge(text = "🛡️ Campus Student Marketplace")
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -160,7 +160,7 @@ fun AuthScreen(
             )
 
             Text(
-                text = if (!state.isOtpSent) "Login with your DTU Roll / College Email" else "Enter 6-Digit Campus Verification Code",
+                text = if (!state.isOtpSent) "Login with your Gmail or Student Email" else "Enter 6-Digit Campus Verification Code",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
@@ -181,7 +181,7 @@ fun AuthScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                text = "COLLEGE EMAIL ADDRESS",
+                                text = "EMAIL ADDRESS",
                                 style = MaterialTheme.typography.labelSmall.copy(
                                     fontFamily = FontFamily.Monospace,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -193,7 +193,7 @@ fun AuthScreen(
                             OutlinedTextField(
                                 value = state.email,
                                 onValueChange = { viewModel.onEmailChange(it) },
-                                placeholder = { Text("e.g. 2k22_co_123@dtu.ac.in", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) },
+                                placeholder = { Text("e.g. nikhil@gmail.com or 2k22_co_123@dtu.ac.in", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)) },
                                 leadingIcon = { Icon(Icons.Default.School, contentDescription = null, tint = CampusLime) },
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Email,

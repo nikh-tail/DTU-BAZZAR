@@ -4,7 +4,7 @@ import { IndianRupee, Users, PackageCheck, Star } from 'lucide-react';
 export const CampusStats: React.FC = () => {
   const stats = [
     { label: 'Student Savings Generated', value: '₹15 Lakhs+', icon: <IndianRupee size={22} className="text-emerald-600" /> },
-    { label: 'Verified DTU Students', value: '1,450+', icon: <Users size={22} className="text-rose-500" /> },
+    { label: 'Verified Student Members', value: '1,450+', icon: <Users size={22} className="text-rose-500" /> },
     { label: 'Campus Items Sold', value: '920+', icon: <PackageCheck size={22} className="text-sky-600" /> },
     { label: 'Peer Satisfaction Rate', value: '4.9 / 5.0', icon: <Star size={22} className="text-amber-500 fill-amber-400" /> },
   ];

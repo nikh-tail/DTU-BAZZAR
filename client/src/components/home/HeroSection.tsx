@@ -172,7 +172,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onSearch, onNavigate }
           <p className="text-xs sm:text-sm md:text-base text-slate-600 font-medium max-w-xl mx-auto mb-6 sm:mb-8 px-2 flex items-center justify-center gap-2 flex-wrap">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-800 text-[11px] sm:text-xs font-bold shadow-sm">
               <ShieldCheck size={14} className="text-emerald-600 flex-shrink-0" />
-              <span>Verified DTU Students Only</span>
+              <span>Verified Student Marketplace</span>
             </span>
             <span className="text-slate-400 hidden sm:inline">•</span>
             <span className="text-slate-600 text-xs sm:text-sm font-semibold">Buy & Sell Directly Within Campus</span>

@@ -424,7 +424,7 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Text(
-                                  'Verified DTU',
+                                  'Verified Student',
                                   style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: Colors.blueAccent),
                                 ),
                               ),
