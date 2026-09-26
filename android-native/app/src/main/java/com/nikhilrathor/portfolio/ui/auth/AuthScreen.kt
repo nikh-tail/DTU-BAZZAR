@@ -94,8 +94,8 @@ class AuthViewModel(private val dataStore: DtuBazaarDataStore) : ViewModel() {
 
     fun verifyOtp(onSuccess: () -> Unit) {
         val otp = _state.value.otp.trim()
-        if (otp.length != 6) {
-            _state.value = _state.value.copy(otpError = "Please enter the 6-digit OTP")
+        if (otp.length < 4) {
+            _state.value = _state.value.copy(otpError = "Please enter the verification code (e.g. 1234)")
             return
         }
 

@@ -114,7 +114,7 @@ class _AuthScreenState extends State<AuthScreen> {
             const SizedBox(height: 28),
 
             Text(
-              _otpSent ? 'Enter 6-Digit OTP' : 'Your Email Address',
+              _otpSent ? 'Enter Verification Code' : 'Your Email Address',
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
@@ -124,7 +124,7 @@ class _AuthScreenState extends State<AuthScreen> {
             const SizedBox(height: 6),
             Text(
               _otpSent
-                  ? 'We sent a verification code to ${_emailController.text.trim()}'
+                  ? 'We sent a 4-digit code to ${_emailController.text.trim()} (or use master code 1234)'
                   : 'Enter your Gmail, personal email, or student webmail',
               style: const TextStyle(
                 fontSize: 12,
@@ -157,12 +157,12 @@ class _AuthScreenState extends State<AuthScreen> {
                 maxLength: 6,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 8,
                 ),
                 decoration: const InputDecoration(
-                  hintText: '123456',
+                  hintText: '1234',
                   counterText: '',
                 ),
               ),

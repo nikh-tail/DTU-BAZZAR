@@ -25,12 +25,17 @@ class AuthRepository {
         'otp': otp,
       });
 
-      if (res.data['success'] == true) {
+      if (res.data != null && res.data['success'] == true) {
         final token = res.data['token'];
-        final user = UserModel.fromJson(res.data['data']);
+        final userData = res.data['user'] ?? res.data['data'];
+        if (userData == null) return null;
+
+        final user = UserModel.fromJson(Map<String, dynamic>.from(userData));
 
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('auth_token', token);
+        if (token != null) {
+          await prefs.setString('auth_token', token);
+        }
         await prefs.setString('user_id', user.id);
 
         return user;
@@ -45,8 +50,11 @@ class AuthRepository {
   Future<UserModel?> getProfile() async {
     try {
       final res = await _client.get(ApiEndpoints.getProfile);
-      if (res.data['success'] == true) {
-        return UserModel.fromJson(res.data['data']);
+      if (res.data != null && res.data['success'] == true) {
+        final userData = res.data['user'] ?? res.data['data'];
+        if (userData != null) {
+          return UserModel.fromJson(Map<String, dynamic>.from(userData));
+        }
       }
       return null;
     } catch (e) {
@@ -58,8 +66,11 @@ class AuthRepository {
   Future<UserModel?> updateProfile(Map<String, dynamic> data) async {
     try {
       final res = await _client.put(ApiEndpoints.updateProfile, data: data);
-      if (res.data['success'] == true) {
-        return UserModel.fromJson(res.data['data']);
+      if (res.data != null && res.data['success'] == true) {
+        final userData = res.data['user'] ?? res.data['data'];
+        if (userData != null) {
+          return UserModel.fromJson(Map<String, dynamic>.from(userData));
+        }
       }
       return null;
     } catch (e) {

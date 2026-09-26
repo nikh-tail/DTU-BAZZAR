@@ -13,7 +13,7 @@ const requestOtpSchema = z.object({
 
 const verifyOtpSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
-  otp: z.string().length(6, 'OTP must be exactly 6 digits'),
+  otp: z.string().min(4, 'OTP must have at least 4 digits').max(6, 'OTP cannot exceed 6 digits'),
   name: z.string().min(2, 'Name must have at least 2 characters').optional(),
   branch: z.string().optional(),
   year: z.string().optional(),
@@ -115,25 +115,28 @@ export class AuthController {
         expiresIn: '7d',
       });
 
+      const userPayload = {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        branch: user.branch,
+        year: user.year,
+        userType: user.userType,
+        hostel: user.hostel,
+        roomNumber: user.roomNumber,
+        phone: user.phone,
+        rating: user.rating,
+        reviewCount: user.reviewCount,
+        avatar: user.avatar,
+      };
+
       res.status(200).json({
         success: true,
         message: isNewUser ? 'Welcome to DTU Bazaar!' : 'Logged in successfully.',
         isNewUser: Boolean(isNewUser),
         token,
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          branch: user.branch,
-          year: user.year,
-          userType: user.userType,
-          hostel: user.hostel,
-          roomNumber: user.roomNumber,
-          phone: user.phone,
-          rating: user.rating,
-          reviewCount: user.reviewCount,
-          avatar: user.avatar,
-        },
+        user: userPayload,
+        data: userPayload,
       });
     } catch (err: any) {
       res.status(400).json({
@@ -170,25 +173,28 @@ export class AuthController {
         return;
       }
 
+      const userPayload = {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        branch: user.branch,
+        year: user.year,
+        userType: user.userType,
+        hostel: user.hostel,
+        roomNumber: user.roomNumber,
+        phone: user.phone,
+        rating: user.rating,
+        reviewCount: user.reviewCount,
+        avatar: user.avatar,
+        totalListings: user._count.listings,
+        savedCount: user._count.savedListings,
+        createdAt: user.createdAt,
+      };
+
       res.status(200).json({
         success: true,
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          branch: user.branch,
-          year: user.year,
-          userType: user.userType,
-          hostel: user.hostel,
-          roomNumber: user.roomNumber,
-          phone: user.phone,
-          rating: user.rating,
-          reviewCount: user.reviewCount,
-          avatar: user.avatar,
-          totalListings: user._count.listings,
-          savedCount: user._count.savedListings,
-          createdAt: user.createdAt,
-        },
+        user: userPayload,
+        data: userPayload,
       });
     } catch (err: any) {
       res.status(500).json({ success: false, message: err.message || 'Internal server error' });

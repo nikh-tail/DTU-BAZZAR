@@ -7,6 +7,7 @@ const router = Router();
 
 // Anti-spam and anti-brute-force guarded endpoints
 router.post('/request-otp', otpRequestLimiter, AuthController.requestOtp);
+router.post('/send-otp', otpRequestLimiter, AuthController.requestOtp);
 router.post('/verify-otp', otpVerifyLimiter, AuthController.verifyOtpAndLogin);
 
 // Protected authenticated session endpoint
