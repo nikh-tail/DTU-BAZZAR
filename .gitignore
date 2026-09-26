@@ -39,8 +39,7 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-*.log
+# APK files and artifacts
+*.apk
+downloaded-apk/
+release-output/
