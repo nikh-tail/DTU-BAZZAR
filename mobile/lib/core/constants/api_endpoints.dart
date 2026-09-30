@@ -14,6 +14,7 @@ class ApiEndpoints {
   // Listings Endpoints
   static const String listings = '/listings';
   static const String myActiveListings = '/users/my-listings';
+  static const String mySoldListings = '/users/my-listings';
   static const String mySavedListings = '/users/saved';
   static const String toggleSaveListing = '/users/saved/toggle';
 
