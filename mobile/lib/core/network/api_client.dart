@@ -9,14 +9,17 @@ class ApiClient {
     dio = Dio(
       BaseOptions(
         baseUrl: ApiEndpoints.baseUrl,
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
+        connectTimeout: const Duration(seconds: 45),
+        receiveTimeout: const Duration(seconds: 45),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       ),
     );
+
+    // Warm-up ping to wake up server container
+    dio.get('/health').catchError((_) => Response(requestOptions: RequestOptions(path: '')));
 
     // Attach JWT Authorization Interceptor
     dio.interceptors.add(

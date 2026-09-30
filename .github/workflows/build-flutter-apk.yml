@@ -48,8 +48,7 @@ jobs:
         run: |
           mkdir -p release-output
           cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar.apk
-          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/dtu-bazaar-v2.2.0.apk
-          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar-v2.2.0.apk
+          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/dtu-bazaar-v2.3.0.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -77,8 +76,7 @@ jobs:
             Download `DTU-Bazaar.apk` below and install directly on your Android phone!
           files: |
             release-output/DTU-Bazaar.apk
-            release-output/dtu-bazaar-v2.2.0.apk
-            release-output/DTU-Bazaar-v2.2.0.apk
+            release-output/dtu-bazaar-v2.3.0.apk
           draft: false
           prerelease: false
           make_latest: true
