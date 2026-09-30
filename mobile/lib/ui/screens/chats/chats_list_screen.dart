@@ -82,7 +82,9 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                                 sellerPhone: conv.otherUser?.phone,
                               ),
                             ),
-                          );
+                          ).then((_) {
+                            chatProv.fetchConversations();
+                          });
                         },
                         leading: CircleAvatar(
                           backgroundColor: AppColors.limeLight,

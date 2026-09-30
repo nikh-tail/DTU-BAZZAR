@@ -74,6 +74,7 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
     final conversationId = await chatProv.startChat(widget.listingId);
 
     if (conversationId != null && mounted) {
+      chatProv.fetchConversations();
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -85,7 +86,9 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
             sellerPhone: _listing?.seller?.phone,
           ),
         ),
-      );
+      ).then((_) {
+        chatProv.fetchConversations();
+      });
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Could not start chat. Please verify your connection.')),
@@ -186,68 +189,83 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
         child: SafeArea(
           child: Row(
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Price', style: TextStyle(fontSize: 10, color: AppColors.textSecondary, fontWeight: FontWeight.w700)),
-                  Text(
-                    Formatters.formatPrice(_listing!.price),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              // Offer Button
-              OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 105),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Price', style: TextStyle(fontSize: 10, color: AppColors.textSecondary, fontWeight: FontWeight.w700)),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        Formatters.formatPrice(_listing!.price),
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: AppColors.textPrimary),
+                      ),
+                    ),
+                  ],
                 ),
-                onPressed: _handleMakeOffer,
-                icon: const Text('🤝', style: TextStyle(fontSize: 14)),
-                label: const Text('Offer', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
               ),
               const SizedBox(width: 8),
-              // WhatsApp Button with authentic WhatsApp branding
-              GestureDetector(
-                onTap: _handleWhatsApp,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF25D366).withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFF25D366), width: 1.2),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      WhatsAppIcon(size: 18),
-                      SizedBox(width: 4),
-                      Text(
-                        'WhatsApp',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFF128C7E),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    // Offer Button
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                      ),
+                      onPressed: _handleMakeOffer,
+                      icon: const Text('🤝', style: TextStyle(fontSize: 13)),
+                      label: const Text('Offer', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800)),
+                    ),
+                    const SizedBox(width: 6),
+                    // WhatsApp Button with authentic WhatsApp branding
+                    GestureDetector(
+                      onTap: _handleWhatsApp,
+                      child: Container(
+                        height: 38,
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF25D366).withOpacity(0.12),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: const Color(0xFF25D366), width: 1.2),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            WhatsAppIcon(size: 17),
+                            SizedBox(width: 3),
+                            Text(
+                              'WhatsApp',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF128C7E),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(width: 6),
+                    // Chat Button
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primaryLime,
+                        foregroundColor: AppColors.textPrimary,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                      onPressed: _handleStartChat,
+                      icon: const Icon(Icons.chat_bubble_outline, size: 14),
+                      label: const Text('Chat', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(width: 8),
-              // Chat Button
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryLime,
-                  foregroundColor: AppColors.textPrimary,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                ),
-                onPressed: _handleStartChat,
-                icon: const Icon(Icons.chat_bubble_outline, size: 15),
-                label: const Text('Chat', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w900)),
               ),
             ],
           ),

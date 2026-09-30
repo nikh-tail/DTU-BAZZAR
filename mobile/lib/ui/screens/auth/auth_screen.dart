@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/categories.dart';
 import '../../../state/auth_provider.dart';
 
 enum OnboardingStep {
-  emailInput, // Step 1 - Stage A
-  otpInput,   // Step 1 - Stage B
-  otpSuccess, // Step 1 - Stage C
-  identity,   // Step 2 - Campus Identity
+  emailInput,   // Step 1 - Stage A
+  otpInput,     // Step 1 - Stage B
+  otpSuccess,   // Step 1 - Stage C
+  identity,     // Step 2 - Campus Identity
   confirmation, // Step 3 - Confirmation
 }
 
@@ -33,11 +34,11 @@ class _AuthScreenState extends State<AuthScreen>
   OnboardingStep _currentStep = OnboardingStep.emailInput;
   OtpStatus _otpStatus = OtpStatus.idle;
 
-  // Controllers & Focus Nodes
+  // Controllers & Focus Nodes (Reverted to 4 digits as requested)
   final TextEditingController _emailController = TextEditingController();
   final List<TextEditingController> _otpControllers =
-      List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
+      List.generate(4, (_) => TextEditingController());
+  final List<FocusNode> _otpFocusNodes = List.generate(4, (_) => FocusNode());
 
   // Step 2 Controllers
   final TextEditingController _nameController = TextEditingController();
@@ -53,19 +54,6 @@ class _AuthScreenState extends State<AuthScreen>
   // Shake animation controller
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
-
-  // Design Tokens
-  static const Color deepInkBg = Color(0xFF0B0D12);
-  static const Color glassSurface = Color(0x0FFFFFFF); // rgba(255,255,255,0.06)
-  static const Color glassBorder = Color(0x24FFFFFF); // rgba(255,255,255,0.14)
-  static const Color flatSurface = Color(0xFF141821);
-  static const Color flatBorder = Color(0xFF262C38);
-  static const Color textPrimary = Color(0xFFEDEFF3);
-  static const Color textMuted = Color(0xFF8A93A3);
-  static const Color accentAmber = Color(0xFFE8A23D);
-  static const Color accentDarkInk = Color(0xFF241705);
-  static const Color successGreen = Color(0xFF34D399);
-  static const Color errorRed = Color(0xFFFF5C5C);
 
   @override
   void initState() {
@@ -130,21 +118,21 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   // =========================================================================
-  // STEP 1 - STAGE B: OTP Input & Verification
+  // STEP 1 - STAGE B: OTP Input & Verification (4 Digits)
   // =========================================================================
   void _onOtpDigitChanged(int index, String value) {
     setState(() => _errorMessage = '');
 
     if (value.isNotEmpty) {
-      // If user pasted a 6-digit code or typed multiple characters
+      // If user pasted a 4-digit code or typed multiple characters
       if (value.length > 1) {
         final digits = value.replaceAll(RegExp(r'\D'), '');
-        if (digits.length >= 6) {
-          for (int i = 0; i < 6; i++) {
+        if (digits.length >= 4) {
+          for (int i = 0; i < 4; i++) {
             _otpControllers[i].text = digits[i];
           }
-          _otpFocusNodes[5].requestFocus();
-          _triggerVerifyOtp(digits.substring(0, 6));
+          _otpFocusNodes[3].requestFocus();
+          _triggerVerifyOtp(digits.substring(0, 4));
           return;
         }
       }
@@ -153,14 +141,14 @@ class _AuthScreenState extends State<AuthScreen>
       final char = value.substring(value.length - 1);
       _otpControllers[index].text = char;
 
-      if (index < 5) {
+      if (index < 3) {
         _otpFocusNodes[index + 1].requestFocus();
       }
     }
 
-    // Check if all 6 boxes are filled
+    // Check if all 4 boxes are filled
     final fullCode = _otpControllers.map((c) => c.text.trim()).join();
-    if (fullCode.length == 6) {
+    if (fullCode.length == 4) {
       _triggerVerifyOtp(fullCode);
     }
   }
@@ -178,7 +166,7 @@ class _AuthScreenState extends State<AuthScreen>
     setState(() => _isLoading = false);
 
     if (success) {
-      // Correct OTP entered: all 6 boxes green border + green glow
+      // Correct OTP entered: all 4 boxes green border + green glow
       setState(() => _otpStatus = OtpStatus.correct);
 
       final user = auth.user;
@@ -202,8 +190,8 @@ class _AuthScreenState extends State<AuthScreen>
 
       setState(() => _currentStep = OnboardingStep.otpSuccess);
 
-      // Stage C auto-advances to Step 2 (or Step 3 if existing user) after ~1.3s
-      await Future.delayed(const Duration(milliseconds: 1300));
+      // Stage C auto-advances to Step 2 (or Step 3 if existing user) after ~1.2s
+      await Future.delayed(const Duration(milliseconds: 1200));
       if (!mounted) return;
 
       setState(() {
@@ -226,7 +214,7 @@ class _AuthScreenState extends State<AuthScreen>
       }
       setState(() {
         _otpStatus = OtpStatus.idle;
-        _errorMessage = 'Incorrect verification code. Please check your inbox or use 123456.';
+        _errorMessage = 'Incorrect verification code. Please check your inbox or use 1234.';
       });
       _otpFocusNodes[0].requestFocus();
     }
@@ -279,13 +267,13 @@ class _AuthScreenState extends State<AuthScreen>
         .toUpperCase();
 
     return Scaffold(
-      backgroundColor: deepInkBg,
+      backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          // Ambient Radial-Gradient Glow 1: Amber at top-left (~18% 12%)
+          // Ambient soft lime decorative glow at top-left
           Positioned(
-            top: -50,
-            left: -50,
+            top: -60,
+            left: -60,
             child: IgnorePointer(
               child: Container(
                 width: 320,
@@ -293,49 +281,55 @@ class _AuthScreenState extends State<AuthScreen>
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    center: const Alignment(-0.64, -0.76),
-                    radius: 0.65,
+                    center: const Alignment(-0.5, -0.5),
+                    radius: 0.7,
                     colors: [
-                      accentAmber.withOpacity(0.14),
+                      AppColors.primaryLime.withOpacity(0.22),
                       Colors.transparent,
                     ],
-                    stops: const [0.0, 0.42],
+                    stops: const [0.0, 0.6],
                   ),
                 ),
               ),
             ),
           ),
 
-          // Ambient Radial-Gradient Glow 2: Green at top-right (~88% 10%)
+          // Ambient soft emerald decorative glow at top-right
           Positioned(
             top: -40,
             right: -60,
             child: IgnorePointer(
               child: Container(
-                width: 340,
-                height: 340,
+                width: 300,
+                height: 300,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    center: const Alignment(0.76, -0.80),
-                    radius: 0.65,
+                    center: const Alignment(0.6, -0.6),
+                    radius: 0.7,
                     colors: [
-                      successGreen.withOpacity(0.12),
+                      AppColors.emeraldPrimary.withOpacity(0.12),
                       Colors.transparent,
                     ],
-                    stops: const [0.0, 0.42],
+                    stops: const [0.0, 0.6],
                   ),
                 ),
               ),
             ),
           ),
 
-          // Dim Overlay Behind Centered Modal
-          Container(
-            color: const Color(0x8C050609), // rgba(5,6,9,0.55)
+          // App Bar Back Button
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
           ),
 
-          // Centered Glass Card Content
+          // Centered Clean Light Card Content (App Normal UI)
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
@@ -351,24 +345,16 @@ class _AuthScreenState extends State<AuthScreen>
                   },
                   child: Container(
                     constraints: const BoxConstraints(maxWidth: 440),
-                    padding: const EdgeInsets.fromLTRB(26, 30, 26, 26),
+                    padding: const EdgeInsets.fromLTRB(24, 28, 24, 26),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0x1AFFFFFF), // rgba(255,255,255,0.10)
-                          Color(0x08FFFFFF), // rgba(255,255,255,0.03)
-                        ],
-                        stops: [0.0, 1.0],
-                      ),
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: glassBorder, width: 1),
+                      color: AppColors.surface,
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: AppColors.border, width: 1.2),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.50),
-                          blurRadius: 60,
-                          offset: const Offset(0, 20),
+                          color: const Color(0xFF0F172A).withOpacity(0.06),
+                          blurRadius: 30,
+                          offset: const Offset(0, 10),
                         ),
                       ],
                     ),
@@ -399,83 +385,97 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   // =========================================================================
-  // STEP 1 — STAGE A (Email Input)
+  // STEP 1 — STAGE A (Email Input — Clean Light Theme)
   // =========================================================================
   Widget _buildStageAEmailInput() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          'Verify your email',
-          style: GoogleFonts.sora(
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-            color: textPrimary,
-          ),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.limeLight,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text('🎓', style: TextStyle(fontSize: 20)),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'Welcome to DTU Bazaar',
+                style: GoogleFonts.sora(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 10),
         Text(
-          'Enter your email address to receive a 6-digit verification code. Any email (Gmail, Outlook, Yahoo, DTU webmail) is accepted.',
+          'Enter your email address to receive a 4-digit verification code. Any email (Gmail, Outlook, Yahoo, DTU webmail) is accepted.',
           style: GoogleFonts.inter(
             fontSize: 13,
             fontWeight: FontWeight.w400,
-            color: textMuted,
-            height: 1.4,
+            color: AppColors.textSecondary,
+            height: 1.45,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 22),
 
         if (_errorMessage.isNotEmpty) ...[
           _buildInlineErrorMessage(_errorMessage),
           const SizedBox(height: 16),
         ],
 
-        // Sentence-case Label
         Text(
           'Email address',
           style: GoogleFonts.inter(
             fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: textMuted,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 6),
 
-        // Glass Input Style
+        // Clean Input Style
         TextField(
           controller: _emailController,
           keyboardType: TextInputType.emailAddress,
           style: GoogleFonts.inter(
             fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: textPrimary,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textPrimary,
           ),
           decoration: InputDecoration(
-            hintText: 'e.g. nikhil@gmail.com or rollno@dtu.ac.in',
+            hintText: 'e.g. rollno@dtu.ac.in or nikhil@gmail.com',
             hintStyle: GoogleFonts.inter(
-              color: const Color(0xFF5A6270),
+              color: AppColors.textMuted,
               fontSize: 13,
             ),
             filled: true,
-            fillColor: glassSurface,
+            fillColor: const Color(0xFFF1F5F9),
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0x28FFFFFF)),
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0x28FFFFFF)),
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: accentAmber, width: 2),
+              borderRadius: BorderRadius.circular(14),
+              borderSide: const BorderSide(color: AppColors.emeraldPrimary, width: 2),
             ),
           ),
           onSubmitted: (_) => _handleSendCode(),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 22),
 
         // Primary Button: "Send code"
         SizedBox(
@@ -484,11 +484,11 @@ class _AuthScreenState extends State<AuthScreen>
           child: ElevatedButton(
             onPressed: _isLoading ? null : _handleSendCode,
             style: ElevatedButton.styleFrom(
-              backgroundColor: accentAmber,
-              foregroundColor: accentDarkInk,
+              backgroundColor: AppColors.primaryLime,
+              foregroundColor: AppColors.textPrimary,
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(9),
+                borderRadius: BorderRadius.circular(14),
               ),
             ),
             child: _isLoading
@@ -497,15 +497,15 @@ class _AuthScreenState extends State<AuthScreen>
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2.5,
-                      valueColor: AlwaysStoppedAnimation<Color>(accentDarkInk),
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.textPrimary),
                     ),
                   )
                 : Text(
-                    'Send code',
+                    'Send verification code',
                     style: GoogleFonts.inter(
                       fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                      color: accentDarkInk,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
                     ),
                   ),
           ),
@@ -515,7 +515,7 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   // =========================================================================
-  // STEP 1 — STAGE B (4 Separate OTP Boxes)
+  // STEP 1 — STAGE B (4 Separate OTP Boxes — Light Theme)
   // =========================================================================
   Widget _buildStageBOtpInput() {
     return Column(
@@ -526,11 +526,11 @@ class _AuthScreenState extends State<AuthScreen>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Enter the code',
+              'Enter verification code',
               style: GoogleFonts.sora(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: textPrimary,
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
               ),
             ),
             GestureDetector(
@@ -544,8 +544,8 @@ class _AuthScreenState extends State<AuthScreen>
                 'Change',
                 style: GoogleFonts.inter(
                   fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: accentAmber,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.emeraldDark,
                 ),
               ),
             ),
@@ -553,28 +553,25 @@ class _AuthScreenState extends State<AuthScreen>
         ),
         const SizedBox(height: 6),
         Text(
-          'We sent a 6-digit code to ${_emailController.text.trim()} (or enter master code 123456)',
+          'We sent a 4-digit code to ${_emailController.text.trim()} (or enter master code 1234)',
           style: GoogleFonts.inter(
             fontSize: 13,
             fontWeight: FontWeight.w400,
-            color: textMuted,
+            color: AppColors.textSecondary,
             height: 1.4,
           ),
         ),
-        const SizedBox(height: 28),
+        const SizedBox(height: 24),
 
-        // 6 Separate Single-Digit OTP Boxes (44x54px, 12px radius, black digit on white surface)
+        // 4 Separate Single-Digit OTP Boxes (56x62px, 14px radius, black digit on white surface)
         Center(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(6, (index) => _buildOtpDigitBox(index)),
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(4, (index) => _buildOtpDigitBox(index)),
           ),
         ),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
 
         if (_errorMessage.isNotEmpty) ...[
           _buildInlineErrorMessage(_errorMessage),
@@ -589,8 +586,8 @@ class _AuthScreenState extends State<AuthScreen>
               'Didn\'t receive code? Resend code',
               style: GoogleFonts.inter(
                 fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: textMuted,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
               ),
             ),
           ),
@@ -600,42 +597,42 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Widget _buildOtpDigitBox(int index) {
-    Color borderColor = const Color(0x33000000);
+    Color borderColor = AppColors.border;
     List<BoxShadow> boxShadows = [
       BoxShadow(
-        color: Colors.black.withOpacity(0.08),
-        blurRadius: 8,
+        color: Colors.black.withOpacity(0.04),
+        blurRadius: 6,
         offset: const Offset(0, 2),
       ),
     ];
 
     if (_otpStatus == OtpStatus.correct) {
-      borderColor = successGreen;
+      borderColor = AppColors.emeraldPrimary;
       boxShadows = [
         const BoxShadow(
-          color: Color(0xA634D399), // 0 0 22px rgba(52,211,153,.65)
-          blurRadius: 22,
+          color: Color(0x6610B981),
+          blurRadius: 18,
           spreadRadius: 1,
         ),
       ];
     } else if (_otpStatus == OtpStatus.wrong) {
-      borderColor = errorRed;
+      borderColor = AppColors.error;
       boxShadows = [
         const BoxShadow(
-          color: Color(0x8CFF5C5C), // 0 0 22px rgba(255,92,92,.55)
-          blurRadius: 22,
+          color: Color(0x66EF4444),
+          blurRadius: 18,
           spreadRadius: 1,
         ),
       ];
     }
 
     return Container(
-      width: 44,
-      height: 54,
-      margin: const EdgeInsets.symmetric(horizontal: 4),
+      width: 56,
+      height: 62,
+      margin: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: borderColor, width: 2),
         boxShadow: boxShadows,
       ),
@@ -658,9 +655,9 @@ class _AuthScreenState extends State<AuthScreen>
             maxLength: 1,
             cursorColor: Colors.black,
             style: GoogleFonts.sora(
-              fontSize: 22,
-              fontWeight: FontWeight.w800,
-              color: Colors.black, // Explicitly black as requested by user
+              fontSize: 24,
+              fontWeight: FontWeight.w900,
+              color: Colors.black, // Explicitly black as requested
             ),
             decoration: const InputDecoration(
               counterText: '',
@@ -679,7 +676,7 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   // =========================================================================
-  // STEP 1 — STAGE C (Verified Successfully)
+  // STEP 1 — STAGE C (Verified Successfully — Light Theme)
   // =========================================================================
   Widget _buildStageCOtpSuccess() {
     return Column(
@@ -687,26 +684,25 @@ class _AuthScreenState extends State<AuthScreen>
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(height: 12),
-        // Green checkmark tile (74x74px, 18px radius, green bg/border/glow)
         Container(
           width: 74,
           height: 74,
           decoration: BoxDecoration(
-            color: successGreen.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: successGreen, width: 2),
+            color: AppColors.emeraldLight,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.emeraldPrimary, width: 2),
             boxShadow: [
               BoxShadow(
-                color: successGreen.withOpacity(0.35),
-                blurRadius: 26,
-                spreadRadius: 2,
+                color: AppColors.emeraldPrimary.withOpacity(0.25),
+                blurRadius: 20,
+                spreadRadius: 1,
               ),
             ],
           ),
           child: const Center(
             child: Icon(
               Icons.check_rounded,
-              color: successGreen,
+              color: AppColors.emeraldDark,
               size: 40,
             ),
           ),
@@ -716,8 +712,8 @@ class _AuthScreenState extends State<AuthScreen>
           'Verified successfully',
           style: GoogleFonts.sora(
             fontSize: 22,
-            fontWeight: FontWeight.w700,
-            color: textPrimary,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -726,8 +722,8 @@ class _AuthScreenState extends State<AuthScreen>
           'Setting up your campus identity...',
           style: GoogleFonts.inter(
             fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: textMuted,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textSecondary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -737,7 +733,7 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   // =========================================================================
-  // STEP 2 — CAMPUS IDENTITY (Consolidated Single Glass Card)
+  // STEP 2 — CAMPUS IDENTITY (Consolidated Clean Card)
   // =========================================================================
   Widget _buildStep2CampusIdentity() {
     return Column(
@@ -748,21 +744,21 @@ class _AuthScreenState extends State<AuthScreen>
           'Campus identity',
           style: GoogleFonts.sora(
             fontSize: 22,
-            fontWeight: FontWeight.w700,
-            color: textPrimary,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 6),
         Text(
-          'Tell us a bit about yourself to personalize your campus marketplace.',
+          'Tell us a bit about yourself to personalize your DTU marketplace.',
           style: GoogleFonts.inter(
             fontSize: 13,
             fontWeight: FontWeight.w400,
-            color: textMuted,
+            color: AppColors.textSecondary,
             height: 1.4,
           ),
         ),
-        const SizedBox(height: 22),
+        const SizedBox(height: 20),
 
         if (_errorMessage.isNotEmpty) ...[
           _buildInlineErrorMessage(_errorMessage),
@@ -774,31 +770,31 @@ class _AuthScreenState extends State<AuthScreen>
           'Full name',
           style: GoogleFonts.inter(
             fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: textMuted,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 6),
         TextField(
           controller: _nameController,
-          style: GoogleFonts.inter(fontSize: 14, color: textPrimary),
+          style: GoogleFonts.inter(fontSize: 14, color: AppColors.textPrimary, fontWeight: FontWeight.w500),
           decoration: InputDecoration(
             hintText: 'e.g. Rohan Sharma',
-            hintStyle: GoogleFonts.inter(color: const Color(0xFF5A6270), fontSize: 13),
+            hintStyle: GoogleFonts.inter(color: AppColors.textMuted, fontSize: 13),
             filled: true,
-            fillColor: glassSurface,
+            fillColor: const Color(0xFFF1F5F9),
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: glassBorder),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: glassBorder),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: accentAmber, width: 2),
+              borderSide: const BorderSide(color: AppColors.emeraldPrimary, width: 2),
             ),
           ),
         ),
@@ -809,31 +805,31 @@ class _AuthScreenState extends State<AuthScreen>
           'Branch / course',
           style: GoogleFonts.inter(
             fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: textMuted,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           value: _selectedBranch,
           isExpanded: true,
-          dropdownColor: flatSurface,
-          style: GoogleFonts.inter(fontSize: 13, color: textPrimary),
+          dropdownColor: Colors.white,
+          style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary, fontWeight: FontWeight.w500),
           decoration: InputDecoration(
             filled: true,
-            fillColor: glassSurface,
+            fillColor: const Color(0xFFF1F5F9),
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: glassBorder),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: glassBorder),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: accentAmber, width: 2),
+              borderSide: const BorderSide(color: AppColors.emeraldPrimary, width: 2),
             ),
           ),
           items: CampusConstants.dtuBranches.map((b) {
@@ -850,31 +846,31 @@ class _AuthScreenState extends State<AuthScreen>
           'Academic year',
           style: GoogleFonts.inter(
             fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: textMuted,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           value: _selectedYear,
           isExpanded: true,
-          dropdownColor: flatSurface,
-          style: GoogleFonts.inter(fontSize: 13, color: textPrimary),
+          dropdownColor: Colors.white,
+          style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary, fontWeight: FontWeight.w500),
           decoration: InputDecoration(
             filled: true,
-            fillColor: glassSurface,
+            fillColor: const Color(0xFFF1F5F9),
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: glassBorder),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: glassBorder),
+              borderSide: const BorderSide(color: AppColors.border),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: accentAmber, width: 2),
+              borderSide: const BorderSide(color: AppColors.emeraldPrimary, width: 2),
             ),
           ),
           items: CampusConstants.dtuYears.map((y) {
@@ -891,8 +887,8 @@ class _AuthScreenState extends State<AuthScreen>
           'Residence type',
           style: GoogleFonts.inter(
             fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: textMuted,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
           ),
         ),
         const SizedBox(height: 6),
@@ -905,11 +901,12 @@ class _AuthScreenState extends State<AuthScreen>
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(
                     color: _userType == 'HOSTELER'
-                        ? accentAmber.withOpacity(0.12)
-                        : glassSurface,
-                    borderRadius: BorderRadius.circular(9),
+                        ? AppColors.limeLight
+                        : const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: _userType == 'HOSTELER' ? accentAmber : glassBorder,
+                      color: _userType == 'HOSTELER' ? AppColors.emeraldDark : AppColors.border,
+                      width: _userType == 'HOSTELER' ? 1.5 : 1,
                     ),
                   ),
                   child: Center(
@@ -917,8 +914,8 @@ class _AuthScreenState extends State<AuthScreen>
                       '🏢 Hosteler',
                       style: GoogleFonts.inter(
                         fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: _userType == 'HOSTELER' ? accentAmber : textMuted,
+                        fontWeight: FontWeight.w700,
+                        color: _userType == 'HOSTELER' ? AppColors.emeraldDark : AppColors.textSecondary,
                       ),
                     ),
                   ),
@@ -933,11 +930,12 @@ class _AuthScreenState extends State<AuthScreen>
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(
                     color: _userType == 'DAY_SCHOLAR'
-                        ? accentAmber.withOpacity(0.12)
-                        : glassSurface,
-                    borderRadius: BorderRadius.circular(9),
+                        ? AppColors.limeLight
+                        : const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: _userType == 'DAY_SCHOLAR' ? accentAmber : glassBorder,
+                      color: _userType == 'DAY_SCHOLAR' ? AppColors.emeraldDark : AppColors.border,
+                      width: _userType == 'DAY_SCHOLAR' ? 1.5 : 1,
                     ),
                   ),
                   child: Center(
@@ -945,8 +943,8 @@ class _AuthScreenState extends State<AuthScreen>
                       '🚗 Day scholar',
                       style: GoogleFonts.inter(
                         fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: _userType == 'DAY_SCHOLAR' ? accentAmber : textMuted,
+                        fontWeight: FontWeight.w700,
+                        color: _userType == 'DAY_SCHOLAR' ? AppColors.emeraldDark : AppColors.textSecondary,
                       ),
                     ),
                   ),
@@ -963,31 +961,31 @@ class _AuthScreenState extends State<AuthScreen>
             'Hostel name',
             style: GoogleFonts.inter(
               fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: textMuted,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
             ),
           ),
           const SizedBox(height: 6),
           DropdownButtonFormField<String>(
             value: _selectedHostel,
             isExpanded: true,
-            dropdownColor: flatSurface,
-            style: GoogleFonts.inter(fontSize: 13, color: textPrimary),
+            dropdownColor: Colors.white,
+            style: GoogleFonts.inter(fontSize: 13, color: AppColors.textPrimary, fontWeight: FontWeight.w500),
             decoration: InputDecoration(
               filled: true,
-              fillColor: glassSurface,
+              fillColor: const Color(0xFFF1F5F9),
               contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: glassBorder),
+                borderSide: const BorderSide(color: AppColors.border),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: glassBorder),
+                borderSide: const BorderSide(color: AppColors.border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: accentAmber, width: 2),
+                borderSide: const BorderSide(color: AppColors.emeraldPrimary, width: 2),
               ),
             ),
             items: CampusConstants.dtuHostels.map((h) {
@@ -1008,11 +1006,11 @@ class _AuthScreenState extends State<AuthScreen>
           child: ElevatedButton(
             onPressed: _handleFinishIdentity,
             style: ElevatedButton.styleFrom(
-              backgroundColor: accentAmber,
-              foregroundColor: accentDarkInk,
+              backgroundColor: AppColors.primaryLime,
+              foregroundColor: AppColors.textPrimary,
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(9),
+                borderRadius: BorderRadius.circular(14),
               ),
             ),
             child: Row(
@@ -1022,12 +1020,12 @@ class _AuthScreenState extends State<AuthScreen>
                   'Finish setup',
                   style: GoogleFonts.inter(
                     fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: accentDarkInk,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(width: 6),
-                const Icon(Icons.arrow_forward, size: 16, color: accentDarkInk),
+                const Icon(Icons.arrow_forward, size: 16, color: AppColors.textPrimary),
               ],
             ),
           ),
@@ -1037,25 +1035,25 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   // =========================================================================
-  // STEP 3 — CONFIRMATION (Centered Glass Card)
+  // STEP 3 — CONFIRMATION (Centered Clean Card)
   // =========================================================================
   Widget _buildStep3Confirmation(String userInitial) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Small square avatar tile showing user's initial in green
+        // Small avatar tile showing user's initial
         Container(
           width: 64,
           height: 64,
           decoration: BoxDecoration(
-            color: successGreen.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: successGreen, width: 1.5),
+            color: AppColors.limeLight,
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: AppColors.emeraldPrimary, width: 2),
             boxShadow: [
               BoxShadow(
-                color: successGreen.withOpacity(0.25),
-                blurRadius: 20,
+                color: AppColors.emeraldPrimary.withOpacity(0.15),
+                blurRadius: 16,
               ),
             ],
           ),
@@ -1065,7 +1063,7 @@ class _AuthScreenState extends State<AuthScreen>
               style: GoogleFonts.sora(
                 fontSize: 26,
                 fontWeight: FontWeight.w800,
-                color: successGreen,
+                color: AppColors.emeraldDark,
               ),
             ),
           ),
@@ -1079,8 +1077,8 @@ class _AuthScreenState extends State<AuthScreen>
               : 'Campus Student',
           style: GoogleFonts.sora(
             fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: textPrimary,
+            fontWeight: FontWeight.w800,
+            color: AppColors.textPrimary,
           ),
           textAlign: TextAlign.center,
         ),
@@ -1091,31 +1089,32 @@ class _AuthScreenState extends State<AuthScreen>
           '$_selectedBranch • $_selectedYear',
           style: GoogleFonts.inter(
             fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: textMuted,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textSecondary,
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 2),
 
-        // Hostel or Day scholar line (more muted)
+        // Hostel or Day scholar line
         Text(
           _userType == 'HOSTELER' ? '🏢 $_selectedHostel' : '🚗 Day scholar',
           style: GoogleFonts.inter(
             fontSize: 12,
-            color: const Color(0xFF6B7688),
+            fontWeight: FontWeight.w500,
+            color: AppColors.textMuted,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 18),
 
         // Reassurance note
         Text(
           'Your campus profile is ready. You can now browse verified listings, message campus peers, and post items with 0% brokerage.',
           style: GoogleFonts.inter(
             fontSize: 12,
-            color: textMuted,
-            height: 1.4,
+            color: AppColors.textSecondary,
+            height: 1.45,
           ),
           textAlign: TextAlign.center,
         ),
@@ -1128,11 +1127,11 @@ class _AuthScreenState extends State<AuthScreen>
           child: ElevatedButton(
             onPressed: _isLoading ? null : _handleEnterApp,
             style: ElevatedButton.styleFrom(
-              backgroundColor: accentAmber,
-              foregroundColor: accentDarkInk,
+              backgroundColor: AppColors.primaryLime,
+              foregroundColor: AppColors.textPrimary,
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(9),
+                borderRadius: BorderRadius.circular(14),
               ),
             ),
             child: Row(
@@ -1142,12 +1141,12 @@ class _AuthScreenState extends State<AuthScreen>
                   _isLoading ? 'Entering...' : 'Enter DTU Bazaar',
                   style: GoogleFonts.inter(
                     fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: accentDarkInk,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 const SizedBox(width: 6),
-                const Icon(Icons.arrow_forward, size: 16, color: accentDarkInk),
+                const Icon(Icons.arrow_forward, size: 16, color: AppColors.textPrimary),
               ],
             ),
           ),
@@ -1161,21 +1160,21 @@ class _AuthScreenState extends State<AuthScreen>
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: errorRed.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: errorRed.withOpacity(0.5)),
+        color: const Color(0xFFFEE2E2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFFCA5A5)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.error_outline, color: errorRed, size: 16),
+          const Icon(Icons.error_outline, color: AppColors.error, size: 16),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               message,
               style: GoogleFonts.inter(
                 fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: errorRed,
+                fontWeight: FontWeight.w600,
+                color: AppColors.error,
               ),
             ),
           ),

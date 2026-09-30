@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../state/auth_provider.dart';
 import '../../../state/listing_provider.dart';
+import '../../../state/chat_provider.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/explore/explore_screen.dart';
 import '../screens/sell/sell_wizard_screen.dart';
@@ -30,6 +31,11 @@ class _MainTabScreenState extends State<MainTabScreen> {
         Navigator.push(context, MaterialPageRoute(builder: (_) => const SellWizardScreen()));
       }
       return;
+    }
+
+    if (index == 3) {
+      // Refresh conversation list on opening Chats tab
+      Provider.of<ChatProvider>(context, listen: false).fetchConversations();
     }
 
     setState(() => _currentIndex = index);

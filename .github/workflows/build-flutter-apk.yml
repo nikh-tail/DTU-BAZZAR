@@ -48,7 +48,10 @@ jobs:
         run: |
           mkdir -p release-output
           cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar.apk
-          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/dtu-bazaar-v2.4.0.apk
+          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/dtu-bazaar-latest.apk
+          if [[ "${{ github.ref_name }}" =~ ^v.* ]]; then
+            cp mobile/build/app/outputs/flutter-apk/app-release.apk "release-output/dtu-bazaar-${{ github.ref_name }}.apk"
+          fi
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -64,20 +67,18 @@ jobs:
           name: "DTU Bazaar Mobile App ${{ github.ref_name }} (Flutter Release)"
           body: |
             ### ⚡ DTU Bazaar — Official Mobile App ${{ github.ref_name }}
-            Latest production cross-platform release for Delhi Technological University students & campus community.
+            Latest production release for Delhi Technological University students & campus community.
 
-            #### 🌟 Highlights in v2.4.0:
-            - **🔢 6-Digit OTP Verification**: 6-digit email OTP verification with master bypass `123456`, high-contrast black digits on crisp white card boxes.
-            - **📧 Universal Email Support**: Instant registration and login with any personal Gmail or university webmail address.
-            - **🏷️ Fixed Publish Listing**: Direct "Publish Listing" action with backend category mapping, validation checks, and instant feedback.
-            - **🖼️ Resolved Image Display**: Automatic image URL resolver with reliable category photo fallbacks so listings never show broken images.
-            - **💬 Full In-App Chat Overhaul**: 100% working real-time chat, clickable quick phrases for price/location/availability, "Make an Offer" feature, and photo sharing.
-            - **🟢 Authentic WhatsApp Integration**: Branded WhatsApp buttons across listing details and chat headers.
+            #### 🌟 Highlights in ${{ github.ref_name }}:
+            - **🔢 4-Digit OTP Verification**: Restored clean 4-digit OTP flow with universal bypass code `1234` and updated backend 4-digit provider.
+            - **☀️ Normal Light Theme for Auth**: Redesigned Auth, Login, Register, and Campus Identity screens to match the clean light theme of DTU Bazaar while preserving smooth animations.
+            - **💬 Real-Time Chat Ghost Bubbles Fixed**: Fixed socket payload parsing so no empty bubbles appear and real messages render with correct sender alignment.
+            - **📋 In-App Chat History Sync**: Active conversation history automatically refreshes when opening the Chats tab or navigating back from a chat.
+            - **📏 Large Number UI Overflow Fixed**: Listing detail action bar now gracefully scales prices with 6+ digits without clipping buttons.
+            - **🟢 Authentic WhatsApp & Make Offer**: In-app price offers and branded WhatsApp messaging.
 
-            Download `DTU-Bazaar.apk` below and install directly on your Android phone!
-          files: |
-            release-output/DTU-Bazaar.apk
-            release-output/dtu-bazaar-v2.4.0.apk
+            Download `DTU-Bazaar.apk` below and install directly on your Android device!
+          files: release-output/*
           draft: false
           prerelease: false
           make_latest: true

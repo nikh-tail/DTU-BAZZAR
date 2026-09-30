@@ -25,11 +25,32 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void handleIncomingSocketMessage(dynamic data) {
-    if (data != null && data['conversationId'] == _activeConversationId) {
-      final msg = MessageModel.fromJson(data);
-      _messages.add(msg);
-      notifyListeners();
+    if (data == null || data is! Map) return;
+
+    final convId = data['conversationId']?.toString() ??
+        (data['message'] != null && data['message'] is Map
+            ? data['message']['conversationId']?.toString()
+            : null);
+
+    final dynamic rawMsg = (data['message'] != null && data['message'] is Map)
+        ? data['message']
+        : data;
+
+    if (rawMsg is Map) {
+      final messageData = Map<String, dynamic>.from(rawMsg);
+      if (convId == _activeConversationId) {
+        final msg = MessageModel.fromJson(messageData);
+        if (msg.content.trim().isNotEmpty) {
+          final isDuplicate = msg.id.isNotEmpty &&
+              _messages.any((existing) => existing.id == msg.id);
+          if (!isDuplicate) {
+            _messages.add(msg);
+            notifyListeners();
+          }
+        }
+      }
     }
+
     fetchConversations();
   }
 

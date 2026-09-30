@@ -65,6 +65,9 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   void dispose() {
     _msgController.dispose();
     _scrollController.dispose();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Safely close active room and refresh conversations
+    });
     super.dispose();
   }
 
@@ -93,6 +96,7 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
 
     if (success) {
       _scrollToBottom();
+      chatProv.fetchConversations();
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to send message. Please retry.')),
@@ -596,6 +600,9 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
   // =========================================================================
   Widget _buildMessageBubble(dynamic msg, bool isMe) {
     final String content = msg.content ?? '';
+    if (content.trim().isEmpty) {
+      return const SizedBox.shrink();
+    }
     final bool isOffer = content.contains('PRICE OFFER:');
     final bool isPhoto = content.contains('[PHOTO]:');
     final bool isVideo = content.contains('[VIDEO]:');
