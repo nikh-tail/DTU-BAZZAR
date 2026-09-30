@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/utils/url_launcher_util.dart';
+import '../../../core/utils/image_url_util.dart';
 import '../../../data/models/listing_model.dart';
 import '../../../data/repositories/listing_repository.dart';
 import '../../../core/network/api_client.dart';
@@ -13,6 +14,7 @@ import '../../widgets/condition_badge.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/make_offer_modal.dart';
 import '../../widgets/image_lightbox.dart';
+import '../../widgets/whatsapp_icon.dart';
 import '../../widgets/campus_listing_card.dart';
 import '../chats/chat_window_screen.dart';
 import '../auth/auth_screen.dart';
@@ -61,6 +63,13 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
       return;
     }
 
+    if (_listing != null && _listing!.sellerId == auth.user?.id) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('This is your own listing! Check buyer inquiries in the Chats tab.')),
+      );
+      return;
+    }
+
     final chatProv = Provider.of<ChatProvider>(context, listen: false);
     final conversationId = await chatProv.startChat(widget.listingId);
 
@@ -72,8 +81,14 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
             conversationId: conversationId,
             sellerName: _listing?.seller?.name ?? 'Seller',
             itemTitle: _listing?.title ?? '',
+            listingPrice: _listing?.price,
+            sellerPhone: _listing?.seller?.phone,
           ),
         ),
+      );
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not start chat. Please verify your connection.')),
       );
     }
   }
@@ -194,17 +209,31 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                 label: const Text('Offer', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w800)),
               ),
               const SizedBox(width: 8),
-              // WhatsApp Button
+              // WhatsApp Button with authentic WhatsApp branding
               GestureDetector(
                 onTap: _handleWhatsApp,
                 child: Container(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF25D366).withOpacity(0.12),
+                    color: const Color(0xFF25D366).withOpacity(0.15),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFF25D366).withOpacity(0.3)),
+                    border: Border.all(color: const Color(0xFF25D366), width: 1.2),
                   ),
-                  child: const Text('💬', style: TextStyle(fontSize: 16)),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      WhatsAppIcon(size: 18),
+                      SizedBox(width: 4),
+                      Text(
+                        'WhatsApp',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF128C7E),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -252,10 +281,16 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                           );
                         },
                         child: CachedNetworkImage(
-                          imageUrl: images[idx].url,
+                          imageUrl: ImageUrlUtil.resolve(images[idx].url, category: _listing?.category),
                           fit: BoxFit.cover,
-                          placeholder: (_, __) => Container(color: const Color(0xFFF1F5F9)),
-                          errorWidget: (_, __, ___) => Container(color: const Color(0xFFF1F5F9)),
+                          placeholder: (_, __) => Container(
+                            color: const Color(0xFFF1F5F9),
+                            child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                          ),
+                          errorWidget: (_, __, ___) => Image.network(
+                            ImageUrlUtil.getCategoryFallback(_listing?.category),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       );
                     },

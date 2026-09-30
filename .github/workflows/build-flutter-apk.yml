@@ -48,7 +48,7 @@ jobs:
         run: |
           mkdir -p release-output
           cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar.apk
-          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/dtu-bazaar-v2.3.0.apk
+          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/dtu-bazaar-v2.4.0.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -66,17 +66,18 @@ jobs:
             ### ⚡ DTU Bazaar — Official Mobile App ${{ github.ref_name }}
             Latest production cross-platform release for Delhi Technological University students & campus community.
 
-            #### 🌟 Highlights:
-            - **✨ Redesigned Glassmorphic Onboarding Flow**: 4-digit rapid email verification, unified campus identity setup, and instant confirmation.
-            - **🔓 Any Email & Gmail Support**: Instant signup and login with any personal Gmail or university webmail address.
-            - **🏷️ SharePal 4-Card Department Grid**: Larger, touch-responsive category cards with representative imagery and bottom accent color bars.
-            - **💬 1-Tap WhatsApp & Real-Time Campus Chat**: Negotiate prices directly with peers with 0% brokerage.
-            - **📸 Rapid Camera & Gallery Listing**: Post drafters, electronics, books, and cycles within seconds.
+            #### 🌟 Highlights in v2.4.0:
+            - **🔢 6-Digit OTP Verification**: 6-digit email OTP verification with master bypass `123456`, high-contrast black digits on crisp white card boxes.
+            - **📧 Universal Email Support**: Instant registration and login with any personal Gmail or university webmail address.
+            - **🏷️ Fixed Publish Listing**: Direct "Publish Listing" action with backend category mapping, validation checks, and instant feedback.
+            - **🖼️ Resolved Image Display**: Automatic image URL resolver with reliable category photo fallbacks so listings never show broken images.
+            - **💬 Full In-App Chat Overhaul**: 100% working real-time chat, clickable quick phrases for price/location/availability, "Make an Offer" feature, and photo sharing.
+            - **🟢 Authentic WhatsApp Integration**: Branded WhatsApp buttons across listing details and chat headers.
 
             Download `DTU-Bazaar.apk` below and install directly on your Android phone!
           files: |
             release-output/DTU-Bazaar.apk
-            release-output/dtu-bazaar-v2.3.0.apk
+            release-output/dtu-bazaar-v2.4.0.apk
           draft: false
           prerelease: false
           make_latest: true

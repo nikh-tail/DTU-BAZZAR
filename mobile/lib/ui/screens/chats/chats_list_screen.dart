@@ -78,6 +78,8 @@ class _ChatsListScreenState extends State<ChatsListScreen> {
                                 conversationId: conv.id,
                                 sellerName: otherName,
                                 itemTitle: conv.listing?.title ?? '',
+                                listingPrice: conv.listing?.price,
+                                sellerPhone: conv.otherUser?.phone,
                               ),
                             ),
                           );

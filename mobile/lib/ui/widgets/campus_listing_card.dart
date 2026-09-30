@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/formatters.dart';
+import '../../core/utils/image_url_util.dart';
 import '../../data/models/listing_model.dart';
 import 'condition_badge.dart';
 
@@ -21,9 +22,9 @@ class CampusListingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = listing.images.isNotEmpty
-        ? listing.images.first.url
-        : 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80';
+    final rawUrl = listing.images.isNotEmpty ? listing.images.first.url : null;
+    final imageUrl = ImageUrlUtil.resolve(rawUrl, category: listing.category);
+    final fallbackUrl = ImageUrlUtil.getCategoryFallback(listing.category);
 
     return GestureDetector(
       onTap: onTap,
@@ -59,9 +60,13 @@ class CampusListingCard extends StatelessWidget {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         ),
                       ),
-                      errorWidget: (context, url, error) => Container(
-                        color: const Color(0xFFF1F5F9),
-                        child: const Icon(Icons.image_not_supported, color: AppColors.textMuted),
+                      errorWidget: (context, url, error) => Image.network(
+                        fallbackUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Container(
+                          color: const Color(0xFFF1F5F9),
+                          child: const Icon(Icons.shopping_bag_outlined, color: AppColors.textMuted),
+                        ),
                       ),
                     ),
                   ),

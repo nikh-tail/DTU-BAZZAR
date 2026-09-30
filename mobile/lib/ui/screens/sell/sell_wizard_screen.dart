@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:dio/dio.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/categories.dart';
+import '../../../core/utils/image_url_util.dart';
 import '../../../state/auth_provider.dart';
 import '../../../state/listing_provider.dart';
 import '../../../data/repositories/listing_repository.dart';
@@ -88,26 +90,35 @@ class _SellWizardScreenState extends State<SellWizardScreen> {
     final desc = _descController.text.trim();
     final price = num.tryParse(_priceController.text) ?? 0;
 
-    if (title.isEmpty || desc.isEmpty || price <= 0) {
+    if (title.length < 3) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all required fields correctly.')),
+        const SnackBar(content: Text('Item title must be at least 3 characters.')),
+      );
+      return;
+    }
+
+    if (desc.length < 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Description must be at least 10 characters so buyers understand its condition.')),
+      );
+      return;
+    }
+
+    if (price <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid price (greater than ₹0).')),
       );
       return;
     }
 
     setState(() => _isPosting = true);
 
-    // Fallback campus stock photo if no photos picked
-    final imageUrls = _selectedImages.isNotEmpty
-        ? [
-            'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80'
-          ]
-        : [
-            'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&auto=format&fit=crop&q=80'
-          ];
+    // Guaranteed reliable campus category fallback photo if no photos picked
+    final defaultCategoryPhoto = ImageUrlUtil.getCategoryFallback(_selectedCategory);
+    final imageUrls = [defaultCategoryPhoto];
 
     final repo = ListingRepository(ApiClient());
-    final success = await repo.createListing({
+    final result = await repo.createListing({
       'title': title,
       'description': desc,
       'price': price,
@@ -121,12 +132,22 @@ class _SellWizardScreenState extends State<SellWizardScreen> {
 
     setState(() => _isPosting = false);
 
-    if (success && mounted) {
+    if (result.success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('🎉 Listing posted successfully to DTU Bazaar!')),
+        SnackBar(
+          content: Text(result.message.isNotEmpty ? result.message : '🎉 Listing published successfully!'),
+          backgroundColor: Colors.green.shade800,
+        ),
       );
       listingProv.fetchInitialData();
       Navigator.pop(context);
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.message),
+          backgroundColor: Colors.red.shade800,
+        ),
+      );
     }
   }
 
@@ -352,7 +373,7 @@ class _SellWizardScreenState extends State<SellWizardScreen> {
             const SizedBox(height: 28),
 
             CustomButton(
-              text: 'Publish Listing on DTU Bazaar',
+              text: 'Publish Listing',
               width: double.infinity,
               isLoading: _isPosting,
               onPressed: _handleSubmit,

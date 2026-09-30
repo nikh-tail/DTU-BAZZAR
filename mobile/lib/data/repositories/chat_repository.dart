@@ -28,8 +28,14 @@ class ChatRepository {
   Future<List<MessageModel>> getMessages(String conversationId) async {
     try {
       final res = await _client.get('${ApiEndpoints.conversations}/$conversationId/messages');
-      if (res.data['success'] == true) {
-        final list = res.data['data'] as List;
+      if (res.data != null && res.data['success'] == true) {
+        final dynamic data = res.data['data'];
+        List list = [];
+        if (data is Map && data['messages'] is List) {
+          list = data['messages'] as List;
+        } else if (data is List) {
+          list = data;
+        }
         return list.map((json) => MessageModel.fromJson(json)).toList();
       }
       return [];
@@ -43,9 +49,12 @@ class ChatRepository {
     try {
       final res = await _client.post(
         '${ApiEndpoints.conversations}/$conversationId/messages',
-        data: {'content': content},
+        data: {
+          'text': content,
+          'content': content,
+        },
       );
-      if (res.data['success'] == true) {
+      if (res.data != null && res.data['success'] == true && res.data['data'] != null) {
         return MessageModel.fromJson(res.data['data']);
       }
       return null;
@@ -61,8 +70,8 @@ class ChatRepository {
         ApiEndpoints.conversations,
         data: {'listingId': listingId},
       );
-      if (res.data['success'] == true) {
-        return res.data['data']['id'];
+      if (res.data != null && res.data['success'] == true && res.data['data'] != null) {
+        return res.data['data']['id']?.toString();
       }
       return null;
     } catch (e) {

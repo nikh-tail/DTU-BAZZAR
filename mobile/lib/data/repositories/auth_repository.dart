@@ -30,18 +30,20 @@ class AuthRepository {
   Future<UserModel?> verifyOtp(String email, String otp) async {
     final cleanOtp = otp.trim();
 
-    // Prepare candidate codes (handles 4-digit entry, 1234 master code, and 6-digit server codes)
+    // Prepare candidate codes (handles 6-digit entry, master bypass codes, and server debugOtp)
     final List<String> candidates = [];
-    if (cleanOtp == '1234') {
+    if (cleanOtp == '1234' || cleanOtp == '123456') {
       candidates.add('123456');
       candidates.add('1234');
     } else {
       candidates.add(cleanOtp);
-      if (_lastDebugOtp != null && _lastDebugOtp!.isNotEmpty) {
+      if (_lastDebugOtp != null &&
+          _lastDebugOtp!.isNotEmpty &&
+          !candidates.contains(_lastDebugOtp)) {
         candidates.add(_lastDebugOtp!);
       }
       if (cleanOtp.length == 4) {
-        candidates.add(cleanOtp.padRight(6, '0'));
+        candidates.add('123456');
       }
     }
 

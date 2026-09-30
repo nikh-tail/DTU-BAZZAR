@@ -36,8 +36,8 @@ class _AuthScreenState extends State<AuthScreen>
   // Controllers & Focus Nodes
   final TextEditingController _emailController = TextEditingController();
   final List<TextEditingController> _otpControllers =
-      List.generate(4, (_) => TextEditingController());
-  final List<FocusNode> _otpFocusNodes = List.generate(4, (_) => FocusNode());
+      List.generate(6, (_) => TextEditingController());
+  final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
 
   // Step 2 Controllers
   final TextEditingController _nameController = TextEditingController();
@@ -136,18 +136,31 @@ class _AuthScreenState extends State<AuthScreen>
     setState(() => _errorMessage = '');
 
     if (value.isNotEmpty) {
+      // If user pasted a 6-digit code or typed multiple characters
+      if (value.length > 1) {
+        final digits = value.replaceAll(RegExp(r'\D'), '');
+        if (digits.length >= 6) {
+          for (int i = 0; i < 6; i++) {
+            _otpControllers[i].text = digits[i];
+          }
+          _otpFocusNodes[5].requestFocus();
+          _triggerVerifyOtp(digits.substring(0, 6));
+          return;
+        }
+      }
+
       // Keep only single numeric digit
       final char = value.substring(value.length - 1);
       _otpControllers[index].text = char;
 
-      if (index < 3) {
+      if (index < 5) {
         _otpFocusNodes[index + 1].requestFocus();
       }
     }
 
-    // Check if all 4 boxes are filled
+    // Check if all 6 boxes are filled
     final fullCode = _otpControllers.map((c) => c.text.trim()).join();
-    if (fullCode.length == 4) {
+    if (fullCode.length == 6) {
       _triggerVerifyOtp(fullCode);
     }
   }
@@ -165,7 +178,7 @@ class _AuthScreenState extends State<AuthScreen>
     setState(() => _isLoading = false);
 
     if (success) {
-      // Correct OTP entered: all 4 boxes green border + green glow
+      // Correct OTP entered: all 6 boxes green border + green glow
       setState(() => _otpStatus = OtpStatus.correct);
 
       final user = auth.user;
@@ -213,7 +226,7 @@ class _AuthScreenState extends State<AuthScreen>
       }
       setState(() {
         _otpStatus = OtpStatus.idle;
-        _errorMessage = 'Incorrect verification code. Please check or use 1234.';
+        _errorMessage = 'Incorrect verification code. Please check your inbox or use 123456.';
       });
       _otpFocusNodes[0].requestFocus();
     }
@@ -394,7 +407,7 @@ class _AuthScreenState extends State<AuthScreen>
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Verify your college email',
+          'Verify your email',
           style: GoogleFonts.sora(
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -403,7 +416,7 @@ class _AuthScreenState extends State<AuthScreen>
         ),
         const SizedBox(height: 6),
         Text(
-          'Enter your email address to receive a 4-digit verification code.',
+          'Enter your email address to receive a 6-digit verification code. Any email (Gmail, Outlook, Yahoo, DTU webmail) is accepted.',
           style: GoogleFonts.inter(
             fontSize: 13,
             fontWeight: FontWeight.w400,
@@ -540,7 +553,7 @@ class _AuthScreenState extends State<AuthScreen>
         ),
         const SizedBox(height: 6),
         Text(
-          'We sent a 4-digit code to ${_emailController.text.trim()} (or enter master code 1234)',
+          'We sent a 6-digit code to ${_emailController.text.trim()} (or enter master code 123456)',
           style: GoogleFonts.inter(
             fontSize: 13,
             fontWeight: FontWeight.w400,
@@ -550,11 +563,14 @@ class _AuthScreenState extends State<AuthScreen>
         ),
         const SizedBox(height: 28),
 
-        // 4 Separate Single-Digit OTP Boxes (52x58px, 12px radius, glass style)
+        // 6 Separate Single-Digit OTP Boxes (44x54px, 12px radius, black digit on white surface)
         Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(4, (index) => _buildOtpDigitBox(index)),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(6, (index) => _buildOtpDigitBox(index)),
+            ),
           ),
         ),
 
@@ -584,13 +600,17 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Widget _buildOtpDigitBox(int index) {
-    Color borderColor = const Color(0x28FFFFFF);
-    Color textColor = textPrimary;
-    List<BoxShadow> boxShadows = [];
+    Color borderColor = const Color(0x33000000);
+    List<BoxShadow> boxShadows = [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.08),
+        blurRadius: 8,
+        offset: const Offset(0, 2),
+      ),
+    ];
 
     if (_otpStatus == OtpStatus.correct) {
       borderColor = successGreen;
-      textColor = successGreen;
       boxShadows = [
         const BoxShadow(
           color: Color(0xA634D399), // 0 0 22px rgba(52,211,153,.65)
@@ -600,7 +620,6 @@ class _AuthScreenState extends State<AuthScreen>
       ];
     } else if (_otpStatus == OtpStatus.wrong) {
       borderColor = errorRed;
-      textColor = errorRed;
       boxShadows = [
         const BoxShadow(
           color: Color(0x8CFF5C5C), // 0 0 22px rgba(255,92,92,.55)
@@ -611,13 +630,13 @@ class _AuthScreenState extends State<AuthScreen>
     }
 
     return Container(
-      width: 52,
-      height: 58,
-      margin: const EdgeInsets.symmetric(horizontal: 6),
+      width: 44,
+      height: 54,
+      margin: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
-        color: glassSurface,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderColor, width: 1.5),
+        border: Border.all(color: borderColor, width: 2),
         boxShadow: boxShadows,
       ),
       child: Center(
@@ -637,15 +656,20 @@ class _AuthScreenState extends State<AuthScreen>
             keyboardType: TextInputType.number,
             textAlign: TextAlign.center,
             maxLength: 1,
+            cursorColor: Colors.black,
             style: GoogleFonts.sora(
               fontSize: 22,
-              fontWeight: FontWeight.w700,
-              color: textColor,
+              fontWeight: FontWeight.w800,
+              color: Colors.black, // Explicitly black as requested by user
             ),
             decoration: const InputDecoration(
               counterText: '',
               border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
               contentPadding: EdgeInsets.zero,
+              filled: true,
+              fillColor: Colors.white,
             ),
             onChanged: (val) => _onOtpDigitChanged(index, val),
           ),

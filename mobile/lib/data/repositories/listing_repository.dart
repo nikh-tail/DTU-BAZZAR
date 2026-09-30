@@ -18,7 +18,9 @@ class ListingRepository {
     try {
       final Map<String, dynamic> params = {};
       if (search != null && search.isNotEmpty) params['search'] = search;
-      if (category != null && category != 'ALL') params['category'] = category;
+      if (category != null && category != 'ALL') {
+        params['category'] = mapCategoryToBackend(category);
+      }
       if (condition != null && condition.isNotEmpty) params['condition'] = condition;
       if (campusLocation != null && campusLocation != 'ALL') {
         params['campusLocation'] = campusLocation;
@@ -51,13 +53,62 @@ class ListingRepository {
     }
   }
 
-  Future<bool> createListing(Map<String, dynamic> data) async {
+  static String mapCategoryToBackend(String category) {
+    switch (category) {
+      case 'DRAWING_TOOLS':
+        return 'LAB_STATIONERY';
+      case 'ELECTRONICS':
+        return 'ELECTRONICS';
+      case 'BOOKS_NOTES':
+        return 'BOOKS_ACADEMICS';
+      case 'FASHION':
+        return 'OTHER';
+      case 'HOSTEL_REQ':
+        return 'HOSTEL_ESSENTIALS';
+      case 'HOBBY_SPORT':
+        return 'SPORTS_FITNESS';
+      case 'CYCLES':
+        return 'CYCLES';
+      case 'BOOKS_ACADEMICS':
+        return 'BOOKS_ACADEMICS';
+      case 'HOSTEL_ESSENTIALS':
+        return 'HOSTEL_ESSENTIALS';
+      case 'LAB_STATIONERY':
+        return 'LAB_STATIONERY';
+      case 'SPORTS_FITNESS':
+        return 'SPORTS_FITNESS';
+      default:
+        return 'OTHER';
+    }
+  }
+
+  Future<({bool success, String message})> createListing(Map<String, dynamic> data) async {
     try {
-      final res = await _client.post(ApiEndpoints.listings, data: data);
-      return res.data['success'] == true;
+      final payload = Map<String, dynamic>.from(data);
+      if (payload['category'] != null) {
+        payload['category'] = mapCategoryToBackend(payload['category'].toString());
+      }
+      final res = await _client.post(ApiEndpoints.listings, data: payload);
+      if (res.data != null && res.data['success'] == true) {
+        return (
+          success: true,
+          message: res.data['message']?.toString() ?? 'Listing posted successfully!',
+        );
+      }
+      return (
+        success: false,
+        message: res.data?['message']?.toString() ?? 'Failed to publish listing.',
+      );
     } catch (e) {
       print('Create Listing Error: $e');
-      return false;
+      String msg = 'Failed to publish listing. Please check connection.';
+      try {
+        final dynamic err = e;
+        if (err.response?.data != null && err.response.data['message'] != null) {
+          msg = err.response.data['message'].toString();
+        }
+      } catch (_) {}
+      return (success: false, message: msg);
     }
   }
 
