@@ -22,7 +22,7 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
 
   const handleDownloadApk = () => {
     setDownloadStarted(true);
-    window.location.href = 'https://github.com/nikh-tail/DTU-BAZZAR/releases/download/v2.1.0/DTU-Bazaar.apk';
+    window.location.href = 'https://github.com/nikh-tail/DTU-BAZZAR/releases/download/v2.2.0/DTU-Bazaar.apk';
   };
 
   const appFeatures = [
@@ -55,7 +55,7 @@ export const DownloadAppPage: React.FC<DownloadAppPageProps> = ({ onNavigate }) 
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-emerald-700 text-xs font-bold shadow-sm">
             <Sparkles size={14} />
-            <span>DTU Bazaar Official Mobile App (v2.1.0)</span>
+            <span>DTU Bazaar Official Mobile App (v2.2.0)</span>
           </div>
 
           <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight text-slate-950">

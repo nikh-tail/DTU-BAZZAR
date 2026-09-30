@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/categories.dart';
 import '../../../state/auth_provider.dart';
@@ -23,9 +24,10 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
   // Design Tokens
   static const Color deepInkBg = Color(0xFF0B0D12);
-  static const Color glassSurface = Color(0x14FFFFFF);
-  static const Color glassBorder = Color(0x24FFFFFF);
-  static const Color dropdownBg = Color(0xFF141821);
+  static const Color glassSurface = Color(0x0FFFFFFF); // rgba(255,255,255,0.06)
+  static const Color glassBorder = Color(0x24FFFFFF); // rgba(255,255,255,0.14)
+  static const Color flatSurface = Color(0xFF141821);
+  static const Color flatBorder = Color(0xFF262C38);
   static const Color textPrimary = Color(0xFFEDEFF3);
   static const Color textMuted = Color(0xFF8A93A3);
   static const Color textSecondaryMuted = Color(0xFF6B7688);
@@ -43,6 +45,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       if (user.branch != null && user.branch!.isNotEmpty) _selectedBranch = user.branch!;
       if (user.year != null && user.year!.isNotEmpty) _selectedYear = user.year!;
       if (user.hostel != null && user.hostel!.isNotEmpty) _selectedHostel = user.hostel!;
+      if (user.userType != null && user.userType!.isNotEmpty) _userType = user.userType!;
     }
   }
 
@@ -93,18 +96,23 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         children: [
           // Dual Ambient Radial-Gradient Glows (amber top-left, green top-right)
           Positioned(
-            top: -60,
-            left: -60,
-            child: Container(
-              width: 320,
-              height: 320,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    accentAmber.withOpacity(0.14),
-                    Colors.transparent,
-                  ],
+            top: -50,
+            left: -50,
+            child: IgnorePointer(
+              child: Container(
+                width: 320,
+                height: 320,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    center: const Alignment(-0.64, -0.76),
+                    radius: 0.65,
+                    colors: [
+                      accentAmber.withOpacity(0.14),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.42],
+                  ),
                 ),
               ),
             ),
@@ -112,16 +120,21 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
           Positioned(
             top: -40,
             right: -60,
-            child: Container(
-              width: 340,
-              height: 340,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    successGreen.withOpacity(0.12),
-                    Colors.transparent,
-                  ],
+            child: IgnorePointer(
+              child: Container(
+                width: 340,
+                height: 340,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    center: const Alignment(0.76, -0.80),
+                    radius: 0.65,
+                    colors: [
+                      successGreen.withOpacity(0.12),
+                      Colors.transparent,
+                    ],
+                    stops: const [0.0, 0.42],
+                  ),
                 ),
               ),
             ),
@@ -133,15 +146,23 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                 child: Container(
                   constraints: const BoxConstraints(maxWidth: 440),
-                  padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 30),
+                  padding: const EdgeInsets.fromLTRB(26, 30, 26, 26),
                   decoration: BoxDecoration(
-                    color: glassSurface,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0x1AFFFFFF), // rgba(255,255,255,0.10)
+                        Color(0x08FFFFFF), // rgba(255,255,255,0.03)
+                      ],
+                      stops: [0.0, 1.0],
+                    ),
                     borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: glassBorder),
+                    border: Border.all(color: glassBorder, width: 1),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        blurRadius: 40,
+                        color: Colors.black.withOpacity(0.50),
+                        blurRadius: 60,
                         offset: const Offset(0, 20),
                       ),
                     ],
@@ -161,50 +182,64 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   Widget _buildCampusIdentityStep() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        const Text(
+        Text(
           'Campus identity',
-          style: TextStyle(
+          style: GoogleFonts.sora(
             fontSize: 22,
             fontWeight: FontWeight.w700,
             color: textPrimary,
           ),
         ),
         const SizedBox(height: 6),
-        const Text(
+        Text(
           'Set up your student profile to trade and connect with peers.',
-          style: TextStyle(fontSize: 12, color: textMuted),
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            color: textMuted,
+            height: 1.4,
+          ),
         ),
         const SizedBox(height: 22),
 
         if (_errorMessage.isNotEmpty) ...[
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               color: errorRed.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: errorRed),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: errorRed.withOpacity(0.5)),
             ),
-            child: Text(
-              _errorMessage,
-              style: const TextStyle(fontSize: 12, color: errorRed, fontWeight: FontWeight.w500),
+            child: Row(
+              children: [
+                const Icon(Icons.error_outline, color: errorRed, size: 16),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    _errorMessage,
+                    style: GoogleFonts.inter(fontSize: 12, color: errorRed, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 16),
         ],
 
         // 1. Full name
-        const Text(
+        Text(
           'Full name',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
+          style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
         ),
         const SizedBox(height: 6),
         TextField(
           controller: _nameController,
-          style: const TextStyle(fontSize: 14, color: textPrimary),
+          style: GoogleFonts.inter(fontSize: 14, color: textPrimary),
           decoration: InputDecoration(
             hintText: 'e.g. Rohan Sharma',
-            hintStyle: const TextStyle(color: Color(0xFF5A6270), fontSize: 14),
+            hintStyle: GoogleFonts.inter(color: const Color(0xFF5A6270), fontSize: 13),
             filled: true,
             fillColor: glassSurface,
             contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -225,16 +260,16 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         const SizedBox(height: 14),
 
         // 2. Branch / course
-        const Text(
+        Text(
           'Branch / course',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
+          style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
         ),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           value: _selectedBranch,
           isExpanded: true,
-          dropdownColor: dropdownBg,
-          style: const TextStyle(fontSize: 12, color: textPrimary),
+          dropdownColor: flatSurface,
+          style: GoogleFonts.inter(fontSize: 13, color: textPrimary),
           decoration: InputDecoration(
             filled: true,
             fillColor: glassSurface,
@@ -262,16 +297,16 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         const SizedBox(height: 14),
 
         // 3. Academic year
-        const Text(
+        Text(
           'Academic year',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
+          style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
         ),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
           value: _selectedYear,
           isExpanded: true,
-          dropdownColor: dropdownBg,
-          style: const TextStyle(fontSize: 12, color: textPrimary),
+          dropdownColor: flatSurface,
+          style: GoogleFonts.inter(fontSize: 13, color: textPrimary),
           decoration: InputDecoration(
             filled: true,
             fillColor: glassSurface,
@@ -299,9 +334,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         const SizedBox(height: 14),
 
         // 4. Residence type — Two-option toggle
-        const Text(
+        Text(
           'Residence type',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
+          style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
         ),
         const SizedBox(height: 6),
         Row(
@@ -323,8 +358,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   child: Center(
                     child: Text(
                       '🏢 Hosteler',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: _userType == 'HOSTELER' ? accentAmber : textMuted,
                       ),
@@ -351,8 +386,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                   child: Center(
                     child: Text(
                       '🚗 Day scholar',
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
                         color: _userType == 'DAY_SCHOLAR' ? accentAmber : textMuted,
                       ),
@@ -367,16 +402,16 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         // 5. Hostel selection — Only visible when Hosteler is selected
         if (_userType == 'HOSTELER') ...[
           const SizedBox(height: 14),
-          const Text(
+          Text(
             'Hostel name',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
+            style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500, color: textMuted),
           ),
           const SizedBox(height: 6),
           DropdownButtonFormField<String>(
             value: _selectedHostel,
             isExpanded: true,
-            dropdownColor: dropdownBg,
-            style: const TextStyle(fontSize: 12, color: textPrimary),
+            dropdownColor: flatSurface,
+            style: GoogleFonts.inter(fontSize: 13, color: textPrimary),
             decoration: InputDecoration(
               filled: true,
               fillColor: glassSurface,
@@ -415,17 +450,19 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               backgroundColor: accentAmber,
               foregroundColor: accentDarkInk,
               elevation: 0,
-              shape: RoundedCornerShape(9),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(9),
+              ),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'Finish setup',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: accentDarkInk),
+                  style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, color: accentDarkInk),
                 ),
-                SizedBox(width: 6),
-                Icon(Icons.arrow_forward, size: 16, color: accentDarkInk),
+                const SizedBox(width: 6),
+                const Icon(Icons.arrow_forward, size: 16, color: accentDarkInk),
               ],
             ),
           ),
@@ -437,6 +474,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   Widget _buildConfirmationStep(String userInitial, bool isLoading) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         // Small square avatar tile showing initial in green
         Container(
@@ -445,7 +483,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
           decoration: BoxDecoration(
             color: successGreen.withOpacity(0.12),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: successGreen),
+            border: Border.all(color: successGreen, width: 1.5),
             boxShadow: [
               BoxShadow(
                 color: successGreen.withOpacity(0.25),
@@ -456,7 +494,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
           child: Center(
             child: Text(
               userInitial,
-              style: const TextStyle(
+              style: GoogleFonts.sora(
                 fontSize: 26,
                 fontWeight: FontWeight.w800,
                 color: successGreen,
@@ -468,10 +506,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
         // Full name heading
         Text(
-          _nameController.text.trim(),
-          style: const TextStyle(
+          _nameController.text.trim().isNotEmpty
+              ? _nameController.text.trim()
+              : 'Campus Student',
+          style: GoogleFonts.sora(
             fontSize: 20,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w700,
             color: textPrimary,
           ),
           textAlign: TextAlign.center,
@@ -481,8 +521,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         // Branch + Year line
         Text(
           '$_selectedBranch • $_selectedYear',
-          style: const TextStyle(
-            fontSize: 12,
+          style: GoogleFonts.inter(
+            fontSize: 13,
             fontWeight: FontWeight.w500,
             color: textMuted,
           ),
@@ -493,8 +533,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         // Hostel / Day scholar line
         Text(
           _userType == 'HOSTELER' ? '🏢 $_selectedHostel' : '🚗 Day scholar',
-          style: const TextStyle(
-            fontSize: 11,
+          style: GoogleFonts.inter(
+            fontSize: 12,
             color: textSecondaryMuted,
           ),
           textAlign: TextAlign.center,
@@ -502,9 +542,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
         const SizedBox(height: 20),
 
         // Reassurance note line
-        const Text(
+        Text(
           'Your campus profile is ready. You can now browse verified listings, message campus peers, and post items with 0% brokerage.',
-          style: TextStyle(
+          style: GoogleFonts.inter(
             fontSize: 12,
             color: textMuted,
             height: 1.4,
@@ -523,14 +563,16 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
               backgroundColor: accentAmber,
               foregroundColor: accentDarkInk,
               elevation: 0,
-              shape: RoundedCornerShape(9),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(9),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   isLoading ? 'Entering...' : 'Enter DTU Bazaar',
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: accentDarkInk),
+                  style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700, color: accentDarkInk),
                 ),
                 const SizedBox(width: 6),
                 const Icon(Icons.arrow_forward, size: 16, color: accentDarkInk),
@@ -541,6 +583,4 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       ],
     );
   }
-
-  RoundedCornerShape(int i) {}
 }
