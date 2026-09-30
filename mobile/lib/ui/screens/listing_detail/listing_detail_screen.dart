@@ -33,6 +33,7 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
   List<ListingModel> _related = [];
   bool _isLoading = true;
   bool _isDetailsExpanded = false;
+  bool _isStartingChat = false;
   int _currentImageIndex = 0;
 
   @override
@@ -70,8 +71,10 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
       return;
     }
 
+    setState(() => _isStartingChat = true);
     final chatProv = Provider.of<ChatProvider>(context, listen: false);
     final conversationId = await chatProv.startChat(widget.listingId);
+    if (mounted) setState(() => _isStartingChat = false);
 
     if (conversationId != null && mounted) {
       chatProv.fetchConversations();
@@ -253,16 +256,28 @@ class _ListingDetailScreenState extends State<ListingDetailScreen> {
                     ),
                     const SizedBox(width: 6),
                     // Chat Button
-                    ElevatedButton.icon(
+                    ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primaryLime,
                         foregroundColor: AppColors.textPrimary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
-                      onPressed: _handleStartChat,
-                      icon: const Icon(Icons.chat_bubble_outline, size: 14),
-                      label: const Text('Chat', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
+                      onPressed: _isStartingChat ? null : _handleStartChat,
+                      child: _isStartingChat
+                          ? const SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.textPrimary),
+                            )
+                          : const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.chat_bubble_outline, size: 14),
+                                SizedBox(width: 4),
+                                Text('Chat', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900)),
+                              ],
+                            ),
                     ),
                   ],
                 ),

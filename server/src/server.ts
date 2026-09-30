@@ -64,6 +64,8 @@ app.use('/uploads', express.static(uploadPath));
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
+    version: '2.6.0',
+    otpDigits: 4,
     message: 'DTU Bazaar API is running smoothly with Helmet & Rate-Limiting active ⚡',
     timestamp: new Date().toISOString(),
     allowedDomains: config.allowedDomains,

@@ -70,12 +70,12 @@ jobs:
             Latest production release for Delhi Technological University students & campus community.
 
             #### 🌟 Highlights in ${{ github.ref_name }}:
-            - **🔢 4-Digit OTP Verification**: Restored clean 4-digit OTP flow with universal bypass code `1234` and updated backend 4-digit provider.
-            - **☀️ Normal Light Theme for Auth**: Redesigned Auth, Login, Register, and Campus Identity screens to match the clean light theme of DTU Bazaar while preserving smooth animations.
-            - **💬 Real-Time Chat Ghost Bubbles Fixed**: Fixed socket payload parsing so no empty bubbles appear and real messages render with correct sender alignment.
-            - **📋 In-App Chat History Sync**: Active conversation history automatically refreshes when opening the Chats tab or navigating back from a chat.
-            - **📏 Large Number UI Overflow Fixed**: Listing detail action bar now gracefully scales prices with 6+ digits without clipping buttons.
-            - **🟢 Authentic WhatsApp & Make Offer**: In-app price offers and branded WhatsApp messaging.
+            - **🔄 In-App OTA Auto-Updater**: Automated in-app update notifications with 1-tap direct install — no need to manually visit GitHub for future updates!
+            - **📸 User Product Photos Fixed**: Multi-part image upload now accurately captures and displays photos published by users across the marketplace, details, and profile.
+            - **🔢 Strict OTP Verification**: OTP validation strictly verifies the exact entered code without false bypass fallbacks.
+            - **🎨 100% Relevant Category Photos**: Updated categories (Fashion, Hostel Essentials, Electronics, Books, Sports) with relevant campus photos.
+            - **⚡ Fast Chat Launch & Zero Message Duplication**: Real-time message deduplication and instant tactile feedback when opening chats.
+            - **☀️ Clean Light Theme**: Normal DTU Bazaar light UI across Auth, Registration, and Onboarding.
 
             Download `DTU-Bazaar.apk` below and install directly on your Android device!
           files: release-output/*

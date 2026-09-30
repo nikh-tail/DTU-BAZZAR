@@ -113,22 +113,22 @@ class _SellWizardScreenState extends State<SellWizardScreen> {
 
     setState(() => _isPosting = true);
 
-    // Guaranteed reliable campus category fallback photo if no photos picked
-    final defaultCategoryPhoto = ImageUrlUtil.getCategoryFallback(_selectedCategory);
-    final imageUrls = [defaultCategoryPhoto];
-
     final repo = ListingRepository(ApiClient());
-    final result = await repo.createListing({
-      'title': title,
-      'description': desc,
-      'price': price,
-      'category': _selectedCategory,
-      'condition': _selectedCondition,
-      'campusLocation': _locationController.text.trim().isNotEmpty
-          ? _locationController.text.trim()
-          : (auth.user?.hostel ?? 'DTU Main Campus'),
-      'imageUrls': imageUrls,
-    });
+    final result = await repo.createListing(
+      {
+        'title': title,
+        'description': desc,
+        'price': price,
+        'category': _selectedCategory,
+        'condition': _selectedCondition,
+        'campusLocation': _locationController.text.trim().isNotEmpty
+            ? _locationController.text.trim()
+            : (auth.user?.hostel ?? 'DTU Main Campus'),
+        if (_selectedImages.isEmpty)
+          'imageUrls': [ImageUrlUtil.getCategoryFallback(_selectedCategory)],
+      },
+      imageFiles: _selectedImages.isNotEmpty ? _selectedImages : null,
+    );
 
     setState(() => _isPosting = false);
 

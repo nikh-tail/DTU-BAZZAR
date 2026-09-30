@@ -30,33 +30,16 @@ class AuthRepository {
   Future<UserModel?> verifyOtp(String email, String otp) async {
     final cleanOtp = otp.trim();
 
-    // Prepare candidate codes (handles 4-digit entry, 1234 master bypass, debugOtp, and legacy)
-    final List<String> candidates = [];
-    candidates.add(cleanOtp);
-    if (cleanOtp != '1234') {
-      candidates.add('1234');
-    }
-    if (_lastDebugOtp != null &&
-        _lastDebugOtp!.isNotEmpty &&
-        !candidates.contains(_lastDebugOtp)) {
-      candidates.add(_lastDebugOtp!);
-    }
-    if (!candidates.contains('123456')) {
-      candidates.add('123456');
-    }
+    try {
+      final res = await _client.post(ApiEndpoints.verifyOtp, data: {
+        'email': email,
+        'otp': cleanOtp,
+      });
 
-    for (final candidate in candidates) {
-      try {
-        final res = await _client.post(ApiEndpoints.verifyOtp, data: {
-          'email': email,
-          'otp': candidate,
-        });
-
-        if (res.data != null && res.data['success'] == true) {
-          final token = res.data['token'];
-          final userData = res.data['user'] ?? res.data['data'];
-          if (userData == null) continue;
-
+      if (res.data != null && res.data['success'] == true) {
+        final token = res.data['token'];
+        final userData = res.data['user'] ?? res.data['data'];
+        if (userData != null) {
           final user = UserModel.fromJson(Map<String, dynamic>.from(userData));
 
           final prefs = await SharedPreferences.getInstance();
@@ -67,9 +50,9 @@ class AuthRepository {
 
           return user;
         }
-      } catch (e) {
-        print('Verify OTP attempt ($candidate) error: $e');
       }
+    } catch (e) {
+      print('Verify OTP error: $e');
     }
 
     return null;

@@ -11,6 +11,7 @@ import '../../widgets/empty_state.dart';
 import '../auth/auth_screen.dart';
 import '../onboarding/profile_setup_screen.dart';
 import '../listing_detail/listing_detail_screen.dart';
+import '../../../core/services/update_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -125,6 +126,23 @@ class _ProfileScreenState extends State<ProfileScreen> with SingleTickerProvider
       appBar: AppBar(
         title: const Text('My Campus Profile'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.system_update_alt_rounded, size: 20, color: AppColors.textPrimary),
+            tooltip: 'Check for Updates',
+            onPressed: () async {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Checking for DTU Bazaar updates...'), duration: Duration(seconds: 1)),
+              );
+              final update = await UpdateService.checkForUpdate();
+              if (update != null && context.mounted) {
+                UpdateService.promptUpdate(context, update);
+              } else if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('⚡ You are on the latest version of DTU Bazaar!')),
+                );
+              }
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.logout, size: 20, color: AppColors.error),
             onPressed: () => auth.logout(),

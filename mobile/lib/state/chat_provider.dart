@@ -41,8 +41,9 @@ class ChatProvider extends ChangeNotifier {
       if (convId == _activeConversationId) {
         final msg = MessageModel.fromJson(messageData);
         if (msg.content.trim().isNotEmpty) {
-          final isDuplicate = msg.id.isNotEmpty &&
-              _messages.any((existing) => existing.id == msg.id);
+          final isDuplicate = _messages.any((m) =>
+              (m.id.isNotEmpty && m.id == msg.id) ||
+              (m.content.trim() == msg.content.trim() && m.senderId == msg.senderId));
           if (!isDuplicate) {
             _messages.add(msg);
             notifyListeners();
@@ -66,12 +67,12 @@ class ChatProvider extends ChangeNotifier {
 
   Future<void> openConversation(String conversationId) async {
     _activeConversationId = conversationId;
-    _messages = [];
     _isLoading = true;
     notifyListeners();
 
     SocketService().joinConversation(conversationId);
-    _messages = await _chatRepo.getMessages(conversationId);
+    final fetched = await _chatRepo.getMessages(conversationId);
+    _messages = fetched;
 
     _isLoading = false;
     notifyListeners();
@@ -92,8 +93,13 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
 
     final msg = await _chatRepo.sendMessage(_activeConversationId!, content.trim());
-    if (msg != null) {
-      _messages.add(msg);
+    if (msg != null && msg.content.trim().isNotEmpty) {
+      final isDuplicate = _messages.any((m) =>
+          (m.id.isNotEmpty && m.id == msg.id) ||
+          (m.content.trim() == msg.content.trim() && m.senderId == msg.senderId));
+      if (!isDuplicate) {
+        _messages.add(msg);
+      }
     }
 
     _isSending = false;

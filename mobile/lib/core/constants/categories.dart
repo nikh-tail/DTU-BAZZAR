@@ -39,7 +39,7 @@ class CampusConstants {
       subtitle: 'Laptops, keyboards, chargers & more',
       icon: '💻',
       themeColor: AppColors.catElectronics,
-      imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=80',
     ),
     CategoryItem(
       id: 'BOOKS_NOTES',
@@ -48,7 +48,7 @@ class CampusConstants {
       subtitle: 'Engineering math, syllabus books & notes',
       icon: '📚',
       themeColor: AppColors.catBooksNotes,
-      imageUrl: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1532012164546-f432f2e372fe?w=600&auto=format&fit=crop&q=80',
     ),
     CategoryItem(
       id: 'FASHION',
@@ -57,7 +57,7 @@ class CampusConstants {
       subtitle: 'Lab coats, hoodies, sports gear & uniforms',
       icon: '👕',
       themeColor: AppColors.catFashion,
-      imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&auto=format&fit=crop&q=80',
     ),
     CategoryItem(
       id: 'HOSTEL_REQ',
@@ -66,7 +66,7 @@ class CampusConstants {
       subtitle: 'Coolers, mattresses, kettles & bedsheets',
       icon: '🛏️',
       themeColor: AppColors.catHostelReq,
-      imageUrl: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=600&auto=format&fit=crop&q=80',
     ),
     CategoryItem(
       id: 'HOBBY_SPORT',
@@ -84,7 +84,7 @@ class CampusConstants {
       subtitle: 'Misc campus equipment, gadgets & more',
       icon: '📦',
       themeColor: AppColors.catOthers,
-      imageUrl: 'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=600&auto=format&fit=crop&q=80',
+      imageUrl: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80',
     ),
   ];
 

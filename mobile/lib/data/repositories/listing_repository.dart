@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import '../../core/constants/api_endpoints.dart';
 import '../../core/network/api_client.dart';
 import '../models/listing_model.dart';
@@ -82,13 +83,47 @@ class ListingRepository {
     }
   }
 
-  Future<({bool success, String message})> createListing(Map<String, dynamic> data) async {
+  Future<({bool success, String message})> createListing(
+    Map<String, dynamic> data, {
+    List<dynamic>? imageFiles,
+  }) async {
     try {
       final payload = Map<String, dynamic>.from(data);
       if (payload['category'] != null) {
         payload['category'] = mapCategoryToBackend(payload['category'].toString());
       }
-      final res = await _client.post(ApiEndpoints.listings, data: payload);
+
+      dynamic body;
+      if (imageFiles != null && imageFiles.isNotEmpty) {
+        final formData = FormData();
+        payload.forEach((key, value) {
+          if (value is List) {
+            for (var item in value) {
+              formData.fields.add(MapEntry('$key[]', item.toString()));
+            }
+          } else {
+            formData.fields.add(MapEntry(key, value.toString()));
+          }
+        });
+
+        for (final img in imageFiles) {
+          final path = img.path?.toString() ?? '';
+          if (path.isNotEmpty) {
+            final fileName = (img.name != null && img.name.toString().isNotEmpty)
+                ? img.name.toString()
+                : 'listing_${DateTime.now().millisecondsSinceEpoch}.jpg';
+            formData.files.add(MapEntry(
+              'images',
+              await MultipartFile.fromFile(path, filename: fileName),
+            ));
+          }
+        }
+        body = formData;
+      } else {
+        body = payload;
+      }
+
+      final res = await _client.post(ApiEndpoints.listings, data: body);
       if (res.data != null && res.data['success'] == true) {
         return (
           success: true,

@@ -4,6 +4,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../state/auth_provider.dart';
 import '../../../state/listing_provider.dart';
 import '../../../state/chat_provider.dart';
+import '../../../core/services/update_service.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/explore/explore_screen.dart';
 import '../screens/sell/sell_wizard_screen.dart';
@@ -20,6 +21,20 @@ class MainTabScreen extends StatefulWidget {
 
 class _MainTabScreenState extends State<MainTabScreen> {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 2), () async {
+        if (!mounted) return;
+        final update = await UpdateService.checkForUpdate();
+        if (update != null && mounted) {
+          UpdateService.promptUpdate(context, update);
+        }
+      });
+    });
+  }
 
   void _onTabTapped(int index) {
     if (index == 2) {
