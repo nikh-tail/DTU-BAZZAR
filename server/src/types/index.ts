@@ -8,8 +8,9 @@ export interface AuthUser {
   year?: string | null;
   userType: string;
   hostel?: string | null;
-  maxListings?: number;
-  isProSeller?: boolean;
+  roomNumber?: string | null;
+  phone?: string | null;
+  isVerified?: boolean;
 }
 
 export interface AuthenticatedRequest extends Request {
@@ -17,20 +18,20 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export type ListingCategory =
-  | 'DRAWING_TOOLS'
-  | 'ELECTRONICS'
-  | 'BOOKS_NOTES'
-  | 'FASHION'
-  | 'HOSTEL_REQ'
-  | 'HOBBY_SPORT'
-  | 'OTHERS'
-  // Legacy aliases
   | 'CYCLES'
+  | 'ELECTRONICS'
   | 'BOOKS_ACADEMICS'
   | 'HOSTEL_ESSENTIALS'
   | 'LAB_STATIONERY'
   | 'SPORTS_FITNESS'
-  | 'OTHER';
+  | 'OTHER'
+  // Extended aliases
+  | 'DRAWING_TOOLS'
+  | 'BOOKS_NOTES'
+  | 'FASHION'
+  | 'HOSTEL_REQ'
+  | 'HOBBY_SPORT'
+  | 'OTHERS';
 
 export type ListingCondition = 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR';
 export type ListingStatus = 'ACTIVE' | 'SOLD' | 'RESERVED' | 'ARCHIVED';

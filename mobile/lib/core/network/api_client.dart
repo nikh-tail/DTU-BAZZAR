@@ -18,8 +18,8 @@ class ApiClient {
       ),
     );
 
-    // Warm-up ping to wake up server container
-    dio.get('/health').catchError((_) => Response(requestOptions: RequestOptions(path: '')));
+    // Warm-up ping to wake up free-tier backend (e.g. Render) on launch
+    dio.get('${ApiEndpoints.baseUrl}/health').catchError((_) => Response(requestOptions: RequestOptions(path: '')));
 
     // Attach JWT Authorization Interceptor
     dio.interceptors.add(
@@ -45,6 +45,10 @@ class ApiClient {
 
   Future<Response> post(String path, {dynamic data}) {
     return dio.post(path, data: data);
+  }
+
+  Future<Response> patch(String path, {dynamic data}) {
+    return dio.patch(path, data: data);
   }
 
   Future<Response> put(String path, {dynamic data}) {

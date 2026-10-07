@@ -10,7 +10,12 @@ class SocketService {
   IO.Socket? _socket;
   bool get isConnected => _socket?.connected ?? false;
 
-  void connect({Function(dynamic)? onNewMessage}) async {
+  void connect({
+    Function(dynamic)? onNewMessage,
+    Function(dynamic)? onNotification,
+    Function(dynamic)? onUserTyping,
+    Function(dynamic)? onUserStoppedTyping,
+  }) async {
     if (_socket != null && _socket!.connected) return;
 
     final prefs = await SharedPreferences.getInstance();
@@ -37,17 +42,51 @@ class SocketService {
       }
     });
 
+    _socket!.on('new_message_notification', (data) {
+      if (onNotification != null) {
+        onNotification(data);
+      }
+    });
+
+    _socket!.on('user_typing', (data) {
+      if (onUserTyping != null) {
+        onUserTyping(data);
+      }
+    });
+
+    _socket!.on('user_stopped_typing', (data) {
+      if (onUserStoppedTyping != null) {
+        onUserStoppedTyping(data);
+      }
+    });
+
     _socket!.onDisconnect((_) {
       print('❌ Disconnected from DTU Bazaar Socket Server');
     });
   }
 
   void joinConversation(String conversationId) {
-    _socket?.emit('join_conversation', conversationId);
+    if (conversationId.isNotEmpty) {
+      _socket?.emit('join_conversation', conversationId);
+    }
   }
 
   void leaveConversation(String conversationId) {
-    _socket?.emit('leave_conversation', conversationId);
+    if (conversationId.isNotEmpty) {
+      _socket?.emit('leave_conversation', conversationId);
+    }
+  }
+
+  void startTyping(String conversationId) {
+    if (conversationId.isNotEmpty) {
+      _socket?.emit('typing_start', {'conversationId': conversationId});
+    }
+  }
+
+  void stopTyping(String conversationId) {
+    if (conversationId.isNotEmpty) {
+      _socket?.emit('typing_stop', {'conversationId': conversationId});
+    }
   }
 
   void disconnect() {

@@ -7,6 +7,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../core/utils/url_launcher_util.dart';
 import '../../../core/utils/image_url_util.dart';
+import '../../../core/network/socket_service.dart';
 import '../../../state/auth_provider.dart';
 import '../../../state/chat_provider.dart';
 import '../../widgets/whatsapp_icon.dart';
@@ -63,11 +64,9 @@ class _ChatWindowScreenState extends State<ChatWindowScreen> {
 
   @override
   void dispose() {
+    SocketService().leaveConversation(widget.conversationId);
     _msgController.dispose();
     _scrollController.dispose();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Safely close active room and refresh conversations
-    });
     super.dispose();
   }
 

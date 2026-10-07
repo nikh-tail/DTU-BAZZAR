@@ -2,10 +2,8 @@ name: Build & Release DTU Bazaar Flutter APK
 
 on:
   push:
-    branches:
-      - main
     tags:
-      - 'v*'
+      - 'v*.*.*'
   workflow_dispatch:
 
 permissions:
@@ -29,7 +27,6 @@ jobs:
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.x'
           channel: 'stable'
           cache: true
 
@@ -42,16 +39,12 @@ jobs:
         run: |
           cd mobile
           chmod +x android/gradlew
-          flutter build apk --release --no-tree-shake-icons
+          flutter build apk --release --split-per-abi=false
 
       - name: Stage APK for Release
         run: |
           mkdir -p release-output
           cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/DTU-Bazaar.apk
-          cp mobile/build/app/outputs/flutter-apk/app-release.apk release-output/dtu-bazaar-latest.apk
-          if [[ "${{ github.ref_name }}" =~ ^v.* ]]; then
-            cp mobile/build/app/outputs/flutter-apk/app-release.apk "release-output/dtu-bazaar-${{ github.ref_name }}.apk"
-          fi
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
@@ -64,23 +57,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
         with:
           tag_name: ${{ github.ref_name }}
-          name: "DTU Bazaar Mobile App ${{ github.ref_name }} (Flutter Release)"
-          body: |
-            ### ⚡ DTU Bazaar — Official Mobile App ${{ github.ref_name }}
-            Latest production release for Delhi Technological University students & campus community.
-
-            #### 🌟 Highlights in ${{ github.ref_name }}:
-            - **🔄 In-App OTA Auto-Updater**: Automated in-app update notifications with 1-tap direct install — no need to manually visit GitHub for future updates!
-            - **📸 User Product Photos Fixed**: Multi-part image upload now accurately captures and displays photos published by users across the marketplace, details, and profile.
-            - **🔢 Strict OTP Verification**: OTP validation strictly verifies the exact entered code without false bypass fallbacks.
-            - **🎨 100% Relevant Category Photos**: Updated categories (Fashion, Hostel Essentials, Electronics, Books, Sports) with relevant campus photos.
-            - **⚡ Fast Chat Launch & Zero Message Duplication**: Real-time message deduplication and instant tactile feedback when opening chats.
-            - **☀️ Clean Light Theme**: Normal DTU Bazaar light UI across Auth, Registration, and Onboarding.
-
-            Download `DTU-Bazaar.apk` below and install directly on your Android device!
-          files: release-output/*
+          name: "DTU Bazaar Mobile ${{ github.ref_name }}"
           draft: false
           prerelease: false
-          make_latest: true
+          files: release-output/DTU-Bazaar.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

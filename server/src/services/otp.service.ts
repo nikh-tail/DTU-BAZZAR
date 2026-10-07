@@ -67,8 +67,7 @@ export class OtpService {
       message: isDelivered
         ? `Verification code delivered to ${cleanEmail}.`
         : `Verification code generated for ${cleanEmail}.`,
-      // Always provide the generated OTP so users with Gmail/unverified domains can log in seamlessly
-      debugOtp: otp,
+      ...(config.simulateEmailOtp ? { debugOtp: otp } : {}),
     };
   }
 
@@ -79,15 +78,15 @@ export class OtpService {
     const cleanEmail = email.trim().toLowerCase();
     const cleanOtp = inputOtp.trim();
 
-    // 1. Universal Master Bypass code for campus testing & reliable login
-    if (cleanOtp === MASTER_OTP || cleanOtp === MASTER_OTP_6DIGIT) {
+    // 1. Dev bypass code "1234" only when explicitly enabled via env flag (SIMULATE_EMAIL_OTP)
+    if (config.simulateEmailOtp && (cleanOtp === MASTER_OTP || cleanOtp === MASTER_OTP_6DIGIT)) {
       await prisma.otpVerification.deleteMany({
         where: { email: cleanEmail },
       });
       return true;
     }
 
-    // 2. Database OTP lookup
+    // 2. Database OTP lookup with strict equality + expiresAt > now
     const record = await prisma.otpVerification.findFirst({
       where: {
         email: cleanEmail,
@@ -97,8 +96,7 @@ export class OtpService {
     });
 
     if (!record) {
-      // Allow master code fallback error message
-      throw new Error('Invalid or expired OTP. Please use the verification code sent to your email or 1234.');
+      throw new Error('Invalid or expired OTP. Please request a new verification code.');
     }
 
     if (record.otp !== cleanOtp) {
@@ -106,7 +104,7 @@ export class OtpService {
         where: { id: record.id },
         data: { attempts: { increment: 1 } },
       });
-      throw new Error('Incorrect OTP code. Please enter the code sent to your email or use universal code 1234.');
+      throw new Error('Incorrect OTP code. Please enter the valid code sent to your email.');
     }
 
     // Successfully verified, clean up used OTP

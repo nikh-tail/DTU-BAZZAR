@@ -1,85 +1,59 @@
-<div align="center">
-
 # ⚡ DTU Bazaar
 
-### Peer-to-Peer Campus Marketplace for Delhi Technological University
+> **Exclusive Campus Peer-to-Peer Marketplace for Delhi Technological University Students**
 
-[![Live Website](https://img.shields.io/badge/Live_Website-dtu--bazzar.vercel.app-00dfa2?style=for-the-badge&logo=vercel&logoColor=white)](https://dtu-bazzar.vercel.app)
-[![API Status](https://img.shields.io/badge/Backend_API-Live_on_Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://dtu-bazzar.onrender.com/api/health)
-[![Database](https://img.shields.io/badge/Database-Neon_PostgreSQL-00E599?style=for-the-badge&logo=postgresql&logoColor=white)](https://neon.tech)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
-
-<p align="center">
-  <strong>DTU Bazaar</strong> is a modern, high-performance marketplace platform engineered specifically for the <strong>Delhi Technological University (DTU)</strong> student ecosystem. It combines the high-energy aesthetic of SharePal with the search density of OLX, enabling students to buy, sell, and exchange academic textbooks, electronics, cycles, coolers, and hostel essentials directly with verified campus peers.
-</p>
-
-[Explore Live Demo](https://dtu-bazzar.vercel.app) • [API Documentation](#-api-endpoints) • [System Architecture](#-system-architecture) • [Getting Started](#-local-development)
+DTU Bazaar is a production-grade full-stack mobile and web marketplace engineered exclusively for the college student community of Delhi Technological University. Verified students (via college email OTP) can buy, sell, and exchange textbooks, electronics, cycles, coolers, and hostel essentials, chat in real-time with buyers and sellers, connect directly via WhatsApp, and receive seamless in-app Over-The-Air (OTA) APK updates from GitHub Releases.
 
 ---
 
-</div>
+## 🌟 Key Features
 
-## 🌟 Key Highlights
-
-- **🎓 Verified Student Community**: Authenticated signup and login with 6-digit one-time verification codes (OTP) delivered directly to student inboxes via **Resend API**.
-- **⚡ Real-Time In-App Messaging**: Instant peer-to-peer chat powered by **Socket.io** with live unread badge updates and 1-click campus inquiry chips (*"Can we meet at Mic-Mac Canteen?"*, *"Is price negotiable?"*).
-- **🔎 High-Density Search & Filtering**: Multi-facet querying by Category, Price Range, Condition (*Brand New, Like New, Good, Fair*), and specific DTU Hostels (*Aryabhatta, VVS, JC Bose, Kalpana Chawla, Day Scholars*).
-- **📦 1-Click Inventory Management**: Quick **"Mark as Sold"** actions to automatically archive items from active feeds, plus saved wishlist bookmarks.
-- **🛡️ Enterprise Security**: Hardened with **Helmet HTTP security headers**, tiered IP rate-limiting (`express-rate-limit`), anti-brute-force OTP guards, and input sanitization via Zod.
-- **☁️ Cloud Native Architecture**: Powered by **Neon Managed Cloud PostgreSQL**, **Cloudinary CDN** for media delivery, and serverless edge deployment on **Vercel** & **Render**.
+- **🎓 Verified Student Community**: Restricted to authenticated students via 4-digit numeric OTP sent directly to their email inbox.
+- **⚡ Real-Time Socket.io Chat**: Instant messaging rooms, typing indicators, live notifications, and price offers with zero message duplication.
+- **📲 Direct WhatsApp Integration**: 1-tap WhatsApp handshake via `url_launcher` with pre-filled listing inquiries.
+- **📦 5 Campus Category Hubs**: Cycles, Electronics, Books & Academics, Hostel Essentials, Lab & Stationery, Sports & Fitness.
+- **🖼️ Flexible Media Storage**: Multipart image upload pipeline via Multer with Cloudinary CDN integration and local disk fallback.
+- **🛡️ Enterprise Security**: Hardened with Helmet HTTP headers, CORS policies, rate limiting (`express-rate-limit`), and JWT authentication.
+- **🔄 In-App OTA Auto-Updater**: Directly checks GitHub Releases for new APK versions and presents an in-app download & install prompt without needing the Google Play Store.
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ Architecture
 
-```mermaid
-flowchart TD
-    subgraph ClientLayer["🖥️ Frontend (Vercel)"]
-        UI["React 18 + TypeScript + Tailwind CSS"]
-        State["Auth, Chat & Socket Context"]
-        Proxy["Vercel Edge Proxy (/api rewrites)"]
-        UI --> State
-        State --> Proxy
-    end
-
-    subgraph BackendLayer["⚙️ Backend API (Render)"]
-        Express["Express.js REST Engine"]
-        Socket["Socket.io WebSocket Gateway"]
-        Security["Helmet + Rate Limiters"]
-        Prisma["Prisma ORM Client"]
-        Express --> Security
-        Security --> Prisma
-        Express <--> Socket
-    end
-
-    subgraph CloudServices["☁️ Managed Cloud Infrastructure"]
-        Neon[("Neon PostgreSQL Cloud Database")]
-        Resend["Resend Transactional Email API"]
-        Cloudinary["Cloudinary CDN Image Storage"]
-    end
-
-    Proxy -->|"HTTPS REST Calls"| Express
-    State <-->|"WSS Real-Time Events"| Socket
-    Prisma <-->|"Pooled SQL Connections"| Neon
-    Express -->|"Send 6-Digit OTP"| Resend
-    Express -->|"Upload Listing Media"| Cloudinary
+```
+Flutter Mobile App (Material 3, Provider, Dio, Socket.io client)
+        │ HTTP REST            │ Persistent WebSocket
+        ▼                      ▼
+Express.js API Gateway (Helmet, Rate-Limiting, CORS, JWT, Multer)
+        │
+        ├── PostgreSQL (via Prisma ORM)
+        ├── Cloudinary (image CDN, fallback to local disk storage)
+        ├── Brevo SMTP / Nodemailer (4-digit OTP emails)
+        └── Socket.io (chat rooms, typing indicators, live notifications)
 ```
 
 ---
 
-## 🛠️ Technology Stack
+## 🛠️ Tech Stack
 
-| Layer | Technology | Purpose |
-| :--- | :--- | :--- |
-| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS | High-performance SPA with SharePal dark aesthetic |
-| **Icons & UI** | Lucide React, Canvas Confetti | Modern iconography and celebratory animations |
-| **Backend** | Node.js, Express 5, TypeScript | Scalable REST API server |
-| **Real-time Engine** | Socket.io 4.8 | Room-based instant messaging & presence |
-| **Database & ORM** | Neon PostgreSQL, Prisma ORM 6 | Type-safe queries, connection pooling & migrations |
-| **Email Infrastructure** | Resend API | Transactional OTP delivery to student inboxes |
-| **Cloud Storage** | Cloudinary CDN | Asset optimization & global image distribution |
-| **Security** | Helmet, Express Rate Limit, Zod | Defense-in-depth protection and payload validation |
-| **Deployment** | Vercel (Frontend), Render (Backend) | Zero-downtime global cloud hosting |
+### Backend
+- **Runtime & Language**: Node.js v20+, TypeScript (`tsx` for dev, `tsc` for build)
+- **Framework**: Express.js
+- **Database & ORM**: PostgreSQL with Prisma ORM (`@prisma/client`, `prisma`)
+- **Real-time**: Socket.io v4.8+
+- **Security**: Helmet, CORS, Express-Rate-Limit, JSON Web Tokens (`jsonwebtoken`)
+- **Uploads**: Multer + Cloudinary (with local disk fallback to `/uploads`)
+- **Email / OTP**: Nodemailer (Brevo SMTP relay & Resend API)
+
+### Mobile
+- **Framework**: Flutter 3.x / Dart (Targeting Android 7.0+ and iOS)
+- **Design System**: Material 3 with Plus Jakarta Sans (`google_fonts`)
+- **State Management**: `provider` (^6.1.2) using `ChangeNotifier`
+- **Networking**: `dio` (^5.4.3+1) with JWT Bearer interceptor & 45s timeouts
+- **Real-Time Client**: `socket_io_client` (^2.0.3+1)
+- **Local Storage**: `shared_preferences` (^2.2.3)
+- **Media**: `image_picker` (^1.1.2), `cached_network_image` (^3.3.1)
+- **Utilities**: `url_launcher` (^6.3.0), `intl` (^0.19.0), `http` (^1.2.1)
 
 ---
 
@@ -87,118 +61,149 @@ flowchart TD
 
 ```
 dtu-bazaar/
-├── client/                     # Frontend React SPA
+├── .github/workflows/build-flutter-apk.yml
+├── server/
 │   ├── src/
-│   │   ├── components/         # Modular UI components
-│   │   │   ├── common/         # Navbar, Footer, Badge, Button, Input, Modal
-│   │   │   ├── home/           # Hero, CategoryGrid, TrustZero, CampusStats
-│   │   │   ├── listings/       # ListingCard, ListingFilters, ListingGallery
-│   │   │   ├── chat/           # ChatDrawer, ChatList, ChatWindow
-│   │   │   └── profile/        # ProfileCard, UserListingsTabs
-│   │   ├── context/            # Global Auth, Socket & Chat state providers
-│   │   ├── pages/              # Routed pages (Home, Browse, Detail, Create, Profile)
-│   │   ├── services/           # Axios HTTP client with JWT interceptors
-│   │   └── types/              # TypeScript domain contracts
-│   ├── tailwind.config.js      # Custom theme tokens & neon glow accents
-│   └── vercel.json             # Vercel reverse proxy & SPA routing rules
-├── server/                     # Backend API & WebSocket Server
-│   ├── src/
-│   │   ├── config/             # Environment, Prisma & Socket singletons
-│   │   ├── controllers/        # Auth, Listing, Chat, and User business logic
-│   │   ├── middleware/         # JWT verification, upload handling & rate limiters
-│   │   ├── routes/             # Express API route declarations
-│   │   ├── services/           # Email, OTP, Socket, and Storage adapters
-│   │   └── prisma/             # Schema definitions & DTU sample seed script
-│   ├── prisma/schema.prisma    # PostgreSQL database schema
-│   └── .env.example            # Environment variables blueprint
-├── render.yaml                 # Render cloud deployment blueprint
-└── package.json                # Monorepo runner scripts
+│   │   ├── config/{env.ts, prisma.ts}
+│   │   ├── controllers/{auth.controller.ts, chat.controller.ts, listing.controller.ts, user.controller.ts}
+│   │   ├── middleware/{auth.middleware.ts, rateLimit.middleware.ts, upload.middleware.ts}
+│   │   ├── prisma/{schema.prisma, seed.ts}
+│   │   ├── routes/{auth.routes.ts, chat.routes.ts, listing.routes.ts, user.routes.ts}
+│   │   ├── services/{email.service.ts, otp.service.ts, socket.service.ts, storage.service.ts}
+│   │   └── server.ts
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── .env.example
+└── mobile/
+    ├── lib/
+    │   ├── core/
+    │   │   ├── constants/{api_endpoints.dart, app_colors.dart, categories.dart}
+    │   │   ├── network/{api_client.dart, socket_service.dart}
+    │   │   ├── services/update_service.dart
+    │   │   ├── theme/app_theme.dart
+    │   │   └── utils/{formatters.dart, image_url_util.dart, url_launcher_util.dart}
+    │   ├── data/{models/, repositories/}
+    │   ├── state/{auth_provider.dart, listing_provider.dart, chat_provider.dart}
+    │   ├── ui/
+    │   │   ├── navigation/main_tab_screen.dart
+    │   │   ├── screens/{auth/, chats/, home/, listing_detail/, profile/, sell/}
+    │   │   └── widgets/
+    │   └── main.dart
+    └── pubspec.yaml
 ```
 
 ---
 
-## ⚡ Local Development
+## 🚀 Run Instructions
 
-### 1. Prerequisites
-- **Node.js**: `v18.0.0` or higher
-- **npm**: `v9.0.0` or higher
+### 1. Backend Server Setup
 
-### 2. Clone and Install
 ```bash
-git clone https://github.com/nikh-tail/DTU-BAZZAR.git
-cd DTU-BAZZAR
+cd server
+npm install
+cp .env.example .env
 
-# Install root, backend, and frontend dependencies:
-npm run install:all
-```
+# Configure DATABASE_URL and JWT_SECRET in server/.env
+npm run db:push
+npm run db:generate
+npm run db:seed    # Seeds authentic DTU student profiles and campus listings
 
-### 3. Configure Environment Variables
-Create `server/.env` with your credentials (or copy from `server/.env.example`):
-```env
-PORT=5001
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-
-# Database Connection (Neon PostgreSQL or local SQLite)
-DATABASE_URL="postgresql://user:pass@ep-xyz.aws.neon.tech/neondb?sslmode=require"
-
-# JWT Secret
-JWT_SECRET="your_jwt_secret_key"
-
-# Email Delivery (Resend API)
-RESEND_API_KEY="re_your_api_key"
-SIMULATE_EMAIL_OTP=false
-ALLOWED_EMAIL_DOMAINS="*"
-
-# Media Storage (Cloudinary)
-STORAGE_PROVIDER="cloudinary"
-CLOUDINARY_CLOUD_NAME="your_cloud_name"
-CLOUDINARY_API_KEY="your_api_key"
-CLOUDINARY_API_SECRET="your_api_secret"
-```
-
-### 4. Database Setup & Seed
-```bash
-# Push schema and seed authentic DTU campus items:
-npm run db:setup
-```
-
-### 5. Start Development Servers
-```bash
+# Start dev server with hot-reload
 npm run dev
 ```
-- **Frontend App**: `http://localhost:5173`
-- **Backend API**: `http://localhost:5001/api/health`
+
+Server will run at `http://localhost:5001`. You can test the health endpoint at `http://localhost:5001/api/health`.
+
+### 2. Mobile App Setup
+
+```bash
+cd mobile
+
+# Update lib/core/constants/api_endpoints.dart:
+# - For Android Emulator: use http://10.0.2.2:5001
+# - For Physical Android Device over Wi-Fi: use http://<your-lan-ip>:5001
+# - For Production: use https://your-production-url.com
+
+flutter pub get
+flutter run
+```
 
 ---
 
-## 📡 API Endpoints
+## 🔑 Environment Variables (`server/.env.example`)
 
-### Authentication
-- `POST /api/auth/request-otp` — Request a 6-digit OTP code (rate-limited)
-- `POST /api/auth/verify-otp` — Verify OTP and receive JWT session token
-- `GET /api/auth/me` — Retrieve active user session profile
-
-### Listings
-- `GET /api/listings` — Query marketplace feed with multi-facet filters & search
-- `GET /api/listings/:id` — Get detailed listing information with seller profile
-- `POST /api/listings` — Create a new listing (Auth required, up to 5 photos)
-- `PATCH /api/listings/:id/sold` — Mark an item as Sold (Archives from active feed)
-- `DELETE /api/listings/:id` — Delete a listing (Owner only)
-
-### Real-Time Chat
-- `GET /api/chat/conversations` — Retrieve all active user chat threads
-- `POST /api/chat/conversations` — Initiate a chat thread on a specific listing
-- `GET /api/chat/conversations/:id/messages` — Fetch message history
-- `POST /api/chat/conversations/:id/messages` — Send a message (Real-time Socket broadcast)
+```env
+PORT=5001
+NODE_ENV=production
+CLIENT_URL=http://localhost:5173
+JWT_SECRET=super_secret_jwt_random_key_min_32_characters_long
+JWT_EXPIRES_IN=7d
+ALLOWED_EMAIL_DOMAINS=dtu.ac.in,delhitechnologicaluniversity.edu,*
+DATABASE_URL="postgresql://username:password@localhost:5432/dtubazaar?sslmode=disable"
+OTP_EXPIRY_MINUTES=10
+SIMULATE_EMAIL_OTP=false
+STORAGE_PROVIDER=cloudinary
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+CLOUDINARY_FOLDER=dtu-bazaar/listings
+UPLOAD_DIR=uploads
+SMTP_HOST=smtp-relay.brevo.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your_brevo_account_email
+SMTP_PASS=your_brevo_smtp_key
+EMAIL_FROM="DTU Bazaar <no-reply@dtu-bazaar.com>"
+```
 
 ---
 
-## 📜 Campus Community Honor Code
-DTU Bazaar is dedicated exclusively to facilitating peer-to-peer campus exchanges. Transactions are conducted in-person within campus premises upon physical inspection. The platform charges 0% commission and does not process payments or retain financial data.
+## 📡 REST API Catalog
+
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/auth/request-otp` | Public | Enforces domain allowlist, generates 4-digit OTP, dispatches email |
+| `POST` | `/api/auth/verify-otp` | Public | Validates OTP against DB record, issues 7-day JWT, returns user profile |
+| `GET` | `/api/auth/me` | JWT | Returns current authenticated student profile and listing count |
+| `GET` | `/api/listings` | Public | Paginated marketplace feed with category, condition, price, and text query filters |
+| `GET` | `/api/listings/:id` | Public | Full listing details + seller campus contacts + increments view counter |
+| `POST` | `/api/listings` | JWT | Multipart upload with `images` array (max 5) + listing metadata |
+| `PATCH` | `/api/listings/:id/sold` | JWT | Marks item as SOLD and archives from the active marketplace feed |
+| `GET` | `/api/chat/conversations` | JWT | Fetches user's conversations sorted by latest message activity |
+| `POST` | `/api/chat/conversations` | JWT | Finds or creates 1-to-1 buyer-seller conversation thread for an item |
+| `GET` | `/api/chat/conversations/:id/messages` | JWT | Returns message history and marks unread messages as read |
+| `POST` | `/api/chat/conversations/:id/messages` | JWT | Creates message and broadcasts via Socket.io to room and receiver inbox |
+| `GET` | `/api/users/my-listings` | JWT | Returns authenticated student's active and sold items |
+| `POST` | `/api/users/saved/toggle` | JWT | Toggles bookmark / wishlist state for a listing |
+| `GET` | `/api/health` | Public | Server health ping returning `{ status, version, otpDigits: 4, timestamp }` |
 
 ---
 
-<div align="center">
-  <sub>Built with ⚡ for the Delhi Technological University Community</sub>
-</div>
+## 🎨 Mobile Design System
+
+- **Primary Lime**: `#C6FF3D`
+- **Emerald Primary**: `#10B981` | **Emerald Dark**: `#047857`
+- **Background**: `#F8FAFC` | **Surface**: `#FFFFFF` | **Border**: `#E2E8F0`
+- **Text Primary**: `#0F172A` | **Text Secondary**: `#64748B` | **Text Muted**: `#94A3B8`
+- **WhatsApp Green**: `#25D366` | **Error Red**: `#EF4444`
+- **Typography**: Plus Jakarta Sans (`google_fonts`)
+
+---
+
+## 🤖 GitHub Actions CI/CD Pipeline
+
+The `.github/workflows/build-flutter-apk.yml` workflow automatically builds and publishes production APK releases on push of tags matching `v*.*.*`:
+
+1. Checks out repository code.
+2. Sets up Eclipse Temurin JDK 17.
+3. Sets up Flutter on the stable release channel with caching.
+4. Executes `flutter pub get` in `mobile/`.
+5. Compiles universal APK via `flutter build apk --release --split-per-abi=false`.
+6. Staged to `release-output/DTU-Bazaar.apk`.
+7. Publishes GitHub Release using `softprops/action-gh-release@v2` with `contents: write`.
+
+---
+
+## 📄 License
+
+MIT License. Designed and engineered for the Delhi Technological University student community.

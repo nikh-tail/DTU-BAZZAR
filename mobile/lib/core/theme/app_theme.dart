@@ -4,7 +4,7 @@ import '../constants/app_colors.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
-    final baseTextTheme = GoogleFonts.interTextTheme();
+    final baseTextTheme = GoogleFonts.plusJakartaSansTextTheme();
 
     return ThemeData(
       useMaterial3: true,
@@ -13,19 +13,17 @@ class AppTheme {
         primary: AppColors.primaryLime,
         secondary: AppColors.emeraldPrimary,
         surface: AppColors.surface,
-        background: AppColors.background,
         error: AppColors.error,
         onPrimary: AppColors.textPrimary,
         onSecondary: AppColors.textWhite,
         onSurface: AppColors.textPrimary,
-        onBackground: AppColors.textPrimary,
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.surface,
         foregroundColor: AppColors.textPrimary,
         elevation: 0,
         centerTitle: false,
-        titleTextStyle: GoogleFonts.inter(
+        titleTextStyle: GoogleFonts.plusJakartaSans(
           fontSize: 18,
           fontWeight: FontWeight.w800,
           color: AppColors.textPrimary,
@@ -43,7 +41,7 @@ class AppTheme {
         filled: true,
         fillColor: const Color(0xFFF1F5F9),
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        hintStyle: GoogleFonts.inter(
+        hintStyle: GoogleFonts.plusJakartaSans(
           fontSize: 13,
           color: AppColors.textMuted,
           fontWeight: FontWeight.w500,
@@ -70,35 +68,35 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          textStyle: GoogleFonts.inter(
+          textStyle: GoogleFonts.plusJakartaSans(
             fontSize: 14,
             fontWeight: FontWeight.w800,
           ),
         ),
       ),
       textTheme: baseTextTheme.copyWith(
-        displayLarge: GoogleFonts.inter(
+        displayLarge: GoogleFonts.plusJakartaSans(
           fontSize: 28,
           fontWeight: FontWeight.w900,
           color: AppColors.textPrimary,
           letterSpacing: -0.5,
         ),
-        titleLarge: GoogleFonts.inter(
+        titleLarge: GoogleFonts.plusJakartaSans(
           fontSize: 20,
           fontWeight: FontWeight.w800,
           color: AppColors.textPrimary,
         ),
-        titleMedium: GoogleFonts.inter(
+        titleMedium: GoogleFonts.plusJakartaSans(
           fontSize: 16,
           fontWeight: FontWeight.w700,
           color: AppColors.textPrimary,
         ),
-        bodyLarge: GoogleFonts.inter(
+        bodyLarge: GoogleFonts.plusJakartaSans(
           fontSize: 14,
           fontWeight: FontWeight.w500,
           color: AppColors.textPrimary,
         ),
-        bodyMedium: GoogleFonts.inter(
+        bodyMedium: GoogleFonts.plusJakartaSans(
           fontSize: 13,
           fontWeight: FontWeight.w400,
           color: AppColors.textSecondary,

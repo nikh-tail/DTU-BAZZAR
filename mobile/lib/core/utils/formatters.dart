@@ -33,21 +33,27 @@ class Formatters {
   }
 
   static String getCategoryName(String categoryId) {
-    switch (categoryId) {
-      case 'DRAWING_TOOLS':
-        return 'Drawing Tools';
+    switch (categoryId.toUpperCase()) {
+      case 'CYCLES':
+        return 'Cycles';
       case 'ELECTRONICS':
         return 'Electronics';
+      case 'BOOKS_ACADEMICS':
       case 'BOOKS_NOTES':
-        return 'Books & Notes';
+        return 'Books & Academics';
+      case 'HOSTEL_ESSENTIALS':
       case 'HOSTEL_REQ':
-        return 'Hostel & Req';
+        return 'Hostel Essentials';
+      case 'LAB_STATIONERY':
+      case 'DRAWING_TOOLS':
+        return 'Lab & Stationery';
+      case 'SPORTS_FITNESS':
+      case 'HOBBY_SPORT':
+        return 'Sports & Fitness';
       case 'FASHION':
         return 'Fashion';
-      case 'HOBBY_SPORT':
-        return 'Hobby / Sport';
       default:
-        return 'Others';
+        return 'Other';
     }
   }
 

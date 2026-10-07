@@ -24,6 +24,45 @@ class ChatProvider extends ChangeNotifier {
     });
   }
 
+  DateTime? _parseDateTime(dynamic dt) {
+    if (dt == null) return null;
+    if (dt is DateTime) return dt;
+    return DateTime.tryParse(dt.toString());
+  }
+
+  /// Appends message safely with deduplication by ID or
+  /// (senderId + content + createdAt within 5 seconds) to prevent duplicate
+  /// bubbles from HTTP response + socket broadcast race conditions.
+  void addMessageSafely(MessageModel msg) {
+    if (msg.content.trim().isEmpty) return;
+
+    final isDuplicate = _messages.any((m) {
+      // 1. Strict match by ID
+      if (m.id.isNotEmpty && msg.id.isNotEmpty && m.id == msg.id) {
+        return true;
+      }
+
+      // 2. Match by senderId + content + createdAt within 5 seconds
+      if (m.senderId == msg.senderId && m.content.trim() == msg.content.trim()) {
+        final mTime = _parseDateTime(m.createdAt);
+        final msgTime = _parseDateTime(msg.createdAt);
+        if (mTime != null && msgTime != null) {
+          final diff = mTime.difference(msgTime).abs();
+          if (diff.inSeconds <= 5) return true;
+        } else {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    if (!isDuplicate) {
+      _messages.add(msg);
+      notifyListeners();
+    }
+  }
+
   void handleIncomingSocketMessage(dynamic data) {
     if (data == null || data is! Map) return;
 
@@ -40,15 +79,7 @@ class ChatProvider extends ChangeNotifier {
       final messageData = Map<String, dynamic>.from(rawMsg);
       if (convId == _activeConversationId) {
         final msg = MessageModel.fromJson(messageData);
-        if (msg.content.trim().isNotEmpty) {
-          final isDuplicate = _messages.any((m) =>
-              (m.id.isNotEmpty && m.id == msg.id) ||
-              (m.content.trim() == msg.content.trim() && m.senderId == msg.senderId));
-          if (!isDuplicate) {
-            _messages.add(msg);
-            notifyListeners();
-          }
-        }
+        addMessageSafely(msg);
       }
     }
 
@@ -93,13 +124,8 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
 
     final msg = await _chatRepo.sendMessage(_activeConversationId!, content.trim());
-    if (msg != null && msg.content.trim().isNotEmpty) {
-      final isDuplicate = _messages.any((m) =>
-          (m.id.isNotEmpty && m.id == msg.id) ||
-          (m.content.trim() == msg.content.trim() && m.senderId == msg.senderId));
-      if (!isDuplicate) {
-        _messages.add(msg);
-      }
+    if (msg != null) {
+      addMessageSafely(msg);
     }
 
     _isSending = false;

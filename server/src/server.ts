@@ -61,7 +61,7 @@ const uploadPath = path.resolve(process.cwd(), config.uploadDir);
 app.use('/uploads', express.static(uploadPath));
 
 // Health check route
-app.get('/api/health', (req: Request, res: Response) => {
+app.get(['/api/health', '/health'], (req: Request, res: Response) => {
   res.status(200).json({
     status: 'ok',
     version: '2.6.0',

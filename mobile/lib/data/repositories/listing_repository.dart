@@ -150,9 +150,10 @@ class ListingRepository {
   Future<bool> toggleSaveListing(String listingId) async {
     try {
       final res = await _client.post(
-        '${ApiEndpoints.listings}/$listingId/save',
+        ApiEndpoints.toggleSaveListing,
+        data: {'listingId': listingId},
       );
-      return res.data['success'] == true;
+      return res.data != null && res.data['success'] == true;
     } catch (e) {
       print('Toggle Save Error: $e');
       return false;
@@ -162,9 +163,15 @@ class ListingRepository {
   Future<List<ListingModel>> getMyActiveListings() async {
     try {
       final res = await _client.get(ApiEndpoints.myActiveListings);
-      if (res.data['success'] == true) {
-        final list = res.data['data'] as List;
-        return list.map((json) => ListingModel.fromJson(json)).toList();
+      if (res.data != null && res.data['success'] == true) {
+        final data = res.data['data'];
+        List rawList = [];
+        if (data is Map && data['active'] is List) {
+          rawList = data['active'] as List;
+        } else if (data is List) {
+          rawList = data;
+        }
+        return rawList.map((json) => ListingModel.fromJson(json)).toList();
       }
       return [];
     } catch (e) {
@@ -176,9 +183,15 @@ class ListingRepository {
   Future<List<ListingModel>> getMySoldListings() async {
     try {
       final res = await _client.get(ApiEndpoints.mySoldListings);
-      if (res.data['success'] == true) {
-        final list = res.data['data'] as List;
-        return list.map((json) => ListingModel.fromJson(json)).toList();
+      if (res.data != null && res.data['success'] == true) {
+        final data = res.data['data'];
+        List rawList = [];
+        if (data is Map && data['sold'] is List) {
+          rawList = data['sold'] as List;
+        } else if (data is List) {
+          rawList = data;
+        }
+        return rawList.map((json) => ListingModel.fromJson(json)).toList();
       }
       return [];
     } catch (e) {
@@ -190,7 +203,7 @@ class ListingRepository {
   Future<List<ListingModel>> getMySavedListings() async {
     try {
       final res = await _client.get(ApiEndpoints.mySavedListings);
-      if (res.data['success'] == true) {
+      if (res.data != null && res.data['success'] == true) {
         final list = res.data['data'] as List;
         return list.map((json) => ListingModel.fromJson(json)).toList();
       }
@@ -203,8 +216,8 @@ class ListingRepository {
 
   Future<bool> markAsSold(String listingId) async {
     try {
-      final res = await _client.put('${ApiEndpoints.listings}/$listingId/sold');
-      return res.data['success'] == true;
+      final res = await _client.patch('${ApiEndpoints.listings}/$listingId/sold');
+      return res.data != null && res.data['success'] == true;
     } catch (e) {
       print('Mark Sold Error: $e');
       return false;

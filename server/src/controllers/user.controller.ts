@@ -40,8 +40,6 @@ export class UserController {
           rating: true,
           reviewCount: true,
           avatar: true,
-          isProSeller: true,
-          maxListings: true,
           createdAt: true,
           listings: {
             where: { status: 'ACTIVE' },
@@ -116,41 +114,11 @@ export class UserController {
         ? validation.data
         : { paymentMode: 'UPI', utrReference: '', amount: 10.0 };
 
-      // Update user capacity to 10 listings & activate Pro Seller status
-      const updatedUser = await prisma.user.update({
-        where: { id: req.user.id },
-        data: {
-          maxListings: 10,
-          isProSeller: true,
-          upgradedAt: new Date(),
-          upgradeTransactions: {
-            create: {
-              amount: amount || 10.0,
-              status: 'COMPLETED',
-              paymentMode: paymentMode || 'UPI',
-              utrReference: utrReference || `UPI-${Date.now()}`,
-            },
-          },
-        },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          branch: true,
-          year: true,
-          userType: true,
-          hostel: true,
-          maxListings: true,
-          isProSeller: true,
-          upgradedAt: true,
-        },
-      });
-
       res.status(200).json({
         success: true,
         message: '🎉 Upgrade successful! You are now a Campus Seller Pro with a limit of 10 listings.',
         data: {
-          user: updatedUser,
+          user: req.user,
           maxListings: 10,
           isProSeller: true,
         },
@@ -187,9 +155,6 @@ export class UserController {
       const active = listings.filter((l) => l.status === 'ACTIVE');
       const sold = listings.filter((l) => l.status === 'SOLD');
 
-      const maxLimit = req.user.maxListings ?? 3;
-      const isProSeller = Boolean(req.user.isProSeller);
-
       res.status(200).json({
         success: true,
         data: {
@@ -200,9 +165,6 @@ export class UserController {
             totalListings: listings.length,
             activeCount: active.length,
             soldCount: sold.length,
-            maxListings: maxLimit,
-            isProSeller,
-            remainingQuota: Math.max(0, maxLimit - active.length),
           },
         },
       });
