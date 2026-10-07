@@ -26,8 +26,16 @@ export function getImageUrl(url?: string | null, category?: string): string {
 
   // If relative path like `/uploads/...` or `uploads/...`
   const relativePath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
-  const apiUrl = (import.meta.env.VITE_API_URL || 'https://dtu-bazzar.onrender.com').replace(/\/+$/, '');
 
+  // In local development or via proxy, relative path works directly with Vite proxy
+  if (typeof window !== 'undefined') {
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (isLocalhost && !import.meta.env.VITE_API_URL) {
+      return relativePath;
+    }
+  }
+
+  const apiUrl = (import.meta.env.VITE_API_URL || 'https://dtu-bazzar.onrender.com').replace(/\/+$/, '');
   return `${apiUrl}${relativePath}`;
 }
 

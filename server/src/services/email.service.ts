@@ -129,7 +129,9 @@ export class EmailService {
     const textContent = `Your DTU Bazaar verification code is: ${otp}. Valid for ${config.otpExpiryMinutes} minutes.`;
 
     // 1. Try Brevo REST API (Fastest & Direct HTTP)
-    const brevoKey = process.env.BREVO_API_KEY || (config.email.resendApiKey?.startsWith('xkeysib-') ? config.email.resendApiKey : null);
+    const brevoKey =
+      process.env.BREVO_API_KEY ||
+      (config.email.resendApiKey?.startsWith('xkeysib-') ? config.email.resendApiKey : null);
     if (brevoKey) {
       try {
         console.log(`📧 Sending real email via Brevo API to ${email}...`);

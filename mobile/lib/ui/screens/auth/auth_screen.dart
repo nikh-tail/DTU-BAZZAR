@@ -109,11 +109,23 @@ class _AuthScreenState extends State<AuthScreen>
         _currentStep = OnboardingStep.otpInput;
         _otpStatus = OtpStatus.idle;
       });
+
+      final debugOtp = auth.lastDebugOtp;
+      if (debugOtp != null && debugOtp.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('⚡ Verification Code: $debugOtp (or use master 1234)'),
+            backgroundColor: const Color(0xFF0F172A),
+            duration: const Duration(seconds: 8),
+          ),
+        );
+      }
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _otpFocusNodes[0].requestFocus();
       });
     } else {
-      setState(() => _errorMessage = 'Failed to send verification code. Please try again.');
+      setState(() => _errorMessage = 'Failed to send verification code. Please check internet connection or retry.');
     }
   }
 
@@ -572,6 +584,47 @@ class _AuthScreenState extends State<AuthScreen>
         ),
 
         const SizedBox(height: 18),
+
+        // Instant campus bypass button for seamless testing & dev
+        Center(
+          child: InkWell(
+            onTap: _isLoading
+                ? null
+                : () {
+                    const code = '1234';
+                    for (int i = 0; i < 4; i++) {
+                      _otpControllers[i].text = code[i];
+                    }
+                    _triggerVerifyOtp(code);
+                  },
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0FDF4),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFF86EFAC)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('⚡', style: TextStyle(fontSize: 14)),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Instant Dev Login with 1234',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: const Color(0xFF166534),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 12),
 
         if (_errorMessage.isNotEmpty) ...[
           _buildInlineErrorMessage(_errorMessage),

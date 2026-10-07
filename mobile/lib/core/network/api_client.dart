@@ -9,10 +9,9 @@ class ApiClient {
     dio = Dio(
       BaseOptions(
         baseUrl: ApiEndpoints.baseUrl,
-        connectTimeout: const Duration(seconds: 45),
-        receiveTimeout: const Duration(seconds: 45),
+        connectTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(seconds: 60),
         headers: {
-          'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       ),
@@ -39,23 +38,23 @@ class ApiClient {
     );
   }
 
-  Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) {
-    return dio.get(path, queryParameters: queryParameters);
+  Future<Response> get(String path, {Map<String, dynamic>? queryParameters, Options? options}) {
+    return dio.get(path, queryParameters: queryParameters, options: options);
   }
 
-  Future<Response> post(String path, {dynamic data}) {
-    return dio.post(path, data: data);
+  Future<Response> post(String path, {dynamic data, Options? options}) {
+    return dio.post(path, data: data, options: options);
   }
 
-  Future<Response> patch(String path, {dynamic data}) {
-    return dio.patch(path, data: data);
+  Future<Response> patch(String path, {dynamic data, Options? options}) {
+    return dio.patch(path, data: data, options: options);
   }
 
-  Future<Response> put(String path, {dynamic data}) {
-    return dio.put(path, data: data);
+  Future<Response> put(String path, {dynamic data, Options? options}) {
+    return dio.put(path, data: data, options: options);
   }
 
-  Future<Response> delete(String path, {dynamic data}) {
-    return dio.delete(path, data: data);
+  Future<Response> delete(String path, {dynamic data, Options? options}) {
+    return dio.delete(path, data: data, options: options);
   }
 }

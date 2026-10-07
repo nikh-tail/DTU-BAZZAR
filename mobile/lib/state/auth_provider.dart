@@ -17,6 +17,7 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   bool get isSendingOtp => _isSendingOtp;
   bool get isVerifyingOtp => _isVerifyingOtp;
+  String? get lastDebugOtp => _authRepo.lastDebugOtp;
 
   AuthProvider(this._authRepo) {
     checkAuthStatus();

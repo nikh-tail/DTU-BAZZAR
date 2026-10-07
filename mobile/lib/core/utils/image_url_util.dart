@@ -1,5 +1,7 @@
+import '../constants/api_endpoints.dart';
+
 class ImageUrlUtil {
-  static const String serverBase = 'https://dtu-bazzar.onrender.com';
+  static String get serverBase => ApiEndpoints.socketUrl;
 
   static const Map<String, String> categoryFallbacks = {
     'DRAWING_TOOLS':
