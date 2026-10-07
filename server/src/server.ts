@@ -60,6 +60,84 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 const uploadPath = path.resolve(process.cwd(), config.uploadDir);
 app.use('/uploads', express.static(uploadPath));
 
+// Root landing route
+app.get('/', (req: Request, res: Response) => {
+  if (req.accepts('html')) {
+    res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DTU Bazaar — Backend API</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #070B14; color: #F8FAFC; margin: 0; padding: 40px 20px; display: flex; justify-content: center; align-items: center; min-height: 80vh; }
+    .card { background: #0E1526; border: 1px solid #1E293B; border-radius: 24px; padding: 36px; max-width: 520px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: center; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(198, 255, 61, 0.12); border: 1px solid #C6FF3D; color: #C6FF3D; border-radius: 999px; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; }
+    h1 { margin: 0 0 8px 0; font-size: 28px; font-weight: 900; letter-spacing: -0.5px; }
+    h1 span { color: #C6FF3D; }
+    p { color: #94A3B8; font-size: 14px; line-height: 1.5; margin: 0 0 24px 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .stat { background: #131C31; border: 1px solid #1E293B; border-radius: 14px; padding: 14px; text-align: left; }
+    .stat-title { font-size: 11px; color: #64748B; font-weight: 700; text-transform: uppercase; }
+    .stat-value { font-size: 15px; color: #F8FAFC; font-weight: 800; margin-top: 4px; }
+    .btn-group { display: flex; flex-direction: column; gap: 10px; }
+    .btn { display: block; padding: 12px 20px; border-radius: 14px; text-decoration: none; font-weight: 800; font-size: 13px; transition: all 0.2s ease; text-align: center; }
+    .btn-primary { background: #C6FF3D; color: #0F172A; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background: #1E293B; color: #F8FAFC; border: 1px solid #334155; }
+    .btn-secondary:hover { background: #334155; }
+    .footer { font-size: 11px; color: #475569; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">⚡ Status: Online & Running</div>
+    <h1>DTU <span>BAZAAR</span> API</h1>
+    <p>The backend gateway and real-time Socket.io engine for Delhi Technological University student marketplace is active.</p>
+    
+    <div class="grid">
+      <div class="stat">
+        <div class="stat-title">API Version</div>
+        <div class="stat-value">v2.6.0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Database</div>
+        <div class="stat-value">PostgreSQL 16</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">Realtime</div>
+        <div class="stat-value">Socket.io Active</div>
+      </div>
+      <div class="stat">
+        <div class="stat-title">OTP Security</div>
+        <div class="stat-value">4 Digits (Active)</div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <a class="btn btn-primary" href="/api/health">⚡ View Health Status (/api/health)</a>
+      <a class="btn btn-secondary" href="/api/listings">📦 Browse Live Listings API (/api/listings)</a>
+    </div>
+
+    <div class="footer">
+      To open the Web Client, run <code>npm run dev:client</code> at <code>http://localhost:5173</code>.<br>
+      To run the Mobile App, open the <code>mobile/</code> project in Flutter.
+    </div>
+  </div>
+</body>
+</html>`);
+    return;
+  }
+
+  res.status(200).json({
+    status: 'ok',
+    name: 'DTU Bazaar API Gateway',
+    version: '2.6.0',
+    health: '/api/health',
+    listings: '/api/listings',
+  });
+});
+
 // Health check route
 app.get(['/api/health', '/health'], (req: Request, res: Response) => {
   res.status(200).json({
